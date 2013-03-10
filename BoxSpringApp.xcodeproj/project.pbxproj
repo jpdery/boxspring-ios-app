@@ -16,6 +16,16 @@
 		C783B7D416E9595500D393B3 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C783B7D316E9595500D393B3 /* Default.png */; };
 		C783B7D616E9595500D393B3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C783B7D516E9595500D393B3 /* Default@2x.png */; };
 		C783B7D816E9595500D393B3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C783B7D716E9595500D393B3 /* Default-568h@2x.png */; };
+		C783B7E116E95B2C00D393B3 /* BSScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E016E95B2C00D393B3 /* BSScriptView.m */; };
+		C783B7E416E95B3B00D393B3 /* BSScriptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E316E95B3B00D393B3 /* BSScriptViewController.m */; };
+		C783B7E716E95B8200D393B3 /* BSBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E616E95B8200D393B3 /* BSBinding.m */; };
+		C783B7F716E9779A00D393B3 /* libiOSJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7F616E9779A00D393B3 /* libiOSJavaScriptCore.a */; };
+		C783B7FA16E9781200D393B3 /* BSConsoleBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7F916E9781200D393B3 /* BSConsoleBinding.m */; };
+		C783B7FC16E9784600D393B3 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7FB16E9784600D393B3 /* libicucore.dylib */; };
+		C783B7FE16E9784C00D393B3 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7FD16E9784C00D393B3 /* libstdc++.dylib */; };
+		C783B80316E97BFA00D393B3 /* NSString+JavaScriptCoreString.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80216E97BFA00D393B3 /* NSString+JavaScriptCoreString.m */; };
+		C783B80516ECEFBE00D393B3 /* App in Resources */ = {isa = PBXBuildFile; fileRef = C783B80416ECEFBE00D393B3 /* App */; };
+		C783B80816ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80716ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -23,15 +33,40 @@
 		C783B7C116E9595500D393B3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C783B7C316E9595500D393B3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C783B7C516E9595500D393B3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		C783B7C916E9595500D393B3 /* BoxSpringApp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BoxSpringApp-Info.plist"; sourceTree = "<group>"; };
 		C783B7CB16E9595500D393B3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C783B7CD16E9595500D393B3 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		C783B7CF16E9595500D393B3 /* BoxSpringApp-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BoxSpringApp-Prefix.pch"; sourceTree = "<group>"; };
+		C783B7CF16E9595500D393B3 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
 		C783B7D016E9595500D393B3 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		C783B7D116E9595500D393B3 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		C783B7D316E9595500D393B3 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		C783B7D516E9595500D393B3 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		C783B7D716E9595500D393B3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		C783B7DF16E95B2C00D393B3 /* BSScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSScriptView.h; sourceTree = "<group>"; };
+		C783B7E016E95B2C00D393B3 /* BSScriptView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSScriptView.m; sourceTree = "<group>"; };
+		C783B7E216E95B3B00D393B3 /* BSScriptViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSScriptViewController.h; sourceTree = "<group>"; };
+		C783B7E316E95B3B00D393B3 /* BSScriptViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSScriptViewController.m; sourceTree = "<group>"; };
+		C783B7E516E95B8200D393B3 /* BSBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSBinding.h; sourceTree = "<group>"; };
+		C783B7E616E95B8200D393B3 /* BSBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSBinding.m; sourceTree = "<group>"; };
+		C783B7E916E95D1D00D393B3 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C783B7ED16E9779A00D393B3 /* JavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScript.h; sourceTree = "<group>"; };
+		C783B7EE16E9779A00D393B3 /* JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScriptCore.h; sourceTree = "<group>"; };
+		C783B7EF16E9779A00D393B3 /* JSBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSBase.h; sourceTree = "<group>"; };
+		C783B7F016E9779A00D393B3 /* JSContextRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSContextRef.h; sourceTree = "<group>"; };
+		C783B7F116E9779A00D393B3 /* JSObjectRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSObjectRef.h; sourceTree = "<group>"; };
+		C783B7F216E9779A00D393B3 /* JSStringRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSStringRef.h; sourceTree = "<group>"; };
+		C783B7F316E9779A00D393B3 /* JSStringRefCF.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSStringRefCF.h; sourceTree = "<group>"; };
+		C783B7F416E9779A00D393B3 /* JSValueRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSValueRef.h; sourceTree = "<group>"; };
+		C783B7F516E9779A00D393B3 /* WebKitAvailability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebKitAvailability.h; sourceTree = "<group>"; };
+		C783B7F616E9779A00D393B3 /* libiOSJavaScriptCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libiOSJavaScriptCore.a; sourceTree = "<group>"; };
+		C783B7F816E9781200D393B3 /* BSConsoleBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSConsoleBinding.h; sourceTree = "<group>"; };
+		C783B7F916E9781200D393B3 /* BSConsoleBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSConsoleBinding.m; sourceTree = "<group>"; };
+		C783B7FB16E9784600D393B3 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
+		C783B7FD16E9784C00D393B3 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
+		C783B80116E97BFA00D393B3 /* NSString+JavaScriptCoreString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+JavaScriptCoreString.h"; path = "BoxSpringLib/NSString+JavaScriptCoreString.h"; sourceTree = "<group>"; };
+		C783B80216E97BFA00D393B3 /* NSString+JavaScriptCoreString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+JavaScriptCoreString.m"; path = "BoxSpringLib/NSString+JavaScriptCoreString.m"; sourceTree = "<group>"; };
+		C783B80416ECEFBE00D393B3 /* App */ = {isa = PBXFileReference; lastKnownFileType = folder; path = App; sourceTree = "<group>"; };
+		C783B80616ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+JavaScriptCoreObject.h"; path = "BoxSpringLib/NSObject+JavaScriptCoreObject.h"; sourceTree = "<group>"; };
+		C783B80716ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+JavaScriptCoreObject.m"; path = "BoxSpringLib/NSObject+JavaScriptCoreObject.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,9 +74,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C783B7FE16E9784C00D393B3 /* libstdc++.dylib in Frameworks */,
+				C783B7FC16E9784600D393B3 /* libicucore.dylib in Frameworks */,
 				C783B7C216E9595500D393B3 /* UIKit.framework in Frameworks */,
 				C783B7C416E9595500D393B3 /* Foundation.framework in Frameworks */,
 				C783B7C616E9595500D393B3 /* CoreGraphics.framework in Frameworks */,
+				C783B7F716E9779A00D393B3 /* libiOSJavaScriptCore.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -51,7 +89,12 @@
 		C783B7B516E9595500D393B3 = {
 			isa = PBXGroup;
 			children = (
+				C783B80416ECEFBE00D393B3 /* App */,
 				C783B7C716E9595500D393B3 /* BoxSpringApp */,
+				C783B7DE16E95ABD00D393B3 /* BoxSpringLib */,
+				C783B7E816E95D1D00D393B3 /* Resources */,
+				C783B7FF16E97B6C00D393B3 /* Extras */,
+				C783B7EB16E9779A00D393B3 /* Libs */,
 				C783B7C016E9595500D393B3 /* Frameworks */,
 				C783B7BF16E9595500D393B3 /* Products */,
 			);
@@ -68,6 +111,8 @@
 		C783B7C016E9595500D393B3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C783B7FD16E9784C00D393B3 /* libstdc++.dylib */,
+				C783B7FB16E9784600D393B3 /* libicucore.dylib */,
 				C783B7C116E9595500D393B3 /* UIKit.framework */,
 				C783B7C316E9595500D393B3 /* Foundation.framework */,
 				C783B7C516E9595500D393B3 /* CoreGraphics.framework */,
@@ -78,8 +123,10 @@
 		C783B7C716E9595500D393B3 /* BoxSpringApp */ = {
 			isa = PBXGroup;
 			children = (
+				C783B7CD16E9595500D393B3 /* main.m */,
 				C783B7D016E9595500D393B3 /* AppDelegate.h */,
 				C783B7D116E9595500D393B3 /* AppDelegate.m */,
+				C783B7CF16E9595500D393B3 /* Prefix.pch */,
 				C783B7C816E9595500D393B3 /* Supporting Files */,
 			);
 			path = BoxSpringApp;
@@ -88,15 +135,71 @@
 		C783B7C816E9595500D393B3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				C783B7C916E9595500D393B3 /* BoxSpringApp-Info.plist */,
 				C783B7CA16E9595500D393B3 /* InfoPlist.strings */,
-				C783B7CD16E9595500D393B3 /* main.m */,
-				C783B7CF16E9595500D393B3 /* BoxSpringApp-Prefix.pch */,
 				C783B7D316E9595500D393B3 /* Default.png */,
 				C783B7D516E9595500D393B3 /* Default@2x.png */,
 				C783B7D716E9595500D393B3 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		C783B7DE16E95ABD00D393B3 /* BoxSpringLib */ = {
+			isa = PBXGroup;
+			children = (
+				C783B7DF16E95B2C00D393B3 /* BSScriptView.h */,
+				C783B7E016E95B2C00D393B3 /* BSScriptView.m */,
+				C783B7E216E95B3B00D393B3 /* BSScriptViewController.h */,
+				C783B7E316E95B3B00D393B3 /* BSScriptViewController.m */,
+				C783B7E516E95B8200D393B3 /* BSBinding.h */,
+				C783B7E616E95B8200D393B3 /* BSBinding.m */,
+				C783B7F816E9781200D393B3 /* BSConsoleBinding.h */,
+				C783B7F916E9781200D393B3 /* BSConsoleBinding.m */,
+			);
+			path = BoxSpringLib;
+			sourceTree = "<group>";
+		};
+		C783B7E816E95D1D00D393B3 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				C783B7E916E95D1D00D393B3 /* Info.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		C783B7EB16E9779A00D393B3 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				C783B7EC16E9779A00D393B3 /* JavaScriptCore */,
+				C783B7F616E9779A00D393B3 /* libiOSJavaScriptCore.a */,
+			);
+			path = Libs;
+			sourceTree = "<group>";
+		};
+		C783B7EC16E9779A00D393B3 /* JavaScriptCore */ = {
+			isa = PBXGroup;
+			children = (
+				C783B7ED16E9779A00D393B3 /* JavaScript.h */,
+				C783B7EE16E9779A00D393B3 /* JavaScriptCore.h */,
+				C783B7EF16E9779A00D393B3 /* JSBase.h */,
+				C783B7F016E9779A00D393B3 /* JSContextRef.h */,
+				C783B7F116E9779A00D393B3 /* JSObjectRef.h */,
+				C783B7F216E9779A00D393B3 /* JSStringRef.h */,
+				C783B7F316E9779A00D393B3 /* JSStringRefCF.h */,
+				C783B7F416E9779A00D393B3 /* JSValueRef.h */,
+				C783B7F516E9779A00D393B3 /* WebKitAvailability.h */,
+			);
+			path = JavaScriptCore;
+			sourceTree = "<group>";
+		};
+		C783B7FF16E97B6C00D393B3 /* Extras */ = {
+			isa = PBXGroup;
+			children = (
+				C783B80116E97BFA00D393B3 /* NSString+JavaScriptCoreString.h */,
+				C783B80216E97BFA00D393B3 /* NSString+JavaScriptCoreString.m */,
+				C783B80616ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.h */,
+				C783B80716ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m */,
+			);
+			name = Extras;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -150,10 +253,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C783B7CC16E9595500D393B3 /* InfoPlist.strings in Resources */,
+				C783B80516ECEFBE00D393B3 /* App in Resources */,
 				C783B7D416E9595500D393B3 /* Default.png in Resources */,
 				C783B7D616E9595500D393B3 /* Default@2x.png in Resources */,
 				C783B7D816E9595500D393B3 /* Default-568h@2x.png in Resources */,
+				C783B7CC16E9595500D393B3 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,6 +270,12 @@
 			files = (
 				C783B7CE16E9595500D393B3 /* main.m in Sources */,
 				C783B7D216E9595500D393B3 /* AppDelegate.m in Sources */,
+				C783B7E116E95B2C00D393B3 /* BSScriptView.m in Sources */,
+				C783B7E416E95B3B00D393B3 /* BSScriptViewController.m in Sources */,
+				C783B7E716E95B8200D393B3 /* BSBinding.m in Sources */,
+				C783B7FA16E9781200D393B3 /* BSConsoleBinding.m in Sources */,
+				C783B80316E97BFA00D393B3 /* NSString+JavaScriptCoreString.m in Sources */,
+				C783B80816ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -243,8 +353,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "BoxSpringApp/BoxSpringApp-Prefix.pch";
-				INFOPLIST_FILE = "BoxSpringApp/BoxSpringApp-Info.plist";
+				GCC_PREFIX_HEADER = BoxSpringApp/Prefix.pch;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Libs\"";
+				INFOPLIST_FILE = Resources/Info.plist;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libs\"",
+					"\"$(SRCROOT)/Libs/\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -254,8 +370,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "BoxSpringApp/BoxSpringApp-Prefix.pch";
-				INFOPLIST_FILE = "BoxSpringApp/BoxSpringApp-Info.plist";
+				GCC_PREFIX_HEADER = BoxSpringApp/Prefix.pch;
+				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/Libs\"";
+				INFOPLIST_FILE = Resources/Info.plist;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/Libs\"",
+					"\"$(SRCROOT)/Libs/\"",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -280,6 +402,7 @@
 				C783B7DD16E9595500D393B3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
