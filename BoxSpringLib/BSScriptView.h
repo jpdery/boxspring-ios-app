@@ -6,26 +6,40 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
+#import <objc/message.h>
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
-#include <objc/message.h>
+
+#define APP_FOLDER App
 
 @class BSBinding;
 
 @interface BSScriptView : UIView {
-    JSGlobalContextRef context;
-    @public JSValueRef undefined;
+    
+    JSGlobalContextRef jsGlobalContext;
+    JSValueRef jsUndefinedValue;
+    JSValueRef jsNullValue;
+    JSValueRef jsTrueValue;
+    JSValueRef jsFalseValue;
+    
+    NSMutableArray* bindings;
 }
 
-@property(nonatomic, readonly) JSGlobalContextRef context;
-@property(nonatomic, readonly) JSValueRef undefined;
-@property(nonatomic, copy) NSMutableArray* bindings;
+@property(nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
+@property(nonatomic, readonly) JSValueRef jsUndefinedValue;
+@property(nonatomic, readonly) JSValueRef jsNullValue;
+@property(nonatomic, readonly) JSValueRef jsTrueValue;
+@property(nonatomic, readonly) JSValueRef jsFalseValue;
 
-- (void)loadScriptFromFile:(NSString *)file;
+@property(nonatomic, retain) NSMutableArray* bindings;
 
-- (void)addGlobalObject:(NSString*)objectName usingClass:(JSClassRef)objectClass withPrivateData:(void*)privateData;
-- (void)addGlobalObject:(NSString*)objectName usingBinding:(BSBinding *)objectBinding withPrivateData:(void*)privateData;
+- (void)loadScript:(NSString*)path;
+- (void)evalScript:(NSString*)source;
+- (void)handleException:(JSValueRef)jsException;
+- (NSString*)pathForResource:(NSString*)resource;
 
-- (JSClassRef)createJSClass:(id)class;
+- (BSBinding*)bind:(Class)boundClass toKey:(NSString*)key;
+- (BSBinding*)bind:(Class)boundClass toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
+
 
 @end

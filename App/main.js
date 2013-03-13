@@ -1,1 +1,1 @@
-console.log('WAT!', 'Patate', 'Zomg');
+console.log('Test');

@@ -6,14 +6,18 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
+#import "NSString+JavaScriptCoreString.h"
+#import "NSObject+JavaScriptCoreObject.h"
 #import "BSBinding.h"
 #import "BSConsoleBinding.h"
-#import "NSString+JavaScriptCoreString.h"
 
 @implementation BSScriptView
 
-@synthesize context;
-@synthesize undefined;
+@synthesize jsGlobalContext;
+@synthesize jsUndefinedValue;
+@synthesize jsNullValue;
+@synthesize jsTrueValue;
+@synthesize jsFalseValue;
 @synthesize bindings;
 
 /**
@@ -25,163 +29,136 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        context = JSGlobalContextCreate(NULL);
-		undefined = JSValueMakeUndefined(context);
-		JSValueProtect(context, undefined);        
-     
         
-        BSConsoleBinding* consoleBinding = [[BSConsoleBinding alloc] initWithScriptView:self];
-        [self addGlobalObject:@"console" usingBinding:consoleBinding withPrivateData:consoleBinding];
-        [consoleBinding release];
+        jsGlobalContext = JSGlobalContextCreate(NULL);
+        
+        jsNullValue = JSValueMakeNull(jsGlobalContext);
+        jsTrueValue = JSValueMakeBoolean(jsGlobalContext, true);
+        jsFalseValue = JSValueMakeBoolean(jsGlobalContext, false);
+        jsUndefinedValue = JSValueMakeUndefined(jsGlobalContext);
+        JSValueProtect(jsGlobalContext, jsNullValue);
+        JSValueProtect(jsGlobalContext, jsTrueValue);
+        JSValueProtect(jsGlobalContext, jsFalseValue);
+        JSValueProtect(jsGlobalContext, jsUndefinedValue);
+                
+        bindings = [[NSMutableArray alloc] init];
+        
+        [self bind:BSConsoleBinding.class toKey:@"console"];
     }
     return self;
 }
 
-- (void)loadScriptFromFile:(NSString *)file
-{
-    NSString* path = [NSString stringWithFormat:@"%@/App/%@", [[NSBundle mainBundle] resourcePath], file];
-    
-    NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
-	
-	if( !script ) {
-		NSLog(@"Error: Can't Find Script %@", path );
-		return;
-	}
-	
-	NSLog(@"Loading Script: %@", path );
-	JSStringRef scriptJS = JSStringCreateWithCFString((CFStringRef)script);
-	JSStringRef pathJS = JSStringCreateWithCFString((CFStringRef)path);
-	
-	JSValueRef exception = NULL;
-	JSEvaluateScript(context, scriptJS, NULL, pathJS, 0, &exception );
-
-    if (exception) {
-    
-    	JSStringRef jsLinePropertyName = JSStringCreateWithUTF8CString("line");
-        JSStringRef jsFilePropertyName = JSStringCreateWithUTF8CString("sourceURL");
-	
-        JSObjectRef exObject = JSValueToObject( context, exception, NULL );
-        JSValueRef line = JSObjectGetProperty( context, exObject, jsLinePropertyName, NULL );
-        JSValueRef file = JSObjectGetProperty( context, exObject, jsFilePropertyName, NULL );
-        
-        NSLog(
-            @"%@ at line %@ in %@",
-            [NSString stringWithJSValue:exception fromContext:context],
-            [NSString stringWithJSValue:line fromContext:context],
-            [NSString stringWithJSValue:file fromContext:context]
-         );
-        
-        JSStringRelease( jsLinePropertyName );
-        JSStringRelease( jsFilePropertyName );
-    
-    }
-
-	   
-	JSStringRelease( scriptJS );
-	JSStringRelease( pathJS );    
-}
-
 /**
- * Add an object of the given class to the global object.
  * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
  * @since  0.0.1
  */
-- (void)addGlobalObject:(NSString*)objectName usingClass:(JSClassRef)objectClass withPrivateData:(void*)privateData
+- (void)dealloc
 {
-    // create a new object of the given class
-    JSObjectRef jsObject = JSObjectMake(self.context, objectClass, privateData);
-    if (jsObject != NULL) {
-    
-        // protect the object from being garbage collected
-        JSValueProtect(self.context, jsObject);
-        
-        // convert the object name to a javascript string
-        JSStringRef jsObjectName = [objectName jsStringValue];
-        if (jsObjectName != NULL) {
-        
-            // add the object as a property of the global object
-            JSObjectSetProperty(self.context, JSContextGetGlobalObject(self.context), jsObjectName, jsObject, kJSPropertyAttributeReadOnly, NULL);
-            
-            // release the reference to the name
-            JSStringRelease(jsObjectName);
-        }        
-    }
+    JSValueUnprotect(jsGlobalContext, jsNullValue);
+    JSValueUnprotect(jsGlobalContext, jsTrueValue);
+    JSValueUnprotect(jsGlobalContext, jsFalseValue);
+    JSValueUnprotect(jsGlobalContext, jsUndefinedValue);
+    JSGlobalContextRelease(jsGlobalContext);
+
+    [bindings release];
+
+    [super dealloc];
 }
 
-- (void)addGlobalObject:(NSString*)objectName usingBinding:(BSBinding *)objectBinding withPrivateData:(void*)privateData
+/**
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
+- (void)loadScript:(NSString *)path
 {
-    [objectBinding retain];
-    [self addGlobalObject:objectName usingClass:[self createJSClass:objectBinding.class] withPrivateData:privateData];
+    NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
+    if (script) {
+        [self evalScript:script];
+        return;
+    }
+
+    NSLog(@"Error: Script at path %@ cannot be loaded.", path);
 }
 
-- (JSClassRef)createJSClass:(id)class
+/**
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
+- (void)evalScript:(NSString *)source
 {
-    NSMutableArray* functions = [[NSMutableArray alloc] init];
-    NSMutableArray* properties = [[NSMutableArray alloc] init];
-    
-    Class base = BSBinding.class;
-    for (Class superclass = class; superclass != base && [base isSubclassOfClass:base]; superclass = superclass.superclass) {
-        u_int count;
-        Method* methods = class_copyMethodList(object_getClass(superclass), &count);
-        for (int i = 0; i < count; i++) {
-            SEL selector = method_getName(methods[i]);
-            NSString *name = NSStringFromSelector(selector);
-			if ([name hasPrefix:@"_ptr_to_func_"] ) {
-				[functions addObject: [name substringFromIndex:sizeof("_ptr_to_func_")-1] ];
-			}
-			else if( [name hasPrefix:@"_ptr_to_get_"] ) {
-				// We only look for getters - a property that has a setter, but no getter will be ignored
-				[properties addObject: [name substringFromIndex:sizeof("_ptr_to_get_")-1] ];
-			}            
-        }
-        free(methods);
-    }
-    
-    JSStaticValue *jsStaticValues = calloc(properties.count + 1, sizeof(JSStaticValue));
-    for (int i = 0; i < properties.count; i++) {
-
-        NSString* name = properties[i];        
-        jsStaticValues[i].name = name.UTF8String;
-        jsStaticValues[i].attributes = kJSPropertyAttributeDontDelete;
-        
-		SEL get = NSSelectorFromString([@"_ptr_to_get_" stringByAppendingString:name]);
-		jsStaticValues[i].getProperty = (JSObjectGetPropertyCallback)[class performSelector:get];
-        
-		SEL set = NSSelectorFromString([@"_ptr_to_set_" stringByAppendingString:name]);
-		if( [class respondsToSelector:set] ) {
-			jsStaticValues[i].setProperty = (JSObjectSetPropertyCallback)[class performSelector:set];
-		}
-		else {
-			jsStaticValues[i].attributes |= kJSPropertyAttributeReadOnly;
-		}        
-    }
-    
-   	JSStaticFunction* jsStaticFunctions = calloc(functions.count + 1, sizeof(JSStaticFunction));
-	for( int i = 0; i < functions.count; i++ ) {
-
-		NSString *name = functions[i];
-		jsStaticFunctions[i].name = name.UTF8String;
-		jsStaticFunctions[i].attributes = kJSPropertyAttributeDontDelete;
-		
-		SEL call = NSSelectorFromString([@"_ptr_to_func_" stringByAppendingString:name]);
-		jsStaticFunctions[i].callAsFunction = (JSObjectCallAsFunctionCallback)[class performSelector:call];
-	}
-	
-	JSClassDefinition jsClassDef = kJSClassDefinitionEmpty;
-	jsClassDef.className = class_getName(class) + sizeof("BSBinding") - 1;
-	//jsClassDef.finalize = EJBindingBaseFinalize;
-	jsClassDef.staticValues = jsStaticValues;
-	jsClassDef.staticFunctions = jsStaticFunctions;
-    JSClassRef jsClass = JSClassCreate(&jsClassDef);
-	
-	free(jsStaticValues);
-	free(jsStaticFunctions);
-	
-	[functions release];
-	[properties release];
-	
-	return jsClass;
-    
+    JSValueRef jsException = NULL;
+	JSEvaluateScript(self.jsGlobalContext, JSStringCreateWithCFString((CFStringRef)source), NULL, NULL, 0, &jsException);
+    [self handleException:jsException];
 }
+
+/**
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
+- (void)handleException:(JSValueRef)jsException
+{
+    if (!jsException)
+        return;
+    
+    JSStringRef jsLinePropertyName = JSStringCreateWithUTF8CString("line");
+    JSStringRef jsFilePropertyName = JSStringCreateWithUTF8CString("sourceURL");
+
+    JSObjectRef jsExceptionObject = JSValueToObject(self.jsGlobalContext, jsException, NULL);
+    JSValueRef jsLine = JSObjectGetProperty(self.jsGlobalContext, jsExceptionObject, jsLinePropertyName, NULL);
+    JSValueRef jsFile = JSObjectGetProperty(self.jsGlobalContext, jsExceptionObject, jsFilePropertyName, NULL);
+    
+    NSLog(
+        @"%@ at line %@ in %@",
+        [NSString stringWithJSValue:jsExceptionObject fromContext:self.jsGlobalContext],
+        [NSString stringWithJSValue:jsLine fromContext:self.jsGlobalContext],
+        [NSString stringWithJSValue:jsFile fromContext:self.jsGlobalContext]
+     );
+    
+    JSStringRelease(jsLinePropertyName);
+    JSStringRelease(jsFilePropertyName);
+}
+
+/**
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
+- (NSString*)pathForResource:(NSString *)resource
+{
+    return [NSString stringWithFormat:@"%@/App/%@", [[NSBundle mainBundle] resourcePath], resource];
+}
+
+/**
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
+- (BSBinding*)bind:(Class)class toKey:(NSString*)key
+{
+    return [self bind:class toKey:key ofObject:JSContextGetGlobalObject(self.jsGlobalContext)];
+}
+
+/**
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
+- (BSBinding*)bind:(Class)class toKey:(NSString*)key ofObject:(JSObjectRef)object
+{
+    JSClassRef jsObjectClass = (JSClassRef)[class jsClass];
+    if (jsObjectClass) {
+    
+        JSObjectRef jsObjectData = JSObjectMake(self.jsGlobalContext, jsObjectClass, NULL);
+        JSStringRef jsObjectName = [key jsStringValue];
+        JSValueProtect(self.jsGlobalContext, jsObjectData);
+        JSObjectSetProperty(self.jsGlobalContext, object, jsObjectName, jsObjectData, kJSPropertyAttributeReadOnly, NULL);
+        
+        BSBinding* binding = [(BSBinding*)[class alloc] initWithScriptView:self];
+        [bindings addObject:binding];
+        JSObjectSetPrivate(jsObjectData, binding);
+        [binding release];
+    
+    }
+
+    return nil;
+}
+
 
 @end

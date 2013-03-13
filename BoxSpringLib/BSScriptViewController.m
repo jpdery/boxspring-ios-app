@@ -32,7 +32,7 @@
 	
 	BSScriptView *view = [[BSScriptView alloc] initWithFrame:frame];
 	self.view = view;
-	[view loadScriptFromFile:@"main.js"];
+	[view loadScript:@"main.js"];
 	[view release];
 }
 

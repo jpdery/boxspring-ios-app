@@ -9,19 +9,51 @@
 #import <Foundation/Foundation.h>
 #import "BSScriptView.h"
 
-// The class method that returns a pointer to the static C callback function
-#define __BS_GET_POINTER_TO(NAME) \
+#define _BS_CREATE_POINTER_TO(NAME) \
 	+ (void *)_ptr_to##NAME { \
 		return (void *)&NAME; \
 	}
 
-// ------------------------------------------------------------------------------------
-// Function - use with BS_BIND_FUNCTION( functionName, ctx, argc, argv ) { ... }
+/**
+ * Macro to define a setter binding as:
+ * - (void)binding:(JSContextRef)context value:(JSValueRef)value
+ */
+#define BS_DEFINE_SETTER(name, binding) \
+	static bool _setter_##name( \
+		JSContextRef ctx, \
+		JSObjectRef object, \
+		JSStringRef propertyName, \
+		JSValueRef value, \
+		JSValueRef* exception \
+	) { \
+		id instance = (id)JSObjectGetPrivate(object); \
+		objc_msgSend(instance, @selector(binding:value:), ctx, value); \
+		return true; \
+	} \
+	_BS_CREATE_POINTER_TO(_set_##name) \
 
-#define BS_BIND_FUNCTION(NAME, CTX_NAME, ARGC_NAME, ARGV_NAME) \
-	\
-	/* The C callback function for the exposed method and class method that returns it */ \
-	static JSValueRef _func_##NAME( \
+/**
+ * Macro to define a getter binding as:
+ * - (JSValueRef)binding:(JSContextRef)context
+ */
+#define BS_DEFINE_GETTER(name, binding) \
+	static JSValueRef _getter_##name( \
+		JSContextRef ctx, \
+		JSObjectRef object, \
+		JSStringRef propertyName, \
+		JSValueRef* exception \
+	) { \
+		id instance = (id)JSObjectGetPrivate(object); \
+		return (JSValueRef)objc_msgSend(instance, @selector(binding:), ctx); \
+	} \
+	_BS_CREATE_POINTER_TO(_getter_##name)\
+
+/**
+ * Macro to define a function binding as:
+ * - (JSValueRef)binding:(JSContextRef)context argc:(size_t)argc argv:(const JSValueRef [])argv
+ */
+#define BS_DEFINE_FUNCTION(name, binding) \
+	static JSValueRef _function_##name( \
 		JSContextRef ctx, \
 		JSObjectRef function, \
 		JSObjectRef object, \
@@ -30,65 +62,17 @@
 		JSValueRef* exception \
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
-		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(_func_##NAME:argc:argv:), ctx, argc, argv); \
-        return ret ? ret : ((BSBinding*)instance)->scriptView->undefined; \
+        NSLog(@"Pointer to %@", NSStringFromSelector(@selector(binding:argc:argv:))); \
+		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(binding:argc:argv:), ctx, argc, argv); \
+        return ret ? ret : ((BSBinding*)instance).scriptView.jsUndefinedValue; \
 	} \
-	__BS_GET_POINTER_TO(_func_##NAME)\
-	\
-	/* The actual implementation for this method */ \
-	- (JSValueRef)_func_##NAME:(JSContextRef)CTX_NAME argc:(size_t)ARGC_NAME argv:(const JSValueRef [])ARGV_NAME
+	_BS_CREATE_POINTER_TO(_function_##name)
 
-
-// ------------------------------------------------------------------------------------
-// Getter - use with BS_BIND_GET( propertyName, ctx ) { ... }
-
-#define BS_BIND_GET(NAME, CTX_NAME) \
-	\
-	/* The C callback function for the exposed getter and class method that returns it */ \
-	static JSValueRef _get_##NAME( \
-		JSContextRef ctx, \
-		JSObjectRef object, \
-		JSStringRef propertyName, \
-		JSValueRef* exception \
-	) { \
-		id instance = (id)JSObjectGetPrivate(object); \
-		return (JSValueRef)objc_msgSend(instance, @selector(_get_##NAME:), ctx); \
-	} \
-	__BS_GET_POINTER_TO(_get_##NAME)\
-	\
-	/* The actual implementation for this getter */ \
-	- (JSValueRef)_get_##NAME:(JSContextRef)CTX_NAME
-
-
-// ------------------------------------------------------------------------------------
-// Setter - use with BS_BIND_SET( propertyName, ctx, value ) { ... }
-
-#define BS_BIND_SET(NAME, CTX_NAME, VALUE_NAME) \
-	\
-	/* The C callback function for the exposed setter and class method that returns it */ \
-	static bool _set_##NAME( \
-		JSContextRef ctx, \
-		JSObjectRef object, \
-		JSStringRef propertyName, \
-		JSValueRef value, \
-		JSValueRef* exception \
-	) { \
-		id instance = (id)JSObjectGetPrivate(object); \
-		objc_msgSend(instance, @selector(_set_##NAME:value:), ctx, value); \
-		return true; \
-	} \
-	__BS_GET_POINTER_TO(_set_##NAME) \
-	\
-	/* The actual implementation for this setter */ \
-	- (void)_set_##NAME:(JSContextRef)CTX_NAME value:(JSValueRef)VALUE_NAME
-		
-
-
-// ------------------------------------------------------------------------------------
-// Shorthand to define a function that logs a "not implemented" warning
-
-#define BS_BIND_FUNCTION_NOT_IMPLEMENTED(NAME) \
-	static JSValueRef _func_##NAME( \
+/**
+ * Macro to define a non implemented function
+ */
+#define BS_DEFINE_MISSING_FUNCTION(name) \
+	static JSValueRef _func_##name( \
 		JSContextRef ctx, \
 		JSObjectRef function, \
 		JSObjectRef object, \
@@ -97,14 +81,14 @@
 		JSValueRef* exception \
 	) { \
 		static bool didShowWarning; \
-		if( !didShowWarning ) { \
-			NSLog(@"Warning: method " @ #NAME @" is not yet implemented!"); \
+		if(!didShowWarning) { \
+			NSLog(@"Warning: method " @ #name @" is not yet implemented!"); \
 			didShowWarning = true; \
 		} \
 		id instance = (id)JSObjectGetPrivate(object); \
-		return ((BSBinding *)instance)->scriptView->undefined; \
+		return ((BSBinding*)instance).scriptView.jsUndefinedValue; \
 	} \
-	__BS_GET_POINTER_TO(_func_##NAME)
+	_BS_CREATE_POINTER_TO(_func_##name)
 
 @interface BSBinding : NSObject {
     @public BSScriptView* scriptView;
@@ -113,5 +97,7 @@
 @property (nonatomic, readonly) BSScriptView* scriptView;
 
 - (id) initWithScriptView:(BSScriptView*)theScriptView;
+
++ (JSClassRef)jsClass;
 
 @end
