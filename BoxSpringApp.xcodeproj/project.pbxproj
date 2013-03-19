@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C71CA51A16F7D990006467FF /* BGViewBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C71CA51916F7D990006467FF /* BGViewBinding.m */; };
+		C735A79E16F8A735008A9CC2 /* BGWindowBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C735A79D16F8A735008A9CC2 /* BGWindowBinding.m */; };
+		C735A7A416F8FBB0008A9CC2 /* NSData+JavaScriptCore.m in Sources */ = {isa = PBXBuildFile; fileRef = C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */; };
 		C783B7C216E9595500D393B3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7C116E9595500D393B3 /* UIKit.framework */; };
 		C783B7C416E9595500D393B3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7C316E9595500D393B3 /* Foundation.framework */; };
 		C783B7C616E9595500D393B3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7C516E9595500D393B3 /* CoreGraphics.framework */; };
@@ -16,11 +19,11 @@
 		C783B7D416E9595500D393B3 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C783B7D316E9595500D393B3 /* Default.png */; };
 		C783B7D616E9595500D393B3 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C783B7D516E9595500D393B3 /* Default@2x.png */; };
 		C783B7D816E9595500D393B3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C783B7D716E9595500D393B3 /* Default-568h@2x.png */; };
-		C783B7E116E95B2C00D393B3 /* BSScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E016E95B2C00D393B3 /* BSScriptView.m */; };
-		C783B7E416E95B3B00D393B3 /* BSScriptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E316E95B3B00D393B3 /* BSScriptViewController.m */; };
-		C783B7E716E95B8200D393B3 /* BSBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E616E95B8200D393B3 /* BSBinding.m */; };
+		C783B7E116E95B2C00D393B3 /* BGScriptView.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E016E95B2C00D393B3 /* BGScriptView.m */; };
+		C783B7E416E95B3B00D393B3 /* BGScriptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E316E95B3B00D393B3 /* BGScriptViewController.m */; };
+		C783B7E716E95B8200D393B3 /* BGBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E616E95B8200D393B3 /* BGBinding.m */; };
 		C783B7F716E9779A00D393B3 /* libiOSJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7F616E9779A00D393B3 /* libiOSJavaScriptCore.a */; };
-		C783B7FA16E9781200D393B3 /* BSConsoleBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7F916E9781200D393B3 /* BSConsoleBinding.m */; };
+		C783B7FA16E9781200D393B3 /* BGConsoleBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7F916E9781200D393B3 /* BGConsoleBinding.m */; };
 		C783B7FC16E9784600D393B3 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7FB16E9784600D393B3 /* libicucore.dylib */; };
 		C783B7FE16E9784C00D393B3 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7FD16E9784C00D393B3 /* libstdc++.dylib */; };
 		C783B80316E97BFA00D393B3 /* NSString+JavaScriptCoreString.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80216E97BFA00D393B3 /* NSString+JavaScriptCoreString.m */; };
@@ -29,6 +32,12 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C71CA51816F7D990006467FF /* BGViewBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGViewBinding.h; sourceTree = "<group>"; };
+		C71CA51916F7D990006467FF /* BGViewBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGViewBinding.m; sourceTree = "<group>"; };
+		C735A79C16F8A735008A9CC2 /* BGWindowBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGWindowBinding.h; sourceTree = "<group>"; };
+		C735A79D16F8A735008A9CC2 /* BGWindowBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGWindowBinding.m; sourceTree = "<group>"; };
+		C735A7A216F8FBB0008A9CC2 /* NSData+JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+JavaScriptCore.h"; path = "BoxSpringLib/NSData+JavaScriptCore.h"; sourceTree = "<group>"; };
+		C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+JavaScriptCore.m"; path = "BoxSpringLib/NSData+JavaScriptCore.m"; sourceTree = "<group>"; };
 		C783B7BE16E9595500D393B3 /* BoxSpringApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoxSpringApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C783B7C116E9595500D393B3 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		C783B7C316E9595500D393B3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -41,12 +50,12 @@
 		C783B7D316E9595500D393B3 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		C783B7D516E9595500D393B3 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		C783B7D716E9595500D393B3 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		C783B7DF16E95B2C00D393B3 /* BSScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSScriptView.h; sourceTree = "<group>"; };
-		C783B7E016E95B2C00D393B3 /* BSScriptView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSScriptView.m; sourceTree = "<group>"; };
-		C783B7E216E95B3B00D393B3 /* BSScriptViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSScriptViewController.h; sourceTree = "<group>"; };
-		C783B7E316E95B3B00D393B3 /* BSScriptViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSScriptViewController.m; sourceTree = "<group>"; };
-		C783B7E516E95B8200D393B3 /* BSBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSBinding.h; sourceTree = "<group>"; };
-		C783B7E616E95B8200D393B3 /* BSBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSBinding.m; sourceTree = "<group>"; };
+		C783B7DF16E95B2C00D393B3 /* BGScriptView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGScriptView.h; sourceTree = "<group>"; };
+		C783B7E016E95B2C00D393B3 /* BGScriptView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGScriptView.m; sourceTree = "<group>"; };
+		C783B7E216E95B3B00D393B3 /* BGScriptViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGScriptViewController.h; sourceTree = "<group>"; };
+		C783B7E316E95B3B00D393B3 /* BGScriptViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGScriptViewController.m; sourceTree = "<group>"; };
+		C783B7E516E95B8200D393B3 /* BGBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGBinding.h; sourceTree = "<group>"; };
+		C783B7E616E95B8200D393B3 /* BGBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGBinding.m; sourceTree = "<group>"; };
 		C783B7E916E95D1D00D393B3 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C783B7ED16E9779A00D393B3 /* JavaScript.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScript.h; sourceTree = "<group>"; };
 		C783B7EE16E9779A00D393B3 /* JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScriptCore.h; sourceTree = "<group>"; };
@@ -58,8 +67,8 @@
 		C783B7F416E9779A00D393B3 /* JSValueRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSValueRef.h; sourceTree = "<group>"; };
 		C783B7F516E9779A00D393B3 /* WebKitAvailability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebKitAvailability.h; sourceTree = "<group>"; };
 		C783B7F616E9779A00D393B3 /* libiOSJavaScriptCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libiOSJavaScriptCore.a; sourceTree = "<group>"; };
-		C783B7F816E9781200D393B3 /* BSConsoleBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSConsoleBinding.h; sourceTree = "<group>"; };
-		C783B7F916E9781200D393B3 /* BSConsoleBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSConsoleBinding.m; sourceTree = "<group>"; };
+		C783B7F816E9781200D393B3 /* BGConsoleBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BGConsoleBinding.h; sourceTree = "<group>"; };
+		C783B7F916E9781200D393B3 /* BGConsoleBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BGConsoleBinding.m; sourceTree = "<group>"; };
 		C783B7FB16E9784600D393B3 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		C783B7FD16E9784C00D393B3 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		C783B80116E97BFA00D393B3 /* NSString+JavaScriptCoreString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+JavaScriptCoreString.h"; path = "BoxSpringLib/NSString+JavaScriptCoreString.h"; sourceTree = "<group>"; };
@@ -146,14 +155,18 @@
 		C783B7DE16E95ABD00D393B3 /* BoxSpringLib */ = {
 			isa = PBXGroup;
 			children = (
-				C783B7DF16E95B2C00D393B3 /* BSScriptView.h */,
-				C783B7E016E95B2C00D393B3 /* BSScriptView.m */,
-				C783B7E216E95B3B00D393B3 /* BSScriptViewController.h */,
-				C783B7E316E95B3B00D393B3 /* BSScriptViewController.m */,
-				C783B7E516E95B8200D393B3 /* BSBinding.h */,
-				C783B7E616E95B8200D393B3 /* BSBinding.m */,
-				C783B7F816E9781200D393B3 /* BSConsoleBinding.h */,
-				C783B7F916E9781200D393B3 /* BSConsoleBinding.m */,
+				C783B7E216E95B3B00D393B3 /* BGScriptViewController.h */,
+				C783B7E316E95B3B00D393B3 /* BGScriptViewController.m */,
+				C783B7DF16E95B2C00D393B3 /* BGScriptView.h */,
+				C783B7E016E95B2C00D393B3 /* BGScriptView.m */,
+				C783B7E516E95B8200D393B3 /* BGBinding.h */,
+				C783B7E616E95B8200D393B3 /* BGBinding.m */,
+				C783B7F816E9781200D393B3 /* BGConsoleBinding.h */,
+				C783B7F916E9781200D393B3 /* BGConsoleBinding.m */,
+				C71CA51816F7D990006467FF /* BGViewBinding.h */,
+				C71CA51916F7D990006467FF /* BGViewBinding.m */,
+				C735A79C16F8A735008A9CC2 /* BGWindowBinding.h */,
+				C735A79D16F8A735008A9CC2 /* BGWindowBinding.m */,
 			);
 			path = BoxSpringLib;
 			sourceTree = "<group>";
@@ -198,6 +211,8 @@
 				C783B80216E97BFA00D393B3 /* NSString+JavaScriptCoreString.m */,
 				C783B80616ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.h */,
 				C783B80716ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m */,
+				C735A7A216F8FBB0008A9CC2 /* NSData+JavaScriptCore.h */,
+				C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -270,12 +285,15 @@
 			files = (
 				C783B7CE16E9595500D393B3 /* main.m in Sources */,
 				C783B7D216E9595500D393B3 /* AppDelegate.m in Sources */,
-				C783B7E116E95B2C00D393B3 /* BSScriptView.m in Sources */,
-				C783B7E416E95B3B00D393B3 /* BSScriptViewController.m in Sources */,
-				C783B7E716E95B8200D393B3 /* BSBinding.m in Sources */,
-				C783B7FA16E9781200D393B3 /* BSConsoleBinding.m in Sources */,
+				C783B7E116E95B2C00D393B3 /* BGScriptView.m in Sources */,
+				C783B7E416E95B3B00D393B3 /* BGScriptViewController.m in Sources */,
+				C783B7E716E95B8200D393B3 /* BGBinding.m in Sources */,
+				C783B7FA16E9781200D393B3 /* BGConsoleBinding.m in Sources */,
 				C783B80316E97BFA00D393B3 /* NSString+JavaScriptCoreString.m in Sources */,
 				C783B80816ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m in Sources */,
+				C71CA51A16F7D990006467FF /* BGViewBinding.m in Sources */,
+				C735A79E16F8A735008A9CC2 /* BGWindowBinding.m in Sources */,
+				C735A7A416F8FBB0008A9CC2 /* NSData+JavaScriptCore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

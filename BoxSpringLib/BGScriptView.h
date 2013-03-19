@@ -10,36 +10,29 @@
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
-#define APP_FOLDER App
+@class BGBinding;
 
-@class BSBinding;
-
-@interface BSScriptView : UIView {
-    
-    JSGlobalContextRef jsGlobalContext;
-    JSValueRef jsUndefinedValue;
-    JSValueRef jsNullValue;
-    JSValueRef jsTrueValue;
-    JSValueRef jsFalseValue;
-    
-    NSMutableArray* bindings;
-}
-
+@interface BGScriptView : UIView
+   
 @property(nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
+@property(nonatomic, readonly) JSObjectRef jsGlobalObject;
 @property(nonatomic, readonly) JSValueRef jsUndefinedValue;
 @property(nonatomic, readonly) JSValueRef jsNullValue;
 @property(nonatomic, readonly) JSValueRef jsTrueValue;
 @property(nonatomic, readonly) JSValueRef jsFalseValue;
-
-@property(nonatomic, retain) NSMutableArray* bindings;
+@property(nonatomic, copy) NSMutableArray* bindings;
 
 - (void)loadScript:(NSString*)path;
 - (void)evalScript:(NSString*)source;
-- (void)handleException:(JSValueRef)jsException;
+
+- (void)log:(JSValueRef)jsException;
+
 - (NSString*)pathForResource:(NSString*)resource;
 
-- (BSBinding*)bind:(Class)boundClass toKey:(NSString*)key;
-- (BSBinding*)bind:(Class)boundClass toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
+- (void)addBinding:(BGBinding*)binding;
+- (void)addBinding:(BGBinding *)binding toKey:(NSString*)key;
+- (void)addBinding:(BGBinding *)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
 
++ (NSString*)binding:(NSString*)name;
 
 @end

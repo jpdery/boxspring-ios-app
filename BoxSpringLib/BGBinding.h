@@ -7,18 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "BSScriptView.h"
+#import <JavaScriptCore/JavaScriptCore.h>
+#import "BGScriptView.h"
 
-#define _BS_CREATE_POINTER_TO(NAME) \
+#define _BSR_CREATE_POINTER_TO(NAME) \
 	+ (void *)_ptr_to##NAME { \
 		return (void *)&NAME; \
 	}
 
 /**
  * Macro to define a setter binding as:
- * - (void)binding:(JSContextRef)context value:(JSValueRef)value
+ * - (void)binding:(JSContextRef)jsContext value:(JSValueRef)jsValue
  */
-#define BS_DEFINE_SETTER(name, binding) \
+#define BG_BIND_SETTER(name, binding) \
 	static bool _setter_##name( \
 		JSContextRef ctx, \
 		JSObjectRef object, \
@@ -30,13 +31,13 @@
 		objc_msgSend(instance, @selector(binding:value:), ctx, value); \
 		return true; \
 	} \
-	_BS_CREATE_POINTER_TO(_set_##name) \
+	_BSR_CREATE_POINTER_TO(_set_##name) \
 
 /**
  * Macro to define a getter binding as:
- * - (JSValueRef)binding:(JSContextRef)context
+ * - (JSValueRef)binding:(JSContextRef)jsContext
  */
-#define BS_DEFINE_GETTER(name, binding) \
+#define BSS_BIND_GETTER(name, binding) \
 	static JSValueRef _getter_##name( \
 		JSContextRef ctx, \
 		JSObjectRef object, \
@@ -46,13 +47,13 @@
 		id instance = (id)JSObjectGetPrivate(object); \
 		return (JSValueRef)objc_msgSend(instance, @selector(binding:), ctx); \
 	} \
-	_BS_CREATE_POINTER_TO(_getter_##name)\
+	_BSR_CREATE_POINTER_TO(_getter_##name)\
 
 /**
  * Macro to define a function binding as:
- * - (JSValueRef)binding:(JSContextRef)context argc:(size_t)argc argv:(const JSValueRef [])argv
+ * - (JSValueRef)binding:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
  */
-#define BS_DEFINE_FUNCTION(name, binding) \
+#define BG_BIND_FUNCTION(name, binding) \
 	static JSValueRef _function_##name( \
 		JSContextRef ctx, \
 		JSObjectRef function, \
@@ -62,11 +63,10 @@
 		JSValueRef* exception \
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
-        NSLog(@"Pointer to %@", NSStringFromSelector(@selector(binding:argc:argv:))); \
 		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(binding:argc:argv:), ctx, argc, argv); \
-        return ret ? ret : ((BSBinding*)instance).scriptView.jsUndefinedValue; \
+        return ret ? ret : ((BGBinding*)instance).scriptView.jsUndefinedValue; \
 	} \
-	_BS_CREATE_POINTER_TO(_function_##name)
+	_BSR_CREATE_POINTER_TO(_function_##name)
 
 /**
  * Macro to define a non implemented function
@@ -86,18 +86,19 @@
 			didShowWarning = true; \
 		} \
 		id instance = (id)JSObjectGetPrivate(object); \
-		return ((BSBinding*)instance).scriptView.jsUndefinedValue; \
+		return ((BGBinding*)instance).scriptView.jsUndefinedValue; \
 	} \
-	_BS_CREATE_POINTER_TO(_func_##name)
+	_BSR_CREATE_POINTER_TO(_func_##name)
 
-@interface BSBinding : NSObject {
-    @public BSScriptView* scriptView;
-}
 
-@property (nonatomic, readonly) BSScriptView* scriptView;
+@interface BGBinding : NSObject
 
-- (id) initWithScriptView:(BSScriptView*)theScriptView;
+@property (nonatomic, readonly) BGScriptView* scriptView;
+@property (nonatomic) JSObjectRef jsObject;
+@property (nonatomic) JSObjectRef jsConstructor;
 
-+ (JSClassRef)jsClass;
+- (id)initWithScriptView:(BGScriptView*)theScriptView;
+
+- (JSObjectRef)jsInstanceObject;
 
 @end

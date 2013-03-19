@@ -6,13 +6,13 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BSScriptViewController.h"
+#import "BGScriptViewController.h"
 
-@interface BSScriptViewController ()
+@interface BGScriptViewController ()
 
 @end
 
-@implementation BSScriptViewController
+@implementation BGScriptViewController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -30,8 +30,10 @@
 //		frame.size = CGSizeMake(frame.size.height, frame.size.width);
 //	}
 	
-	BSScriptView *view = [[BSScriptView alloc] initWithFrame:frame];
+	BGScriptView *view = [[BGScriptView alloc] initWithFrame:frame];
 	self.view = view;
+    
+
 	[view loadScript:@"main.js"];
 	[view release];
 }

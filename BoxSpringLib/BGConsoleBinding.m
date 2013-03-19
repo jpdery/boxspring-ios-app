@@ -6,16 +6,16 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BSConsoleBinding.h"
+#import "BGConsoleBinding.h"
 #import "NSString+JavaScriptCoreString.h"
 
-@implementation BSConsoleBinding
+@implementation BGConsoleBinding
 
-BS_DEFINE_FUNCTION(log, jsLog)
-BS_DEFINE_FUNCTION(info, jsLog)
-BS_DEFINE_FUNCTION(warn, jsLog)
-BS_DEFINE_FUNCTION(debug, jsLog)
-BS_DEFINE_FUNCTION(error, jsLog)
+BG_BIND_FUNCTION(log, jsLog)
+BG_BIND_FUNCTION(info, jsLog)
+BG_BIND_FUNCTION(warn, jsLog)
+BG_BIND_FUNCTION(debug, jsLog)
+BG_BIND_FUNCTION(error, jsLog)
 
 /**
  *

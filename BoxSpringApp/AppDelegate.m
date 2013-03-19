@@ -7,8 +7,8 @@
 //
 
 #import "AppDelegate.h"
-#import "BSScriptViewController.h"
-#import "BSScriptView.h"
+#import "BGScriptViewController.h"
+#import "BGScriptView.h"
 
 @implementation AppDelegate
 
@@ -24,7 +24,7 @@
     // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
-    [self.window setRootViewController:[[BSScriptViewController alloc] init]];
+    [self.window setRootViewController:[[BGScriptViewController alloc] init]];
     return YES;
 }
 

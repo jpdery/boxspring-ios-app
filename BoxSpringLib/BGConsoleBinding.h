@@ -1,14 +1,14 @@
 //
-//  BSScriptViewController.h
+//  BSConsoleBinding.h
 //  BoxSpringApp
 //
 //  Created by Jean-Philippe Déry on 2013-03-07.
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
-#import "BSScriptView.h"
+#import <JavaScriptCore/JavaScriptCore.h>
+#import "BGBinding.h"
 
-@interface BSScriptViewController : UIViewController
+@interface BGConsoleBinding : BGBinding
 
 @end
