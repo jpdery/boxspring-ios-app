@@ -1322,6 +1322,9 @@ var window = this;
                 }
             },
             constructor: function(x, y, w, h) {
+            
+                console.log('Calling constructor!!')
+            
                 var rect = arguments[0];
                 if (rect instanceof Rect) {
                     x = rect.origin.x;
@@ -1329,10 +1332,10 @@ var window = this;
                     w = rect.size.x;
                     h = rect.size.y;
                 }
-                this.origin.x = x;
-                this.origin.y = y;
-                this.size.x = w;
-                this.size.y = h;
+                this.origin.x = x || 0;
+                this.origin.y = y || 0;
+                this.size.x = w || 0;
+                this.size.y = h || 0;
                 this.style = new ViewStyle(this);
                 this.on("add", this.bound("onAdd"));
                 this.on("remove", this.bound("onRemove"));
@@ -1572,12 +1575,22 @@ var window = this;
 });
 
 
-var view = __classes__['boxspring.View'];
-view.test = "DASDSA";
-new view();
-//view.wat = "DSA"
-//var wat = view.wat;
+var view = new __classes__['boxspring.View'];
+//console.log(view);
+//view.foo = "BAR";
+console.log(view.opacity);
+view.draw();
 console.log('WAT');
+console.log('---')
+console.log(Object.keys(view.__proto__.__proto__));
+console.log(view.size.x);
+//
+////view.wat = "DSA"
+////var wat = view.wat;
+//console.log('View foo ' + view.foo);
+//console.log('View opacity ' + view.opacity);
+//console.log(view);
+//view.draw();
 
 
 //console.log(Point.PATATE);

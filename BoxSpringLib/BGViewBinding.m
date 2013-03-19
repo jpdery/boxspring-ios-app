@@ -10,4 +10,13 @@
 
 @implementation BGViewBinding
 
+BG_BIND_FUNCTION(draw, draw)
+- (JSValueRef)draw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
+{
+    NSLog(@"CAlling draw");
+    return NULL;
+}
+
+
+
 @end

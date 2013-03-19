@@ -30,8 +30,8 @@
 - (NSString*)pathForResource:(NSString*)resource;
 
 - (void)addBinding:(BGBinding*)binding;
-- (void)addBinding:(BGBinding *)binding toKey:(NSString*)key;
-- (void)addBinding:(BGBinding *)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
+- (void)addBinding:(BGBinding*)binding toKey:(NSString*)key;
+- (void)addBinding:(BGBinding*)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
 
 + (NSString*)binding:(NSString*)name;
 

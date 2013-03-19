@@ -10,7 +10,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "BGScriptView.h"
 
-#define _BSR_CREATE_POINTER_TO(NAME) \
+#define _BG_CREATE_POINTER_TO(NAME) \
 	+ (void *)_ptr_to##NAME { \
 		return (void *)&NAME; \
 	}
@@ -31,7 +31,7 @@
 		objc_msgSend(instance, @selector(binding:value:), ctx, value); \
 		return true; \
 	} \
-	_BSR_CREATE_POINTER_TO(_set_##name) \
+	_BG_CREATE_POINTER_TO(_setter_##name) \
 
 /**
  * Macro to define a getter binding as:
@@ -47,7 +47,7 @@
 		id instance = (id)JSObjectGetPrivate(object); \
 		return (JSValueRef)objc_msgSend(instance, @selector(binding:), ctx); \
 	} \
-	_BSR_CREATE_POINTER_TO(_getter_##name)\
+	_BG_CREATE_POINTER_TO(_getter_##name)\
 
 /**
  * Macro to define a function binding as:
@@ -66,13 +66,13 @@
 		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(binding:argc:argv:), ctx, argc, argv); \
         return ret ? ret : ((BGBinding*)instance).scriptView.jsUndefinedValue; \
 	} \
-	_BSR_CREATE_POINTER_TO(_function_##name)
+	_BG_CREATE_POINTER_TO(_function_##name)
 
 /**
  * Macro to define a non implemented function
  */
-#define BS_DEFINE_MISSING_FUNCTION(name) \
-	static JSValueRef _func_##name( \
+#define BG_DEFINE_MISSING_FUNCTION(name) \
+	static JSValueRef _function_##name( \
 		JSContextRef ctx, \
 		JSObjectRef function, \
 		JSObjectRef object, \
@@ -88,17 +88,14 @@
 		id instance = (id)JSObjectGetPrivate(object); \
 		return ((BGBinding*)instance).scriptView.jsUndefinedValue; \
 	} \
-	_BSR_CREATE_POINTER_TO(_func_##name)
+	_BG_CREATE_POINTER_TO(_function_##name)
 
 
 @interface BGBinding : NSObject
 
 @property (nonatomic, readonly) BGScriptView* scriptView;
-@property (nonatomic) JSObjectRef jsObject;
-@property (nonatomic) JSObjectRef jsConstructor;
+@property (nonatomic, readonly) JSObjectRef jsObject;
 
 - (id)initWithScriptView:(BGScriptView*)theScriptView;
-
-- (JSObjectRef)jsInstanceObject;
 
 @end
