@@ -18,6 +18,7 @@ BG_DEFINE_BOUND_FUNCTION(draw, draw);
  */
 - (JSValueRef)draw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"BGViewBinding:draw()");
     return NULL;
 }
 

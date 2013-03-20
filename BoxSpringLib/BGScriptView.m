@@ -49,32 +49,25 @@ JSObjectRef jsConstructorCall(JSContextRef jsContext, JSObjectRef jsObject, size
         return NULL;
     }
 
-    // create a new binding instance
     BGBinding* instance = [(BGBinding*)[binding alloc] initWithScriptView:data->view];
-
-    // this is the object we'll work with in javascript
-    JSObjectRef jsInstance = instance.jsObject;
-
-    // this is the object that will be inserted into the prototype chain
-    JSObjectRef jsInstanceSuperProto = [[classes objectForKey:data->name] jsObject];
-
-    // call the parent object constructor
-    JSObjectRef jsInstanceSuperObject = JSObjectCallAsConstructor(
-        jsContext,
-        jsInstanceSuperProto,
-        argc,
-        argv,
-        NULL
-    );
+    JSObjectRef jsBinding = instance.jsObject;
     
-    // the prototype object that we will change its prototype
-    JSObjectRef jsInstanceProto = (JSObjectRef) JSObjectGetPrototype(jsContext, jsInstance);
+    //
+    // takes the class that the binding replaces, instantiate it and set it as
+    // the replaced object prototype, this way we can still call methods that
+    // are not defined in objective-c but are in javascript.
+    //
     
-    // changes the prototype
     JSObjectSetPrototype(
         jsContext,
-        jsInstanceProto,
-        jsInstanceSuperObject
+        jsBinding,
+        JSObjectCallAsConstructor(
+            jsContext,
+            [[classes objectForKey:data->name] jsObject],
+            argc,
+            argv,
+            NULL
+        )
     );
 
     // call the binding constructor 
@@ -83,7 +76,7 @@ JSObjectRef jsConstructorCall(JSContextRef jsContext, JSObjectRef jsObject, size
     [data->view addBinding:instance];
     [binding release];
        
-    return jsInstance;
+    return jsBinding;
 }
 
 /**

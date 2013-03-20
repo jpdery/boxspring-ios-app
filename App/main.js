@@ -1575,15 +1575,22 @@ var window = this;
 });
 
 
-var view = new __classes__['boxspring.View'];
+var View = __classes__['boxspring.View'];
+
+console.log('View Prototype');
+console.log(Object.keys(View.prototype));
+
+console.log('View instance')
+var view = new View(1, 2, 3, 4);
+console.log(Object.keys(view));
+console.log(view);
+view.draw();
+
 //console.log(view);
 //view.foo = "BAR";
-console.log(view.opacity);
-view.draw();
-console.log('WAT');
-console.log('---')
-console.log(Object.keys(view.__proto__.__proto__));
-console.log(view.size.x);
+//console.log(view.opacity);
+//view.draw();
+//console.log(view.size.x);
 //
 ////view.wat = "DSA"
 ////var wat = view.wat;

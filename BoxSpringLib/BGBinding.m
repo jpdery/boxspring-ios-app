@@ -86,6 +86,7 @@ BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
         //jsClassDef.finalize = EJBindingBaseFinalize;
         jsClassDef.staticValues = jsStaticValues;
         jsClassDef.staticFunctions = jsStaticFunctions;
+        jsClassDef.attributes = kJSClassAttributeNoAutomaticPrototype;
         JSClassRef jsClass = JSClassCreate(&jsClassDef);
 
         free(jsStaticValues);
@@ -111,7 +112,11 @@ BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
  */
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    NSLog(@"Calling constructor");
+    NSLog(@"Constructor of %@ called with %zu arguments",
+        [self class],
+        argc
+    );
+
     return NULL;
 }
 
