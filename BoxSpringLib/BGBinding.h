@@ -19,7 +19,7 @@
  * Macro to define a setter binding as:
  * - (void)binding:(JSContextRef)jsContext value:(JSValueRef)jsValue
  */
-#define BG_BIND_SETTER(name, binding) \
+#define BG_DEFINE_BOUND_SETTER(name, context_name, value_name) \
 	static bool _setter_##name( \
 		JSContextRef ctx, \
 		JSObjectRef object, \
@@ -28,16 +28,17 @@
 		JSValueRef* exception \
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
-		objc_msgSend(instance, @selector(binding:value:), ctx, value); \
+		objc_msgSend(instance, @selector(_setter_##name:value:), ctx, value); \
 		return true; \
 	} \
 	_BG_CREATE_POINTER_TO(_setter_##name) \
+    - (void)_setter_##name:(JSContextRef)context_name value:(JSValueRef)value_name
 
 /**
  * Macro to define a getter binding as:
  * - (JSValueRef)binding:(JSContextRef)jsContext
  */
-#define BSS_BIND_GETTER(name, binding) \
+#define BG_DEFINE_BOUND_GETTER(name, context_name) \
 	static JSValueRef _getter_##name( \
 		JSContextRef ctx, \
 		JSObjectRef object, \
@@ -45,16 +46,18 @@
 		JSValueRef* exception \
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
-		return (JSValueRef)objc_msgSend(instance, @selector(binding:), ctx); \
+		return (JSValueRef)objc_msgSend(instance, @selector(_getter_##name:), ctx); \
 	} \
 	_BG_CREATE_POINTER_TO(_getter_##name)\
+    - (JSValueRef)_get_##name:(JSContextRef)context_name
 
 /**
  * Macro to define a function binding as:
- * - (JSValueRef)binding:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
+ * (Replace BOUND_NAME with the name of your objective-c method)
+ * - (JSValueRef)BOUND_NAME:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
  */
-#define BG_BIND_FUNCTION(name, binding) \
-	static JSValueRef _function_##name( \
+#define BG_DEFINE_BOUND_FUNCTION(FUNCTION_NAME, BOUND_NAME) \
+	static JSValueRef _function_##FUNCTION_NAME( \
 		JSContextRef ctx, \
 		JSObjectRef function, \
 		JSObjectRef object, \
@@ -63,10 +66,10 @@
 		JSValueRef* exception \
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
-		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(binding:argc:argv:), ctx, argc, argv); \
+		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(BOUND_NAME:argc:argv:), ctx, argc, argv); \
         return ret ? ret : ((BGBinding*)instance).scriptView.jsUndefinedValue; \
 	} \
-	_BG_CREATE_POINTER_TO(_function_##name)
+	_BG_CREATE_POINTER_TO(_function_##FUNCTION_NAME) \
 
 /**
  * Macro to define a non implemented function
@@ -97,5 +100,8 @@
 @property (nonatomic, readonly) JSObjectRef jsObject;
 
 - (id)initWithScriptView:(BGScriptView*)theScriptView;
+
+- (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
+- (JSValueRef)destroy:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
 
 @end

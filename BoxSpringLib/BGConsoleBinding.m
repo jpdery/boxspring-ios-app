@@ -11,16 +11,12 @@
 
 @implementation BGConsoleBinding
 
-BG_BIND_FUNCTION(log, jsLog)
-BG_BIND_FUNCTION(info, jsLog)
-BG_BIND_FUNCTION(warn, jsLog)
-BG_BIND_FUNCTION(debug, jsLog)
-BG_BIND_FUNCTION(error, jsLog)
+BG_DEFINE_BOUND_FUNCTION(log, log)
 
 /**
- *
+ * @since 0.0.1
  */
-- (JSValueRef)jsLog:(JSContextRef)context argc:(size_t)argc argv:(const JSValueRef[])argv
+- (JSValueRef)log:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
     NSMutableArray* args = [[NSMutableArray alloc] initWithCapacity: argc];
     for (int i = 0; i < argc; i++) {
@@ -31,20 +27,5 @@ BG_BIND_FUNCTION(error, jsLog)
     [args release];
     return NULL;
 }
-
-//BS_BIND_FUNCTION(log, ctx, argc, argv) {
-//    
-//    NSMutableArray* arguments = [[NSMutableArray alloc] init];
-//    for (int i = 0; i < argc; i++) {
-//        NSString* value = [NSString stringWithJSValue:argv[i] fromContext:self.scriptView.context];
-//        [arguments addObject:value];
-//    }
-//
-//    NSLog(@"LOG: %@", arguments);
-//    
-//    [arguments release];
-//
-//    return NULL;
-//}
 
 @end

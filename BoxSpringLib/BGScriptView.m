@@ -17,7 +17,7 @@
 #import "BGWindowBinding.h"
 #import "BGViewBinding.h"
 
-static NSMutableDictionary* prototypes = nil;
+static NSMutableDictionary* classes = nil;
 static NSMutableDictionary* constructors = nil;
 
 @implementation BGScriptView
@@ -36,63 +36,70 @@ typedef struct {
 } JSConstructorData;
 
 /**
- * Called when a constructor is initialized
+ * Called when one of our fake constructor is initialized.
  * @since 0.0.1
  */
 JSObjectRef jsConstructorCall(JSContextRef jsContext, JSObjectRef jsObject, size_t argc, const JSValueRef argv[], JSValueRef* exception)
 {
     JSConstructorData* data = JSObjectGetPrivate(jsObject);
-
-    NSString* bind = [BGScriptView binding:data->name];
     
-    Class boundClass = NSClassFromString(bind);
-    if (boundClass == nil) {
-        NSLog(@"The binding %@ cannot be instantiated because it does not exists.", boundClass);
+    Class binding = NSClassFromString([BGScriptView binding:data->name]);
+    if (binding == nil) {
+        NSLog(@"Binding class %@ does not exists.", binding);
         return NULL;
     }
 
     // create a new binding instance
-    BGBinding* binding = [(BGBinding*)[boundClass alloc] initWithScriptView:data->view];
-    [data->view addBinding:binding];
+    BGBinding* instance = [(BGBinding*)[binding alloc] initWithScriptView:data->view];
 
-    // insert the proper object inside the prototype chain. This will make sure
-    // that methods that are not bound but exists will be callable
-    NSData* jsPrototypeData = [prototypes objectForKey:data->name];
+    // this is the object we'll work with in javascript
+    JSObjectRef jsInstance = instance.jsObject;
 
-    // do something like MyNewClass.prototype = new SuperClass()
-    JSObjectRef jsPrototype = JSObjectCallAsConstructor(
+    // this is the object that will be inserted into the prototype chain
+    JSObjectRef jsInstanceSuperProto = [[classes objectForKey:data->name] jsObject];
+
+    // call the parent object constructor
+    JSObjectRef jsInstanceSuperObject = JSObjectCallAsConstructor(
         jsContext,
-        [jsPrototypeData jsObject],
+        jsInstanceSuperProto,
         argc,
         argv,
-        NULL);
+        NULL
+    );
+    
+    // the prototype object that we will change its prototype
+    JSObjectRef jsInstanceProto = (JSObjectRef) JSObjectGetPrototype(jsContext, jsInstance);
     
     // changes the prototype
-    JSObjectSetPrototype(jsContext,
-        (JSObjectRef)JSObjectGetPrototype(jsContext, binding.jsObject),
-        jsPrototype
+    JSObjectSetPrototype(
+        jsContext,
+        jsInstanceProto,
+        jsInstanceSuperObject
     );
 
-    // call the binding constructor
-    objc_msgSend(binding, @selector(constructor:argc:argv:), jsContext, argc, argv);
-    
+    // call the binding constructor 
+    objc_msgSend(instance, @selector(constructor:argc:argv:), jsContext, argc, argv);
+
+    [data->view addBinding:instance];
     [binding release];
-    return [binding jsObject];
+       
+    return jsInstance;
 }
 
 /**
- * Called when a property of a constructo is set
+ * Called when a property of a constructor is set.
  * @since 0.0.1
  */
 bool jsConstructorSetProperty(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef jsVal, JSValueRef* jsException)
 {
     JSConstructorData* data = (JSConstructorData*)JSObjectGetPrivate(jsObject);
-    NSData* jsPrototypeData = [prototypes objectForKey:data->name];
-    if (jsPrototypeData) {
-        JSObjectRef jsPrototype = [jsPrototypeData jsObject];
-        JSObjectSetProperty(jsContext, jsPrototype, jsKey, jsVal, kJSClassAttributeNone, NULL);
+    
+    NSData* jsClassData = [classes objectForKey:data->name];
+    if (jsClassData) {
+        JSObjectSetProperty(jsContext, [jsClassData jsObject], jsKey, jsVal, kJSClassAttributeNone, NULL);
         return true;
     }
+    
     return false;
 }
 
@@ -103,11 +110,13 @@ bool jsConstructorSetProperty(JSContextRef jsContext, JSObjectRef jsObject, JSSt
 JSValueRef jsConstructorGetProperty(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef* jsException)
 {
     JSConstructorData* data = JSObjectGetPrivate(jsObject);
-    NSData* jsPrototypeData = [prototypes objectForKey:data->name];
-    if (jsPrototypeData) {
-        return [jsPrototypeData jsValue];
+    
+    NSData* jsClassData = [classes objectForKey:data->name];
+    if (jsClassData) {
+        return [jsClassData jsValue];
     }
-    return NULL;
+   
+     return NULL;
 }
 
 /**
@@ -116,7 +125,7 @@ JSValueRef jsConstructorGetProperty(JSContextRef jsContext, JSObjectRef jsObject
  */
 bool jsClassSetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef jsVal, JSValueRef* jsException)
 {
-    [prototypes setObject:[NSData dataWithJSValueRef:jsVal] forKey:[NSString stringWithJSString:jsKey]];
+    [classes setObject:[NSData dataWithJSValueRef:jsVal] forKey:[NSString stringWithJSString:jsKey]];
     return true;
 }
 
@@ -151,12 +160,11 @@ JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringR
         // create the new constructor object
         JSObjectRef jsConstructorObject = JSObjectMake(jsContext, jsConstructorClass, data);
         [constructors setObject:[NSData dataWithJSObjectRef:jsConstructorObject] forKey:name];
-        
         return jsConstructorObject;
     }
 
     // this class is not to be bound to anything
-    NSData* jsValueData = [prototypes objectForKey:name];
+    NSData* jsValueData = [classes objectForKey:name];
     if (jsValueData) {
         return [jsValueData jsObject];
     }
@@ -187,8 +195,8 @@ JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringR
 
         bindings = [NSMutableArray new];
 
-        if (prototypes == nil) {
-            prototypes = [NSMutableDictionary new];
+        if (classes == nil) {
+            classes = [NSMutableDictionary new];
         }
         
         if (constructors == nil) {
@@ -243,7 +251,9 @@ JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringR
  */
 - (void)loadScript:(NSString *)path
 {
-    NSString *script = [NSString stringWithContentsOfFile:[self pathForResource:path] encoding:NSUTF8StringEncoding error:NULL];
+    path = [NSString stringWithFormat:@"%@/App/%@", [[NSBundle mainBundle] resourcePath], path];
+
+    NSString *script = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:NULL];
     if (script == nil) {
         NSLog(@"Error: Script at path %@ cannot be loaded.", path);
         return;
@@ -288,15 +298,6 @@ JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringR
     
     JSStringRelease(jsLinePropertyName);
     JSStringRelease(jsFilePropertyName);
-}
-
-/**
- * Return the full path of a specified resource.
- * @since  0.0.1
- */
-- (NSString*)pathForResource:(NSString *)resource
-{
-    return [NSString stringWithFormat:@"%@/App/%@", [[NSBundle mainBundle] resourcePath], resource];
 }
 
 - (void)addBinding:(BGBinding *)binding

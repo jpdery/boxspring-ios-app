@@ -27,8 +27,6 @@
 
 - (void)log:(JSValueRef)jsException;
 
-- (NSString*)pathForResource:(NSString*)resource;
-
 - (void)addBinding:(BGBinding*)binding;
 - (void)addBinding:(BGBinding*)binding toKey:(NSString*)key;
 - (void)addBinding:(BGBinding*)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
