@@ -11,4 +11,9 @@
 
 @interface BGConsoleBinding : BGBinding
 
+static void mange()
+{
+
+}
+
 @end

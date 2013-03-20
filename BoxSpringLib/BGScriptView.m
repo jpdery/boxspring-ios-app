@@ -35,10 +35,6 @@ typedef struct {
     BGScriptView* view;
 } JSConstructorData;
 
-/**
- * Called when one of our fake constructor is initialized.
- * @since 0.0.1
- */
 JSObjectRef jsConstructorCall(JSContextRef jsContext, JSObjectRef jsObject, size_t argc, const JSValueRef argv[], JSValueRef* exception)
 {
     JSConstructorData* data = JSObjectGetPrivate(jsObject);
@@ -49,40 +45,13 @@ JSObjectRef jsConstructorCall(JSContextRef jsContext, JSObjectRef jsObject, size
         return NULL;
     }
 
-    BGBinding* instance = [(BGBinding*)[binding alloc] initWithScriptView:data->view];
+    BGBinding* instance = [(BGBinding*)[binding alloc] initWithScriptView:data->view andArguments:argc argv:argv forPrototype:[[classes objectForKey:data->name] jsObject]];
     JSObjectRef jsBinding = instance.jsObject;
-    
-    //
-    // takes the class that the binding replaces, instantiate it and set it as
-    // the replaced object prototype, this way we can still call methods that
-    // are not defined in objective-c but are in javascript.
-    //
-    
-    JSObjectSetPrototype(
-        jsContext,
-        jsBinding,
-        JSObjectCallAsConstructor(
-            jsContext,
-            [[classes objectForKey:data->name] jsObject],
-            argc,
-            argv,
-            NULL
-        )
-    );
-
-    // call the binding constructor 
-    objc_msgSend(instance, @selector(constructor:argc:argv:), jsContext, argc, argv);
-
-    [data->view addBinding:instance];
-    [binding release];
-       
+    [data->view bind:instance];
+    [instance release];    
     return jsBinding;
 }
 
-/**
- * Called when a property of a constructor is set.
- * @since 0.0.1
- */
 bool jsConstructorSetProperty(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef jsVal, JSValueRef* jsException)
 {
     JSConstructorData* data = (JSConstructorData*)JSObjectGetPrivate(jsObject);
@@ -96,10 +65,6 @@ bool jsConstructorSetProperty(JSContextRef jsContext, JSObjectRef jsObject, JSSt
     return false;
 }
 
-/**
- * Called when a property of a constructor is returned
- * @since 0.0.1
- */
 JSValueRef jsConstructorGetProperty(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef* jsException)
 {
     JSConstructorData* data = JSObjectGetPrivate(jsObject);
@@ -112,20 +77,12 @@ JSValueRef jsConstructorGetProperty(JSContextRef jsContext, JSObjectRef jsObject
      return NULL;
 }
 
-/**
- * Called when an object is set within the __classes__ javascript object
- * @since 0.0.1
- */
 bool jsClassSetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef jsVal, JSValueRef* jsException)
 {
     [classes setObject:[NSData dataWithJSValueRef:jsVal] forKey:[NSString stringWithJSString:jsKey]];
     return true;
 }
 
-/**
- * Called when an object is retrieved within the __classes__ javascript object
- * @since 0.0.1
- */
 JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef* jsException)
 {
     NSString* name = [NSString stringWithJSString:jsKey];
@@ -165,10 +122,6 @@ JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringR
     return NULL;
 }
 
-/**
- * Constructor
- * @since  0.0.1
- */
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -216,17 +169,13 @@ JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringR
         
         // load common bindings
         BGConsoleBinding* consoleBinding = [[BGConsoleBinding alloc] initWithScriptView:self];
-        [self addBinding: consoleBinding toKey:@"console"];
+        [self bind: consoleBinding toKey:@"console"];
         [consoleBinding release];
     }
     
     return self;
 }
 
-/**
- * Destructor
- * @since  0.0.1
- */
 - (void)dealloc
 {
     JSValueUnprotect(jsGlobalContext, jsNullValue);
@@ -238,10 +187,6 @@ JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringR
     [super dealloc];
 }
 
-/**
- * Load script at a specified path.
- * @since 0.0.1
- */
 - (void)loadScript:(NSString *)path
 {
     path = [NSString stringWithFormat:@"%@/App/%@", [[NSBundle mainBundle] resourcePath], path];
@@ -255,10 +200,6 @@ JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringR
     [self evalScript:script];
 }
 
-/**
- * Execute script.
- * @since  0.0.1
- */
 - (void)evalScript:(NSString *)source
 {
     JSValueRef jsException = NULL;
@@ -266,10 +207,6 @@ JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringR
     [self log:jsException];
 }
 
-/**
- * Log an error message based on a javscript exception.
- * @since  0.0.1
- */
 - (void)log:(JSValueRef)jsException
 {
     if (!jsException)
@@ -293,30 +230,21 @@ JSValueRef jsClassGetter(JSContextRef jsContext, JSObjectRef jsObject, JSStringR
     JSStringRelease(jsFilePropertyName);
 }
 
-- (void)addBinding:(BGBinding *)binding
+- (void)bind:(BGBinding *)binding
 {
     [bindings addObject:binding];
 }
 
-- (void)addBinding:(BGBinding *)binding toKey:(NSString*)key
+- (void)bind:(BGBinding *)binding toKey:(NSString*)key
 {
-    [self addBinding:binding toKey:key ofObject:self.jsGlobalObject];
+    [self bind:binding toKey:key ofObject:self.jsGlobalObject];
 }
 
-- (void)addBinding:(BGBinding *)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject
+- (void)bind:(BGBinding *)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject
 {
-    [self addBinding:binding];
-    
-    JSObjectSetProperty(
-        self.jsGlobalContext,
-        jsObject,
-        [key jsStringValue],
-        [binding jsObject],
-        kJSClassAttributeNone,
-        NULL
-    );
+    JSObjectSetProperty(self.jsGlobalContext, jsObject, [key jsStringValue], [binding jsObject], kJSClassAttributeNone, NULL);
+    [self bind:binding];
 }
-
 
 + (NSString*)binding:(NSString*)name
 {

@@ -14,119 +14,136 @@
 @implementation BGBinding
 
 @synthesize scriptView;
+@synthesize jsContext;
 @synthesize jsObject;
+@synthesize jsPrototype;
+@synthesize boundSetters;
+@synthesize boundGetters;
+@synthesize boundFunctions;
 
 BG_DEFINE_BOUND_FUNCTION(constructor, constructor)
 BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
 
-- (id)initWithScriptView:(BGScriptView *)theScriptView
+- (id)initWithContext:(JSContextRef)theJSContext
 {
-    self = [super init];
+    self = [self init];
     if (self) {
-        
-        scriptView = theScriptView;
-        
-        // bind the class methods
-        NSMutableArray* methods = [[NSMutableArray alloc] init];
-        NSMutableArray* properties = [[NSMutableArray alloc] init];
-
+    
+        jsContext = theJSContext;
+    
+        boundSetters = [NSMutableArray new];
+        boundGetters = [NSMutableArray new];
+        boundFunctions = [NSMutableArray new];
+    
         Class class = [self class];
-        Class base = BGBinding.class;
-
-        for (Class sc = class; sc != base && [sc isSubclassOfClass:base]; sc = sc.superclass) {
-
+        while (class && [class isSubclassOfClass:BGBinding.class]) {
             u_int count;
-            Method* methodList = class_copyMethodList(object_getClass(sc), &count);
-
-            for (int i = 0; i < count; i++) {
-
-                NSString *name = NSStringFromSelector(method_getName(methodList[i]));
-
-                if ([name hasPrefix:@"_ptr_to_function_"]) {
-                    [methods addObject:[name substringFromIndex:sizeof("_ptr_to_function_") - 1]];
+            Method* methods = class_copyMethodList(object_getClass(class), &count);
+            for (u_int i = 0; i < count; i++) {
+                NSString *name = NSStringFromSelector(method_getName(methods[i]));
+                if ([name hasPrefix:@"_ptr_to_setter_"]) {
+                    [boundSetters addObject:[name substringFromIndex:sizeof("_ptr_to_setter_") - 1]];
                     continue;
                 }
-
                 if ([name hasPrefix:@"_ptr_to_getter_"]) {
-                    [properties addObject:[name substringFromIndex:sizeof("_ptr_to_getter_") - 1]];
+                    [boundGetters addObject:[name substringFromIndex:sizeof("_ptr_to_getter_") - 1]];
+                    continue;
+                }
+                if ([name hasPrefix:@"_ptr_to_function_"]) {
+                    [boundFunctions addObject:[name substringFromIndex:sizeof("_ptr_to_function_") - 1]];
                     continue;
                 }
             }
-
-            free(methodList);
+            free(methods);
+            class = class.superclass;
+        }
+        
+        JSStaticFunction* jsFunctions = calloc(boundFunctions.count + 1, sizeof(JSStaticFunction));
+        for (int i = 0; i < boundFunctions.count; i++) {
+            NSString *name = [boundFunctions objectAtIndex:i];
+            jsFunctions[i].name = name.UTF8String;
+            jsFunctions[i].attributes = kJSPropertyAttributeDontDelete;
+            jsFunctions[i].callAsFunction = (JSObjectCallAsFunctionCallback)[self.class performSelector:NSSelectorFromString([@"_ptr_to_function_" stringByAppendingString:name])];
         }
 
-        JSStaticValue *jsStaticValues = calloc(properties.count + 1, sizeof(JSStaticValue));
-        JSStaticFunction* jsStaticFunctions = calloc(methods.count + 1, sizeof(JSStaticFunction));
-
-        for (int i = 0; i < properties.count; i++) {
-            NSString* name = properties[i];
-            jsStaticValues[i].name = name.UTF8String;
-            jsStaticValues[i].attributes = kJSPropertyAttributeDontDelete;
-            SEL get = NSSelectorFromString([@"_ptr_to_getter_" stringByAppendingString:name]);
-            SEL set = NSSelectorFromString([@"_ptr_to_setter_" stringByAppendingString:name]);
-            jsStaticValues[i].getProperty = (JSObjectGetPropertyCallback)[class performSelector:get];
-            if ([class respondsToSelector:set]) {
-                jsStaticValues[i].setProperty = (JSObjectSetPropertyCallback)[class performSelector:set];
+        JSStaticValue *jsValues = calloc(boundGetters.count + 1, sizeof(JSStaticValue));
+        for (int i = 0; i < boundGetters.count; i++) {
+            NSString* name = [boundGetters objectAtIndex:i];
+            jsValues[i].name = name.UTF8String;
+            jsValues[i].attributes = kJSPropertyAttributeDontDelete;
+            jsValues[i].getProperty = (JSObjectGetPropertyCallback)[self.class performSelector:NSSelectorFromString([@"_ptr_to_getter_" stringByAppendingString:name])];
+            if ([boundSetters containsObject:name]) {
+                jsValues[i].setProperty = (JSObjectSetPropertyCallback)[self.class performSelector:NSSelectorFromString([@"_ptr_to_setter_" stringByAppendingString:name])];
             } else {
-                jsStaticValues[i].attributes |= kJSPropertyAttributeReadOnly;
+                jsValues[i].attributes |= kJSPropertyAttributeReadOnly;
             }
         }
 
-        for (int i = 0; i < methods.count; i++) {
-            NSString *name = methods[i];
-            jsStaticFunctions[i].name = name.UTF8String;
-            jsStaticFunctions[i].attributes = kJSPropertyAttributeDontDelete;
-            SEL call = NSSelectorFromString([@"_ptr_to_function_" stringByAppendingString:name]);
-            jsStaticFunctions[i].callAsFunction = (JSObjectCallAsFunctionCallback)[class performSelector:call];
-        }
+        JSClassDefinition jsBindingClassDef = kJSClassDefinitionEmpty;
+        jsBindingClassDef.className = class_getName(class);
+        jsBindingClassDef.staticValues = jsValues;
+        jsBindingClassDef.staticFunctions = jsFunctions;
+        jsBindingClassDef.attributes = kJSClassAttributeNoAutomaticPrototype;
+        // jsClassDef.finalize = EJBindingBaseFinalize;
+        JSClassRef jsBindingClass = JSClassCreate(&jsBindingClassDef);
 
-        JSClassDefinition jsClassDef = kJSClassDefinitionEmpty;
-        jsClassDef.className = class_getName(class);
-        //jsClassDef.finalize = EJBindingBaseFinalize;
-        jsClassDef.staticValues = jsStaticValues;
-        jsClassDef.staticFunctions = jsStaticFunctions;
-        jsClassDef.attributes = kJSClassAttributeNoAutomaticPrototype;
-        JSClassRef jsClass = JSClassCreate(&jsClassDef);
-
-        free(jsStaticValues);
-        free(jsStaticFunctions);
-
-        [methods release];
-        [properties release];
-
-        jsObject = JSObjectMake(self.scriptView.jsGlobalContext, jsClass, self);        
+        jsObject = JSObjectMake(jsContext, jsBindingClass, self);
+        
+        free(jsValues);
+        free(jsFunctions);        
     }
+    
+    return self;
+}
+
+- (id)initWithScriptView:(BGScriptView*)theScriptView
+{
+    self = [self initWithContext:theScriptView.jsGlobalContext];
+    if (self) {
+        scriptView = theScriptView;
+    }
+    return self;
+}
+
+- (id)initWithScriptView:(BGScriptView*)theScriptView andArguments:(size_t)argc argv:(const JSValueRef[])argv forPrototype:(JSObjectRef)theJSPrototype
+{
+    self = [self initWithScriptView:theScriptView];
+    if (self) {
+    
+        jsPrototype = theJSPrototype;
+        
+        JSObjectSetPrototype(
+            self.jsContext,
+            self.jsObject,
+            JSObjectCallAsConstructor(
+                self.jsContext,
+                jsPrototype,
+                argc,
+                argv,
+                NULL
+            )
+        );
+        
+        [self constructor:theScriptView.jsGlobalContext argc:argc argv:argv];
+    }
+        
     return self;
 }
 
 - (void)dealloc
 {
+    [self destructor:self.jsContext argc:0 argv:NULL];
     [scriptView release];
     [super dealloc];
 }
 
-/**
- * @binding
- * @since 0.0.1
- */
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    NSLog(@"Constructor of %@ called with %zu arguments",
-        [self class],
-        argc
-    );
-
     return NULL;
 }
 
-/**
- * @binding
- * @since 0.0.1
- */
-- (JSValueRef)destroy:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
+- (JSValueRef)destructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    NSLog(@"Calling destroy");
     return NULL;
 }
 

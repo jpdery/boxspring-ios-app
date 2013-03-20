@@ -1581,11 +1581,12 @@ console.log('View Prototype');
 console.log(Object.keys(View.prototype));
 
 console.log('View instance')
-var view = new View(1, 2, 3, 4);
+var view = new View(10, 10, 50, 50);
 console.log(Object.keys(view));
 console.log(view);
 view.draw();
 
+console.draw();
 //console.log(view);
 //view.foo = "BAR";
 //console.log(view.opacity);

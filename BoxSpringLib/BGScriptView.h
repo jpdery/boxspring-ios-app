@@ -25,12 +25,13 @@
 - (void)loadScript:(NSString*)path;
 - (void)evalScript:(NSString*)source;
 
+- (void)bind:(BGBinding*)binding;
+- (void)bind:(BGBinding*)binding toKey:(NSString*)key;
+- (void)bind:(BGBinding*)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
+
 - (void)log:(JSValueRef)jsException;
 
-- (void)addBinding:(BGBinding*)binding;
-- (void)addBinding:(BGBinding*)binding toKey:(NSString*)key;
-- (void)addBinding:(BGBinding*)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
-
+// temp
 + (NSString*)binding:(NSString*)name;
 
 @end

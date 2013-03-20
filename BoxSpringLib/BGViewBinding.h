@@ -7,7 +7,10 @@
 //
 
 #import "BGBinding.h"
+#import "BGView.h"
 
-@interface BGViewBinding : BGBinding
+@interface BGViewBinding : BGBinding {
+    BGView* view;
+}
 
 @end

@@ -13,9 +13,6 @@
 
 BG_DEFINE_BOUND_FUNCTION(log, log)
 
-/**
- * @since 0.0.1
- */
 - (JSValueRef)log:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
     NSMutableArray* args = [[NSMutableArray alloc] initWithCapacity: argc];
