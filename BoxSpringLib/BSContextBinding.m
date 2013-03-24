@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BGContextBinding.h"
+#import "BSContextBinding.h"
 
-@implementation BGContextBinding
+@implementation BSContextBinding
 
 /*
 fillStyle	Sets or returns the color, gradient, or pattern used to fill the drawing

@@ -6,12 +6,12 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BGConsoleBinding.h"
+#import "BSConsoleBinding.h"
 #import "NSString+JavaScriptCoreString.h"
 
-@implementation BGConsoleBinding
+@implementation BSConsoleBinding
 
-BG_DEFINE_BOUND_FUNCTION(log, log)
+BS_DEFINE_BOUND_FUNCTION(log, log)
 
 - (JSValueRef)log:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {

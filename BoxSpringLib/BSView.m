@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BGView.h"
+#import "BSView.h"
 
-@implementation BGView
+@implementation BSView
 
 - (id)initWithFrame:(CGRect)frame
 {

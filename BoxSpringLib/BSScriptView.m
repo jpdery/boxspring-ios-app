@@ -6,21 +6,23 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BGSCriptView.h"
 #import "NSString+JavaScriptCoreString.h"
 #import "NSObject+JavaScriptCoreObject.h"
 #import "NSData+JavaScriptCore.h"
 
 // bindings
-#import "BGBinding.h"
-#import "BGConsoleBinding.h"
-#import "BGWindowBinding.h"
-#import "BGViewBinding.h"
+#import "BSScriptView.h"
+#import "BSBinding.h"
+#import "BSConsoleBinding.h"
+#import "BSWindowBinding.h"
+#import "BSViewBinding.h"
+#import "BSWindow.h"
+#import "BSView.h"
 
-static NSMutableDictionary* jsClasses = nil;
-static NSMutableDictionary* jsConstructors = nil;
+static NSMutableDictionary* jsPrimeClasses = nil;
+static NSMutableDictionary* jsBoundClasses = nil;
 
-@implementation BGScriptView
+@implementation BSScriptView
 
 @synthesize jsGlobalContext;
 @synthesize jsGlobalObject;
@@ -32,94 +34,95 @@ static NSMutableDictionary* jsConstructors = nil;
 
 typedef struct {
     NSString* name;
-    BGScriptView* view;
+    BSScriptView* view;
 } JSConstructorData;
 
-JSObjectRef BGBindingCallAsConstructor(JSContextRef jsContext, JSObjectRef jsObject, size_t argc, const JSValueRef argv[], JSValueRef* exception)
+void JSCopyProperties(JSContextRef jsContext, JSObjectRef jsObject, JSObjectRef jsObjectFrom)
+{
+    JSPropertyNameArrayRef jsProperties = JSObjectCopyPropertyNames(jsContext, jsObjectFrom);
+        
+    size_t count = JSPropertyNameArrayGetCount(jsProperties);
+    
+    for (int i = 0; i < count; i++) {
+        JSStringRef jsProperty = JSPropertyNameArrayGetNameAtIndex(jsProperties, i);
+        JSObjectSetProperty(
+            jsContext,
+            jsObject,
+            jsProperty,
+            JSObjectGetProperty(jsContext, jsObjectFrom, jsProperty, NULL),
+            kJSPropertyAttributeNone,
+            NULL
+        );
+    }
+}
+
+JSObjectRef BSBindingCallAsConstructor(JSContextRef jsContext, JSObjectRef jsObject, size_t argc, const JSValueRef argv[], JSValueRef* exception)
 {
     JSConstructorData* data = JSObjectGetPrivate(jsObject);
 
-    Class class = NSClassFromString([BGScriptView binding:data->name]);
+    NSString* primeClassName = data->name;
+    NSString* boundClassName = [BSScriptView binding:primeClassName];
 
-    // TODO: check if class exists
-
-    BGBinding* binding;
-    
-    JSObjectRef jsPrototypeObject = (JSObjectRef) JSObjectGetProperty(jsContext, jsObject, JSStringCreateWithUTF8CString("prototype"), NULL);
-    if (jsPrototypeObject) {
-        binding = [(BGBinding*)[class alloc] initWithScriptView:data->view inherits:jsPrototypeObject argc:argc argv:argv];
-    } else {
-        binding = [(BGBinding*)[class alloc] initWithScriptView:data->view];
+    Class class = NSClassFromString(boundClassName);
+    if (class == nil) {
+        [NSException raise:@"Bound class does not exists" format:@"The class %@ does not exists", boundClassName];
     }
 
-    JSObjectRef jsBoundObject = binding.jsObject;
+    BSBinding* binding;
     
+    JSObjectRef jsParentObject = [[jsPrimeClasses objectForKey:primeClassName] jsObject];
+    if (jsParentObject) {
+        binding = [(BSBinding*)[class alloc] initWithScriptView:data->view inherits:jsParentObject argc:argc argv:argv];
+    } else {
+        binding = [(BSBinding*)[class alloc] initWithScriptView:data->view];
+    }
+
     [data->view bind:binding];
-    
+    JSObjectRef jsBoundObject = binding.jsObject;
     [binding release];
     
     return jsBoundObject;
 }
 
-void BGBindingFinalize(JSObjectRef object)
+void BSBindingFinalize(JSObjectRef object)
 {
     NSLog(@"binding fini");
 }
 
-JSValueRef BGBindingManagerGetClass(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef* jsException)
+bool BSBindingManagerSetClass(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef jsVal, JSValueRef* jsException)
 {
-    return [[jsClasses objectForKey:[NSString stringWithJSString:jsKey]] jsValue];
-}
+    NSString* name = [NSString stringWithJSString:jsKey];
+    NSString* class = [BSScriptView binding:name];
 
-bool BGBindingManagerSetClass(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef jsVal, JSValueRef* jsException)
-{
-    NSString* bindingName = [NSString stringWithJSString:jsKey];
-    NSString* bindingClass = [BGScriptView binding:bindingName];
-
-    if (bindingClass) {
-        
-        if ([jsConstructors objectForKey:bindingName]) {
-            NSLog(@"JS Binding for %@ already exists", bindingName);
-            return false;
-        }
-
-        NSLog(@"Setting binding to %@ for %@", bindingName, bindingClass);
+    [jsPrimeClasses setObject:[NSData dataWithJSValueRef:jsVal] forKey:name];
+    
+    if (class) {
 
         JSClassDefinition jsBoundConstructorClassDef = kJSClassDefinitionEmpty;
-        jsBoundConstructorClassDef.className = [[bindingClass stringByAppendingString:@"Constructor"] UTF8String];
-        jsBoundConstructorClassDef.callAsConstructor = BGBindingCallAsConstructor;
-        jsBoundConstructorClassDef.finalize = BGBindingFinalize;
+        jsBoundConstructorClassDef.className = [[class stringByAppendingString:@"Constructor"] UTF8String];
+        jsBoundConstructorClassDef.callAsConstructor = BSBindingCallAsConstructor;
+        jsBoundConstructorClassDef.finalize = BSBindingFinalize;
         JSClassRef jsBoundConstructorClass = JSClassCreate(&jsBoundConstructorClassDef);
 
         JSConstructorData* data = malloc(sizeof(JSConstructorData));
-		data->name = bindingName;
+		data->name = name;
 		data->view = JSObjectGetPrivate(jsObject);
 
         JSObjectRef jsBoundConstructor = JSObjectMake(jsContext, jsBoundConstructorClass, data);
-        
-        // free(data); ?
-        
-        // force this constructor to have the object it replaces' prototype
-        JSObjectRef jsPrototypeClass = (JSObjectRef) jsVal;
-        JSObjectRef jsPrototypeObject = (JSObjectRef) JSObjectGetProperty(jsContext, jsPrototypeClass, JSStringCreateWithUTF8CString("prototype"), NULL);
-        
-        JSObjectSetProperty(
-            jsContext,
-            jsBoundConstructor,
-            JSStringCreateWithUTF8CString("prototype"),
-            jsPrototypeObject,
-            kJSPropertyAttributeNone,
-            NULL
-        );
-        
-        [jsClasses setObject:[NSData dataWithJSValueRef:jsBoundConstructor] forKey:bindingName];
+        JSCopyProperties(jsContext, jsBoundConstructor, (JSObjectRef) jsVal);
+        [jsBoundClasses setObject:[NSData dataWithJSObjectRef:jsBoundConstructor] forKey:name];
         
         return jsBoundConstructor;
     }
     
-    [jsClasses setObject:[NSData dataWithJSValueRef:jsVal] forKey:bindingName];
-        
     return true;
+}
+
+JSValueRef BSBindingManagerGetClass(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef* jsException)
+{
+    NSString* name = [NSString stringWithJSString:jsKey];
+    JSObjectRef binding = [[jsBoundClasses objectForKey:name] jsObject];
+    return binding ? binding : [[jsPrimeClasses objectForKey:name] jsObject];
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -141,18 +144,18 @@ bool BGBindingManagerSetClass(JSContextRef jsContext, JSObjectRef jsObject, JSSt
 
         bindings = [NSMutableArray new];
 
-        if (jsClasses == nil) {
-            jsClasses = [NSMutableDictionary new];
+        if (jsPrimeClasses == nil) {
+            jsPrimeClasses = [NSMutableDictionary new];
         }
         
-        if (jsConstructors == nil) {
-            jsConstructors = [NSMutableDictionary new];
+        if (jsBoundClasses == nil) {
+            jsBoundClasses = [NSMutableDictionary new];
         }
         
         // define the javascript object responsible for detecting bindings
         JSClassDefinition jsBindingManagerClassDef = kJSClassDefinitionEmpty;
-        jsBindingManagerClassDef.getProperty = BGBindingManagerGetClass;
-        jsBindingManagerClassDef.setProperty = BGBindingManagerSetClass;
+        jsBindingManagerClassDef.getProperty = BSBindingManagerGetClass;
+        jsBindingManagerClassDef.setProperty = BSBindingManagerSetClass;
         JSClassRef jsBindingManagerClass = JSClassCreate(&jsBindingManagerClassDef);
 
         // create this javascript object
@@ -168,7 +171,7 @@ bool BGBindingManagerSetClass(JSContextRef jsContext, JSObjectRef jsObject, JSSt
         );
         
         // load common bindings
-        BGConsoleBinding* consoleBinding = [[BGConsoleBinding alloc] initWithScriptView:self];
+        BSConsoleBinding* consoleBinding = [[BSConsoleBinding alloc] initWithScriptView:self];
         [self bind:consoleBinding toKey:@"console"];
         [consoleBinding release];
     }
@@ -183,6 +186,9 @@ bool BGBindingManagerSetClass(JSContextRef jsContext, JSObjectRef jsObject, JSSt
     JSValueUnprotect(jsGlobalContext, jsFalseValue);
     JSValueUnprotect(jsGlobalContext, jsUndefinedValue);
     JSGlobalContextRelease(jsGlobalContext);
+  
+    [jsPrimeClasses release];
+    [jsBoundClasses release];
   
     [super dealloc];
 }
@@ -230,17 +236,17 @@ bool BGBindingManagerSetClass(JSContextRef jsContext, JSObjectRef jsObject, JSSt
     JSStringRelease(jsFilePropertyName);
 }
 
-- (void)bind:(BGBinding *)binding
+- (void)bind:(BSBinding *)binding
 {
     [bindings addObject:binding];
 }
 
-- (void)bind:(BGBinding *)binding toKey:(NSString*)key
+- (void)bind:(BSBinding *)binding toKey:(NSString*)key
 {
     [self bind:binding toKey:key ofObject:self.jsGlobalObject];
 }
 
-- (void)bind:(BGBinding *)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject
+- (void)bind:(BSBinding *)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject
 {
     JSObjectSetProperty(self.jsGlobalContext, jsObject, [key jsStringValue], [binding jsObject], kJSClassAttributeNone, NULL);
     [self bind:binding];
@@ -252,8 +258,8 @@ bool BGBindingManagerSetClass(JSContextRef jsContext, JSObjectRef jsObject, JSSt
     
     if (bindings == nil) {
         bindings = [[NSDictionary alloc] initWithObjectsAndKeys:
-            @"BGViewBinding",   @"boxspring.View",
-            @"BGWindowBinding", @"boxspring.Window",
+            @"BSViewBinding",   @"boxspring.View",
+            @"BSWindowBinding", @"boxspring.Window",
         nil];
     }
     

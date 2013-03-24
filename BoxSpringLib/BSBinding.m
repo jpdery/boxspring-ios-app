@@ -6,28 +6,26 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BGBinding.h"
+#import "BSBinding.h"
 #import "NSString+JavaScriptCoreString.h"
 #import "NSObject+JavaScriptCoreObject.h"
 #import "NSData+JavaScriptCore.h"
 
-@implementation BGBinding
+@implementation BSBinding
 
 @synthesize scriptView;
 @synthesize jsContext;
 @synthesize jsObject;
-@synthesize jsPrototype;
-
-@synthesize jsBaseObject;
-@synthesize jsBasePrototype;
-@synthesize jsBaseConstructor;
+@synthesize jsParentObject;
+@synthesize jsParentPrototype;
+@synthesize jsParentConstructor;
 
 @synthesize boundSetters;
 @synthesize boundGetters;
 @synthesize boundFunctions;
 
-BG_DEFINE_BOUND_FUNCTION(constructor, constructor)
-BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
+BS_DEFINE_BOUND_FUNCTION(constructor, constructor)
+BS_DEFINE_BOUND_FUNCTION(destroy, destroy)
 
 - (id)initWithContext:(JSContextRef)theJSContext
 {
@@ -41,7 +39,7 @@ BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
         boundFunctions = [NSMutableArray new];
     
         Class class = [self class];
-        while (class && [class isSubclassOfClass:BGBinding.class]) {
+        while (class && [class isSubclassOfClass:BSBinding.class]) {
             u_int count;
             Method* methods = class_copyMethodList(object_getClass(class), &count);
             for (u_int i = 0; i < count; i++) {
@@ -101,7 +99,7 @@ BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
     return self;
 }
 
-- (id)initWithScriptView:(BGScriptView*)theScriptView
+- (id)initWithScriptView:(BSScriptView*)theScriptView
 {
     self = [self initWithContext:theScriptView.jsGlobalContext];
     if (self) {
@@ -110,43 +108,31 @@ BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
     return self;
 }
 
-- (id)initWithScriptView:(BGScriptView*)theScriptView inherits:(JSObjectRef)jsPrototypeObject
+- (id)initWithScriptView:(BSScriptView*)theScriptView inherits:(JSObjectRef)jsParent
 {
     self = [self initWithScriptView:theScriptView];
     if (self) {
-    
-  //      jsBaseObject = jsBindingClass;
-//      jsBasePrototype = (JSObjectRef) JSObjectGetProperty(self.jsContext, jsBaseObject, JSStringCreateWithUTF8CString("prototype"), NULL);
-        jsBasePrototype = jsPrototypeObject;
-        jsBaseConstructor = (JSObjectRef) JSObjectGetProperty(self.jsContext, jsPrototypeObject , JSStringCreateWithUTF8CString("constructor"), NULL);
+        
+        jsParentObject = jsParent;
+        jsParentPrototype = (JSObjectRef) JSObjectGetProperty(self.jsContext, jsParentObject, JSStringCreateWithUTF8CString("prototype"), NULL);
+        jsParentConstructor = (JSObjectRef) JSObjectGetProperty(self.jsContext, jsParentPrototype , JSStringCreateWithUTF8CString("constructor"), NULL);
         
         JSObjectSetPrototype(
             self.jsContext,
             self.jsObject,
-            self.jsBasePrototype
+            jsParentPrototype
         );
     }
         
     return self;
 }
 
-- (id)initWithScriptView:(BGScriptView*)theScriptView inherits:(JSObjectRef)jsBindingClass argc:(size_t)argc argv:(const JSValueRef[])argv
+- (id)initWithScriptView:(BSScriptView*)theScriptView inherits:(JSObjectRef)jsParent argc:(size_t)argc argv:(const JSValueRef[])argv
 {
-    self = [self initWithScriptView:theScriptView inherits:jsBindingClass];
+    self = [self initWithScriptView:theScriptView inherits:jsParent];
     if (self) {
-        
-        JSObjectCallAsFunction(
-            self.jsContext,
-            self.jsBaseConstructor,
-            self.jsObject,
-            argc,
-            argv,
-            NULL
-        );
-        
-        [self constructor:theScriptView.jsGlobalContext argc:argc argv:argv];
+        [self constructor:self.jsContext argc:argc argv:argv];
     }
-
     return self;
 }
 
@@ -159,7 +145,7 @@ BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
 
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    return NULL;
+    return [self parent:@"constructor" argc:argc argv:argv];
 }
 
 - (JSValueRef)destructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
@@ -167,9 +153,18 @@ BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
     return NULL;
 }
 
-- (JSValueRef)callJSFunction:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
+- (JSValueRef)invoke:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
 {
     JSObjectRef jsFunction = (JSObjectRef) JSObjectGetProperty(self.jsContext, self.jsObject, [name jsStringValue], NULL);
+    if (jsFunction) {
+       return JSObjectCallAsFunction(self.jsContext, jsFunction, self.jsObject, argc, argv, NULL);
+    }
+    return NULL;
+}
+
+- (JSValueRef)parent:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
+{
+    JSObjectRef jsFunction = (JSObjectRef) JSObjectGetProperty(self.jsContext, self.jsParentPrototype, [name jsStringValue], NULL);
     if (jsFunction) {
        return JSObjectCallAsFunction(self.jsContext, jsFunction, self.jsObject, argc, argv, NULL);
     }

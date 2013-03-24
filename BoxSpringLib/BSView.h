@@ -1,13 +1,13 @@
 //
-//  BGContextBinding.h
+//  BGView.h
 //  BoxSpringApp
 //
 //  Created by Jean-Philippe Déry on 2013-03-20.
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BGBinding.h"
+#import <UIKit/UIKit.h>
 
-@interface BGContextBinding : BGBinding
+@interface BSView : UIView
 
 @end

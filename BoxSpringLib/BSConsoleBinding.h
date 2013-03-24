@@ -7,9 +7,9 @@
 //
 
 #import <JavaScriptCore/JavaScriptCore.h>
-#import "BGBinding.h"
+#import "BSBinding.h"
 
-@interface BGConsoleBinding : BGBinding
+@interface BSConsoleBinding : BSBinding
 
 static void mange()
 {

@@ -6,8 +6,10 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BGViewBinding.h"
+#import "BSViewBinding.h"
 
-@interface BGWindowBinding : BGViewBinding
+@class BSWindow;
+
+@interface BSWindowBinding : BSViewBinding
 
 @end

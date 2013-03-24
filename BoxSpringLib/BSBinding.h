@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
-#import "BGScriptView.h"
+#import "BSScriptView.h"
 
-#define _BG_CREATE_POINTER_TO(NAME) \
+#define _BS_CREATE_POINTER_TO(NAME) \
 	+ (void *)_ptr_to##NAME { \
 		return (void *)&NAME; \
 	}
@@ -19,7 +19,7 @@
  * Macro to define a setter binding as:
  * - (void)binding:(JSContextRef)jsContext value:(JSValueRef)jsValue
  */
-#define BG_DEFINE_BOUND_SETTER(name, context_name, value_name) \
+#define BS_DEFINE_BOUND_SETTER(name, context_name, value_name) \
 	static bool _setter_##name( \
 		JSContextRef ctx, \
 		JSObjectRef object, \
@@ -31,14 +31,14 @@
 		objc_msgSend(instance, @selector(_setter_##name:value:), ctx, value); \
 		return true; \
 	} \
-	_BG_CREATE_POINTER_TO(_setter_##name) \
+	_BS_CREATE_POINTER_TO(_setter_##name) \
     - (void)_setter_##name:(JSContextRef)context_name value:(JSValueRef)value_name
 
 /**
  * Macro to define a getter binding as:
  * - (JSValueRef)binding:(JSContextRef)jsContext
  */
-#define BG_DEFINE_BOUND_GETTER(name, context_name) \
+#define BS_DEFINE_BOUND_GETTER(name, context_name) \
 	static JSValueRef _getter_##name( \
 		JSContextRef ctx, \
 		JSObjectRef object, \
@@ -48,7 +48,7 @@
 		id instance = (id)JSObjectGetPrivate(object); \
 		return (JSValueRef)objc_msgSend(instance, @selector(_getter_##name:), ctx); \
 	} \
-	_BG_CREATE_POINTER_TO(_getter_##name)\
+	_BS_CREATE_POINTER_TO(_getter_##name)\
     - (JSValueRef)_get_##name:(JSContextRef)context_name
 
 /**
@@ -56,7 +56,7 @@
  * (Replace BOUND_NAME with the name of your objective-c method)
  * - (JSValueRef)BOUND_NAME:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
  */
-#define BG_DEFINE_BOUND_FUNCTION(FUNCTION_NAME, BOUND_NAME) \
+#define BS_DEFINE_BOUND_FUNCTION(FUNCTION_NAME, BOUND_NAME) \
 	static JSValueRef _function_##FUNCTION_NAME( \
 		JSContextRef ctx, \
 		JSObjectRef function, \
@@ -67,14 +67,14 @@
 	) { \
 		id instance = (id)JSObjectGetPrivate(object); \
 		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(BOUND_NAME:argc:argv:), ctx, argc, argv); \
-        return ret ? ret : ((BGBinding*)instance).scriptView.jsUndefinedValue; \
+        return ret ? ret : ((BSBinding*)instance).scriptView.jsUndefinedValue; \
 	} \
-	_BG_CREATE_POINTER_TO(_function_##FUNCTION_NAME) \
+	_BS_CREATE_POINTER_TO(_function_##FUNCTION_NAME) \
 
 /**
  * Macro to define a non implemented function
  */
-#define BG_DEFINE_MISSING_FUNCTION(name) \
+#define BS_DEFINE_MISSING_FUNCTION(name) \
 	static JSValueRef _function_##name( \
 		JSContextRef ctx, \
 		JSObjectRef function, \
@@ -89,33 +89,31 @@
 			didShowWarning = true; \
 		} \
 		id instance = (id)JSObjectGetPrivate(object); \
-		return ((BGBinding*)instance).scriptView.jsUndefinedValue; \
+		return ((BSBinding*)instance).scriptView.jsUndefinedValue; \
 	} \
-	_BG_CREATE_POINTER_TO(_function_##name)
+	_BS_CREATE_POINTER_TO(_function_##name)
 
 
-@interface BGBinding : NSObject
-
-@property (nonatomic, readonly) BGScriptView* scriptView;
-@property (nonatomic, readonly) JSContextRef jsContext;
-@property (nonatomic, readonly) JSObjectRef jsObject;
-
-@property (nonatomic, readonly) JSObjectRef jsPrototype;
-
-@property (nonatomic, readonly) JSObjectRef jsBaseObject;
-@property (nonatomic, readonly) JSObjectRef jsBasePrototype;
-@property (nonatomic, readonly) JSObjectRef jsBaseConstructor;
+@interface BSBinding : NSObject
 
 @property (nonatomic, readonly) NSMutableArray* boundSetters;
 @property (nonatomic, readonly) NSMutableArray* boundGetters;
 @property (nonatomic, readonly) NSMutableArray* boundFunctions;
 
-- (id)initWithContext:(JSContextRef)theJSContext;
-- (id)initWithScriptView:(BGScriptView*)theScriptView;
-- (id)initWithScriptView:(BGScriptView*)theScriptView inherits:(JSObjectRef)jsBindingClass;
-- (id)initWithScriptView:(BGScriptView*)theScriptView inherits:(JSObjectRef)jsBindingClass argc:(size_t)argc argv:(const JSValueRef[])argv;
+@property (nonatomic, readonly) BSScriptView* scriptView;
+@property (nonatomic, readonly) JSContextRef jsContext;
+@property (nonatomic, readonly) JSObjectRef jsObject;
+@property (nonatomic, readonly) JSObjectRef jsParentObject;
+@property (nonatomic, readonly) JSObjectRef jsParentPrototype;
+@property (nonatomic, readonly) JSObjectRef jsParentConstructor;
 
-- (JSValueRef)callJSFunction:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
+- (id)initWithContext:(JSContextRef)theJSContext;
+- (id)initWithScriptView:(BSScriptView*)theScriptView;
+- (id)initWithScriptView:(BSScriptView*)theScriptView inherits:(JSObjectRef)jsParent;
+- (id)initWithScriptView:(BSScriptView*)theScriptView inherits:(JSObjectRef)jsParent argc:(size_t)argc argv:(const JSValueRef[])argv;
+
+- (JSValueRef)invoke:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
+- (JSValueRef)parent:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
 
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
 - (JSValueRef)destructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;

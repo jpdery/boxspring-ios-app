@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BGScriptView.h"
+#import "BSScriptView.h"
 
-@interface BGScriptViewController : UIViewController
+@interface BSScriptViewController : UIViewController
 
 @end

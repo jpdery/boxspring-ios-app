@@ -6,11 +6,13 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BGBinding.h"
-#import "BGView.h"
+#import "BSBinding.h"
+#import "BSView.h"
 
-@interface BGViewBinding : BGBinding
+@interface BSViewBinding : BSBinding
 
-@property (nonatomic, retain) BGView* view;
+@property (nonatomic, retain) BSView* view;
+
+- (void)loadViewWithRect:(CGRect)rect;
 
 @end

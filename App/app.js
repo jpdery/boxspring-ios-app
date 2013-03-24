@@ -12,12 +12,18 @@
         
         */
 
-//var viewDef = __classes__['boxspring.View'];
-//
-//console.log(Object.keys(viewDef), Object.keys(viewDef).length);
-//console.log(Object.keys(viewDef.prototype), Object.keys(viewDef.prototype).length);
-//
-//console.log(new viewDef(300, 300));
 
+var w = new boxspring.Window(320, 460);
 
-console.log(new boxspring.Window(300, 300));
+//console.log(w.__children);
+//console.log(w.children);
+//console.log(w.__children);
+
+for (var k in w) {
+//    console.log('Key:' + k + ' : ' + w[k]);
+    if (k.indexOf('_') === 0) console.log('Key:' + k);
+}
+
+//
+//var view = new boxspring.View(100, 100, 50, 50);
+//w.addChild(view);

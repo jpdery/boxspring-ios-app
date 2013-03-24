@@ -625,6 +625,7 @@
             __afterListeners: null,
             __beforeListeners: null,
             constructor: function() {
+                console.log("boxspring.Object Constructor Called");
                 var inits = this.__propertyInits;
                 for (var i = 0, l = inits.length; i < l; i++) {
                     inits[i].call(this);
@@ -1105,6 +1106,7 @@
                 }
             },
             constructor: function(w, h, x, y) {
+                console.log("boxspring.View constructor called");
                 View.parent.constructor.call(this);
                 var rect = arguments[0];
                 if (rect instanceof Rect) {
@@ -1177,6 +1179,7 @@
                 return this;
             },
             addChild: function(view) {
+                console.log(this.__children);
                 return this.addChildAt(view, this.__children.length);
             },
             addChildAt: function(view, index) {

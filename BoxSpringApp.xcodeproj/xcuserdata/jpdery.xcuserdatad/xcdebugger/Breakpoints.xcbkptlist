@@ -37,22 +37,22 @@
          timestampString = "385753938.276282"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "32"
-         endingLineNumber = "32"
-         landmarkName = "-initWithContext:"
+         startingLineNumber = "105"
+         endingLineNumber = "105"
+         landmarkName = "-initWithScriptView:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "BoxSpringLib/BGBinding.m"
-         timestampString = "385753938.276282"
+         filePath = "BoxSpringLib/BSBinding.m"
+         timestampString = "385853426.280042"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "105"
-         endingLineNumber = "105"
-         landmarkName = "-initWithScriptView:"
+         startingLineNumber = "31"
+         endingLineNumber = "31"
+         landmarkName = "-initWithContext:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

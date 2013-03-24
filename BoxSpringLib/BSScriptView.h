@@ -10,9 +10,10 @@
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
-@class BGBinding;
+@class BSBinding;
+@class BSWindow;
 
-@interface BGScriptView : UIView
+@interface BSScriptView : UIView
    
 @property(nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
 @property(nonatomic, readonly) JSObjectRef jsGlobalObject;
@@ -25,9 +26,9 @@
 - (void)loadScript:(NSString*)path;
 - (void)evalScript:(NSString*)source;
 
-- (void)bind:(BGBinding*)binding;
-- (void)bind:(BGBinding*)binding toKey:(NSString*)key;
-- (void)bind:(BGBinding*)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
+- (void)bind:(BSBinding*)binding;
+- (void)bind:(BSBinding*)binding toKey:(NSString*)key;
+- (void)bind:(BSBinding*)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
 
 - (void)log:(JSValueRef)jsException;
 
