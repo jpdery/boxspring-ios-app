@@ -1373,6 +1373,9 @@
         "use strict";
         var Window = boxspring.define("boxspring.Window", {
             inherits: boxspring.View,
+            constructor: function() {
+                return Window.parent.constructor.apply(this, arguments);
+            },
             onAdd: function(view) {
                 Window.parent.onAdd.call(this, view);
                 view.__setWindow(this);
