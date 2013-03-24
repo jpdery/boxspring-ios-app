@@ -99,14 +99,23 @@
 @property (nonatomic, readonly) BGScriptView* scriptView;
 @property (nonatomic, readonly) JSContextRef jsContext;
 @property (nonatomic, readonly) JSObjectRef jsObject;
+
 @property (nonatomic, readonly) JSObjectRef jsPrototype;
+
+@property (nonatomic, readonly) JSObjectRef jsBaseObject;
+@property (nonatomic, readonly) JSObjectRef jsBasePrototype;
+@property (nonatomic, readonly) JSObjectRef jsBaseConstructor;
+
 @property (nonatomic, readonly) NSMutableArray* boundSetters;
 @property (nonatomic, readonly) NSMutableArray* boundGetters;
 @property (nonatomic, readonly) NSMutableArray* boundFunctions;
 
 - (id)initWithContext:(JSContextRef)theJSContext;
 - (id)initWithScriptView:(BGScriptView*)theScriptView;
-- (id)initWithScriptView:(BGScriptView*)theScriptView andArguments:(size_t)argc argv:(const JSValueRef[])argv forPrototype:(JSObjectRef)theJSPrototype;
+- (id)initWithScriptView:(BGScriptView*)theScriptView inherits:(JSObjectRef)jsBindingClass;
+- (id)initWithScriptView:(BGScriptView*)theScriptView inherits:(JSObjectRef)jsBindingClass argc:(size_t)argc argv:(const JSValueRef[])argv;
+
+- (JSValueRef)callJSFunction:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
 
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
 - (JSValueRef)destructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;

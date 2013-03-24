@@ -9,8 +9,8 @@
 #import "BGBinding.h"
 #import "BGView.h"
 
-@interface BGViewBinding : BGBinding {
-    BGView* view;
-}
+@interface BGViewBinding : BGBinding
+
+@property (nonatomic, retain) BGView* view;
 
 @end

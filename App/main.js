@@ -1,4 +1,3 @@
-var window = this;
 (function(modules) {
     var cache = {}, require = function(id) {
         var module = cache[id];
@@ -20,8 +19,11 @@ var window = this;
         require("q");
         require("r");
         require("s");
+        require("t");
         require("u");
         require("v");
+        require("x");
+        require("y");
         module.exports = boxspring;
     },
     "1": function(require, module, exports, global) {
@@ -581,23 +583,17 @@ var window = this;
         var array = boxspring.array;
         var string = boxspring.string;
         var object = boxspring.object;
-        if (global.__classes__ === undefined) {
-            global.__classes__ = {};
-        }
-        var classes = global.__classes__;
+        if (global.__classes__ === undefined) global.__classes__ = {};
         boxspring.define = function(name, prototype) {
-    //        if (classes[name]) {
-  //              throw new Error("Class " + name + " is already defined");
-//            }
             prototype.__kind__ = name;
             if (prototype.inherits === undefined) {
-                prototype.inherits = classes["boxspring.Object"];
+                prototype.inherits = __classes__["boxspring.Object"];
             } else if (typeof prototype.inherits === "string") {
-                prototype.inherits = classes[prototype.inherits];
+                prototype.inherits = __classes__[prototype.inherits];
             }
-            var klass = classes[name] = prime(prototype);
-            create(name, klass);
-            return klass;
+            __classes__[name] = prime(prototype);
+            assign(name, __classes__[name]);
+            return __classes__[name];
         };
         boxspring.implement = function(name, key, val) {
             var klass = classes[name];
@@ -607,7 +603,7 @@ var window = this;
             prime.implement(klass, key, val);
             return this;
         };
-        var create = function(key, val, obj) {
+        var assign = function(key, val, obj) {
             if (!obj) obj = global;
             var nodes = array.isArray(key) ? key : key.split(".");
             if (nodes.length === 1) {
@@ -615,7 +611,7 @@ var window = this;
                 return;
             }
             var node = array.shift(nodes);
-            create(nodes, val, obj[node] || (obj[node] = {}));
+            assign(nodes, val, obj[node] || (obj[node] = {}));
         };
     },
     n: function(require, module, exports, global) {
@@ -629,6 +625,10 @@ var window = this;
             __afterListeners: null,
             __beforeListeners: null,
             constructor: function() {
+                var inits = this.__propertyInits;
+                for (var i = 0, l = inits.length; i < l; i++) {
+                    inits[i].call(this);
+                }
                 return this;
             },
             destroy: function() {
@@ -673,13 +673,6 @@ var window = this;
                 }
                 return this;
             },
-            base: function(method) {
-                var parent = this.__base || this.constructor.parent;
-                this.__base = parent.constructor.parent;
-                var result = parent[method].apply(this, array.slice(arguments, 1));
-                this.__base = parent;
-                return result;
-            },
             bound: function(name) {
                 var bound = this._bound || (this._bound = {});
                 return bound[name] || (bound[name] = func.bound(this[name], this));
@@ -696,8 +689,12 @@ var window = this;
                 }
                 if (key === "mixins") {}
                 if (key === "properties") {
+                    if (!this.prototype.__propertyInits) this.prototype.__propertyInits = [];
                     var parent = this.parent;
                     object.each(value, function(descriptor, property) {
+                        this.prototype.__propertyInits.push(function() {
+                            init.call(this, property, descriptor);
+                        });
                         if (parent) {
                             var parentDescriptor = Object.getOwnPropertyDescriptor(parent.constructor.prototype, property);
                             if (parentDescriptor) {
@@ -738,6 +735,10 @@ var window = this;
                 this.prototype[key] = value;
             }
         });
+        var init = function(property, descriptor) {
+            var bind = descriptor.bind || (descriptor.bind = "__" + property);
+            if (!(bind in this)) this[bind] = lamda(descriptor.init).call(this);
+        };
         var lamda = function(value) {
             return typeof value === "function" ? value : function() {
                 return value;
@@ -772,7 +773,7 @@ var window = this;
     },
     o: function(require, module, exports, global) {
         "use strict";
-        boxspring.define("boxspring.Point", {
+        var Point = boxspring.define("boxspring.Point", {
             properties: {
                 x: {
                     init: 0
@@ -782,7 +783,7 @@ var window = this;
                 }
             },
             constructor: function(x, y) {
-                this.base("constructor");
+                Point.parent.constructor.call(this);
                 var point = arguments[0];
                 if (point instanceof boxspring.Point) {
                     x = point.x;
@@ -796,7 +797,7 @@ var window = this;
     },
     p: function(require, module, exports, global) {
         "use strict";
-        boxspring.define("boxspring.Size", {
+        var Size = boxspring.define("boxspring.Size", {
             properties: {
                 x: {
                     init: 0
@@ -806,7 +807,7 @@ var window = this;
                 }
             },
             constructor: function(x, y) {
-                this.base("constructor");
+                Size.parent.constructor.call(this);
                 var size = arguments[0];
                 if (size instanceof boxspring.Size) {
                     x = size.x;
@@ -822,7 +823,7 @@ var window = this;
         "use strict";
         var Size = boxspring.Size;
         var Point = boxspring.Point;
-        boxspring.define("boxspring.Rect", {
+        var Rect = boxspring.define("boxspring.Rect", {
             statics: {
                 union: function(r1, r2) {
                     var x1 = Math.min(r1.origin.x, r2.origin.x);
@@ -845,7 +846,7 @@ var window = this;
                 }
             },
             constructor: function(x, y, w, h) {
-                this.base("constructor");
+                Rect.parent.constructor.call(this);
                 var rect = arguments[0];
                 if (rect instanceof boxspring.Rect) {
                     x = rect.origin.x;
@@ -947,232 +948,7 @@ var window = this;
     },
     s: function(require, module, exports, global) {
         "use strict";
-        var Map = require("t");
-        var array = boxspring.array;
-        var Point = boxspring.Point;
-        var Size = boxspring.Size;
-        var Rect = boxspring.Rect;
-        var Emitter = boxspring.Emitter;
-        var buffers = new Map;
-        var redraws = new Map;
-        var instances = new Map;
-        boxspring.define("boxspring.ViewRenderer", {
-            inherits: Emitter,
-            statics: {
-                create: function(view) {
-                    var instance = instances.get(view);
-                    if (instance) {
-                        throw new Error("There is already a renderer assocaited with this view");
-                    }
-                    console.log("WAT");
-                    instance = new boxspring.ViewRenderer(view);
-                    instances.set(view, instance);
-                    return instance;
-                },
-                get: function(view) {
-                    var instance = instances.get(root(view));
-                    if (instance) return instance;
-                    return null;
-                },
-                redraw: function(view, area) {
-                    var instance = ViewRenderer.get(view);
-                    if (instance) {
-                        instance.redraw(view, area);
-                    }
-                    return this;
-                },
-                reflow: function(view) {
-                    var instance = ViewRenderer.get(view);
-                    if (instance) {
-                        instance.reflow(view);
-                    }
-                    return this;
-                },
-                free: function(view) {
-                    var buffer = buffers.get(view);
-                    if (buffer) {
-                        buffer.width = 0;
-                        bugger.height = 0;
-                    }
-                    buffers.remove(view);
-                    redraws.remove(view);
-                }
-            },
-            properties: {
-                canvas: {
-                    init: null,
-                    bind: "__canvas"
-                }
-            },
-            constructor: function(view) {
-                this.base("constructor");
-                this.__view = view;
-                this.__canvas = document.createElement("canvas");
-                this.__canvas.width = this.__view.size.x;
-                this.__canvas.height = this.__view.size.y;
-                document.body.appendChild(this.__canvas);
-                this.__context = this.__canvas.getContext("2d");
-                this.__nextFrame = null;
-            },
-            redraw: function(view, area) {
-                var a = redraws.get(view);
-                if (a) {
-                    a = Rect.union(a, area);
-                } else {
-                    a = area;
-                }
-                redraws.set(view, a);
-                if (this.__nextFrame === null) {
-                    this.__nextFrame = requestAnimationFrame(this.render.bind(this));
-                }
-                return this;
-            },
-            reflow: function(view) {
-                if (this.__nextFrame === null) {
-                    this.__nextFrame = requestAnimationFrame(this.render.bind(this));
-                }
-                return this;
-            },
-            render: function() {
-                this.__nextFrame = null;
-                if (this.__view === null) return;
-                this.__context.clearRect(0, 0, this.__view.size.x, this.__view.size.y);
-                var self = this;
-                var paint = function(view, offset) {
-                    if (view.visible === false) return;
-                    var context = null;
-                    var buffer = buffers.get(view);
-                    if (buffer === null) {
-                        buffer = document.createElement("canvas");
-                        buffer.width = view.size.x;
-                        buffer.height = view.size.y;
-                        context = buffer.getContext("2d");
-                        context.save();
-                        view.draw(context, new Rect(0, 0, view.size.x, view.size.y));
-                        context.restore();
-                        buffers.set(view, buffer);
-                        redraws.remove(view);
-                    }
-                    var area = redraws.get(view);
-                    if (area) {
-                        context = buffer.getContext("2d");
-                        context.save();
-                        context.rect(area.origin.x, area.origin.y, area.size.x, area.size.y);
-                        context.clip();
-                        view.draw(context, area);
-                        context.restore();
-                        redraws.remove(view);
-                    }
-                    var origin = new Point(offset.x + view.origin.x, offset.y + view.origin.y);
-                    self.__context.save();
-                    self.__context.globalAlpha = view.opacity;
-                    self.__context.drawImage(buffer, 0, 0, view.size.x, view.size.y, origin.x, origin.y, view.size.x, view.size.y);
-                    var children = view.children;
-                    for (var i = 0; i < children.length; i++) paint(children[i], origin);
-                    self.__context.restore();
-                };
-                paint(this.__view, new Point);
-                return this;
-            }
-        });
-        var root = function(view) {
-            while (view.parent) view = view.parent;
-            return view;
-        };
-    },
-    t: function(require, module, exports, global) {
-        "use strict";
-        var prime = require("5"), array = require("3");
-        var Map = prime({
-            constructor: function() {
-                if (!this || this.constructor !== Map) return new Map;
-                this.length = 0;
-                this._values = [];
-                this._keys = [];
-            },
-            set: function(key, value) {
-                var index = array.indexOf(this._keys, key);
-                if (index === -1) {
-                    this._keys.push(key);
-                    this._values.push(value);
-                    this.length++;
-                } else {
-                    this._values[index] = value;
-                }
-                return this;
-            },
-            get: function(key) {
-                var index = array.indexOf(this._keys, key);
-                return index === -1 ? null : this._values[index];
-            },
-            count: function() {
-                return this.length;
-            },
-            each: function(method, context) {
-                for (var i = 0, l = this.length; i < l; i++) {
-                    if (method.call(context, this._values[i], this._keys[i], this) === false) break;
-                }
-                return this;
-            },
-            backwards: function(method, context) {
-                for (var i = this.length - 1; i >= 0; i--) {
-                    if (method.call(context, this._values[i], this._keys[i], this) === false) break;
-                }
-                return this;
-            },
-            map: function(method, context) {
-                var results = new Map;
-                this.each(function(value, key) {
-                    results.set(key, method.call(context, value, key, this));
-                }, this);
-                return results;
-            },
-            filter: function(method, context) {
-                var results = new Map;
-                this.each(function(value, key) {
-                    if (method.call(context, value, key, this)) results.set(key, value);
-                }, this);
-                return results;
-            },
-            every: function(method, context) {
-                var every = true;
-                this.each(function(value, key) {
-                    if (!method.call(context, value, key, this)) return every = false;
-                }, this);
-                return every;
-            },
-            some: function(method, context) {
-                var some = false;
-                this.each(function(value, key) {
-                    if (method.call(context, value, key, this)) return !(some = true);
-                }, this);
-                return some;
-            },
-            index: function(value) {
-                var index = array.indexOf(this._values, value);
-                return index > -1 ? this._keys[index] : null;
-            },
-            remove: function(key) {
-                var index = array.indexOf(this._keys, key);
-                if (index !== -1) {
-                    this._keys.splice(index, 1);
-                    this.length--;
-                    return this._values.splice(index, 1)[0];
-                }
-                return null;
-            },
-            keys: function() {
-                return this._keys.slice();
-            },
-            values: function() {
-                return this._values.slice();
-            }
-        });
-        module.exports = Map;
-    },
-    u: function(require, module, exports, global) {
-        "use strict";
-        boxspring.define("boxspring.ViewStyle", {
+        var ViewStyle = boxspring.define("boxspring.ViewStyle", {
             properties: {
                 view: {
                     writable: false,
@@ -1201,7 +977,7 @@ var window = this;
                 backgroundRepeat: {}
             },
             constructor: function(view) {
-                this.base("constructor");
+                ViewStyle.parent.constructor.call(this);
                 this.__view = view;
                 return this;
             },
@@ -1231,7 +1007,7 @@ var window = this;
             }
         });
     },
-    v: function(require, module, exports, global) {
+    t: function(require, module, exports, global) {
         "use strict";
         var array = boxspring.array;
         var Point = boxspring.Point;
@@ -1239,8 +1015,7 @@ var window = this;
         var Rect = boxspring.Rect;
         var Emitter = boxspring.Emitter;
         var ViewStyle = boxspring.ViewStyle;
-        var ViewRenderer = boxspring.ViewRenderer;
-        boxspring.define("boxspring.View", {
+        var View = boxspring.define("boxspring.View", {
             inherits: Emitter,
             properties: {
                 name: {
@@ -1285,6 +1060,14 @@ var window = this;
                         this.reflow();
                     }
                 },
+                contentOffset: {
+                    init: function() {
+                        return new Point(0, 0);
+                    },
+                    onChange: function() {
+                        this.reflow();
+                    }
+                },
                 visible: {
                     init: true,
                     onChange: function(newVisible, oldVisible) {
@@ -1321,10 +1104,8 @@ var window = this;
                     }
                 }
             },
-            constructor: function(x, y, w, h) {
-            
-                console.log('Calling constructor!!')
-            
+            constructor: function(w, h, x, y) {
+                View.parent.constructor.call(this);
                 var rect = arguments[0];
                 if (rect instanceof Rect) {
                     x = rect.origin.x;
@@ -1332,10 +1113,10 @@ var window = this;
                     w = rect.size.x;
                     h = rect.size.y;
                 }
-                this.origin.x = x || 0;
-                this.origin.y = y || 0;
-                this.size.x = w || 0;
-                this.size.y = h || 0;
+                this.origin.x = x;
+                this.origin.y = y;
+                this.size.x = w;
+                this.size.y = h;
                 this.style = new ViewStyle(this);
                 this.on("add", this.bound("onAdd"));
                 this.on("remove", this.bound("onRemove"));
@@ -1348,6 +1129,12 @@ var window = this;
                 this.on("touchmove", this.bound("onTouchMove"));
                 this.on("touchend", this.bound("onTouchEnd"));
                 return this;
+            },
+            marde: function() {
+                console.log("Called marde");
+                for (var i = 0; i < arguments.length; i++) {
+                    console.log(arguments[i]);
+                }
             },
             destroy: function() {
                 this.removeFromParent();
@@ -1362,7 +1149,7 @@ var window = this;
                 this.off("touchmove", this.bound("onTouchMove"));
                 this.off("touchend", this.bound("onTouchEnd"));
                 this.removeListeners();
-                ViewRenderer.free(this);
+                Renderer.free(this);
                 return this.base("destroy");
             },
             moveTo: function(x, y) {
@@ -1465,6 +1252,13 @@ var window = this;
                 }
                 return null;
             },
+            cascade: function(fn) {
+                if (fn) {
+                    fn.call(this, this);
+                }
+                array.invoke(this.__children, "cascade", fn);
+                return this;
+            },
             hits: function(x, y) {
                 var point = arguments[0];
                 if (point instanceof Point) {
@@ -1482,11 +1276,11 @@ var window = this;
                 return this;
             },
             redraw: function(area) {
-                ViewRenderer.redraw(this, area || new Rect(0, 0, this.size.x, this.size.y));
+                boxspring.Renderer.redraw(this, area || new Rect(0, 0, this.size.x, this.size.y));
                 return this;
             },
             reflow: function() {
-                ViewRenderer.reflow(this);
+                boxspring.Renderer.reflow(this);
                 return this;
             },
             onAdd: function(view) {},
@@ -1571,34 +1365,286 @@ var window = this;
                 array.invoke(this.__children, "emit", "removefromwindow", window);
             }
         });
+    },
+    u: function(require, module, exports, global) {
+        "use strict";
+        var Window = boxspring.define("boxspring.Window", {
+            inherits: boxspring.View,
+            onAdd: function(view) {
+                Window.parent.onAdd.call(this, view);
+                view.__setWindow(this);
+            },
+            onRemove: function(view) {
+                Window.parent.onRemove.call(this, view);
+                view.__setWindow(null);
+            }
+        });
+    },
+    v: function(require, module, exports, global) {
+        "use strict";
+        var array = boxspring.array;
+        var Point = boxspring.Point;
+        var Size = boxspring.Size;
+        var Rect = boxspring.Rect;
+        var Emitter = boxspring.Emitter;
+        var Map = require("w");
+        var buffers = new Map;
+        var redraws = new Map;
+        var instances = new Map;
+        var Renderer = boxspring.define("boxspring.Renderer", {
+            inherits: Emitter,
+            statics: {
+                redraw: function(view, area) {
+                    var instance = instances.get(view instanceof boxspring.Window ? view : view.window);
+                    if (instance) {
+                        instance.redraw(view, area);
+                    }
+                    return this;
+                },
+                reflow: function(view) {
+                    var instance = instances.get(view instanceof boxspring.Window ? view : view.window);
+                    if (instance) {
+                        instance.reflow(view);
+                    }
+                    return this;
+                },
+                free: function(view) {
+                    var buffer = buffers.get(view);
+                    if (buffer) {
+                        buffer.width = 0;
+                        buffer.height = 0;
+                    }
+                    buffers.remove(view);
+                    redraws.remove(view);
+                }
+            },
+            properties: {
+                canvas: {
+                    init: null
+                }
+            },
+            __window: null,
+            __canvas: null,
+            __context: null,
+            constructor: function(window) {
+                if (instances.get(window)) {
+                    throw new Error("A renderer is already defined for this window");
+                }
+                instances.set(window, this);
+                Renderer.parent.constructor.call(this);
+                this.__window = window;
+                this.__canvas = document.createElement("canvas");
+                this.__canvas.width = window.size.x;
+                this.__canvas.height = window.size.y;
+                document.body.appendChild(this.__canvas);
+                this.__context = this.__canvas.getContext("2d");
+                this.__nextFrame = null;
+            },
+            redraw: function(view, area) {
+                var a = redraws.get(view);
+                if (a) {
+                    a = Rect.union(a, area);
+                } else {
+                    a = area;
+                }
+                redraws.set(view, a);
+                if (this.__nextFrame === null) {
+                    this.__nextFrame = requestAnimationFrame(this.render.bind(this));
+                }
+                return this;
+            },
+            reflow: function(view) {
+                if (this.__nextFrame === null) {
+                    this.__nextFrame = requestAnimationFrame(this.render.bind(this));
+                }
+                return this;
+            },
+            render: function() {
+                this.__nextFrame = null;
+                if (this.__window === null) return;
+                this.__context.clearRect(0, 0, this.__window.size.x, this.__window.size.y);
+                var self = this;
+                var paint = function(view, offset) {
+                    if (view.visible === false) return;
+                    var context = null;
+                    var buffer = buffers.get(view);
+                    if (buffer === null) {
+                        buffer = document.createElement("canvas");
+                        buffer.width = view.size.x;
+                        buffer.height = view.size.y;
+                        context = buffer.getContext("2d");
+                        context.save();
+                        view.draw(context, new Rect(0, 0, view.size.x, view.size.y));
+                        context.restore();
+                        buffers.set(view, buffer);
+                        redraws.remove(view);
+                    }
+                    var area = redraws.get(view);
+                    if (area) {
+                        context = buffer.getContext("2d");
+                        context.save();
+                        context.rect(area.origin.x, area.origin.y, area.size.x, area.size.y);
+                        context.clip();
+                        view.draw(context, area);
+                        context.restore();
+                        redraws.remove(view);
+                    }
+                    var origin = new Point(offset.x + view.origin.x, offset.y + view.origin.y);
+                    self.__context.save();
+                    self.__context.globalAlpha = view.opacity;
+                    self.__context.drawImage(buffer, 0, 0, view.size.x, view.size.y, origin.x, origin.y, view.size.x, view.size.y);
+                    var children = view.children;
+                    for (var i = 0; i < children.length; i++) paint(children[i], origin);
+                    self.__context.restore();
+                };
+                paint(this.__window, new Point);
+                return this;
+            }
+        });
+    },
+    w: function(require, module, exports, global) {
+        "use strict";
+        var prime = require("5"), array = require("3");
+        var Map = prime({
+            constructor: function() {
+                if (!this || this.constructor !== Map) return new Map;
+                this.length = 0;
+                this._values = [];
+                this._keys = [];
+            },
+            set: function(key, value) {
+                var index = array.indexOf(this._keys, key);
+                if (index === -1) {
+                    this._keys.push(key);
+                    this._values.push(value);
+                    this.length++;
+                } else {
+                    this._values[index] = value;
+                }
+                return this;
+            },
+            get: function(key) {
+                var index = array.indexOf(this._keys, key);
+                return index === -1 ? null : this._values[index];
+            },
+            count: function() {
+                return this.length;
+            },
+            each: function(method, context) {
+                for (var i = 0, l = this.length; i < l; i++) {
+                    if (method.call(context, this._values[i], this._keys[i], this) === false) break;
+                }
+                return this;
+            },
+            backwards: function(method, context) {
+                for (var i = this.length - 1; i >= 0; i--) {
+                    if (method.call(context, this._values[i], this._keys[i], this) === false) break;
+                }
+                return this;
+            },
+            map: function(method, context) {
+                var results = new Map;
+                this.each(function(value, key) {
+                    results.set(key, method.call(context, value, key, this));
+                }, this);
+                return results;
+            },
+            filter: function(method, context) {
+                var results = new Map;
+                this.each(function(value, key) {
+                    if (method.call(context, value, key, this)) results.set(key, value);
+                }, this);
+                return results;
+            },
+            every: function(method, context) {
+                var every = true;
+                this.each(function(value, key) {
+                    if (!method.call(context, value, key, this)) return every = false;
+                }, this);
+                return every;
+            },
+            some: function(method, context) {
+                var some = false;
+                this.each(function(value, key) {
+                    if (method.call(context, value, key, this)) return !(some = true);
+                }, this);
+                return some;
+            },
+            index: function(value) {
+                var index = array.indexOf(this._values, value);
+                return index > -1 ? this._keys[index] : null;
+            },
+            remove: function(key) {
+                var index = array.indexOf(this._keys, key);
+                if (index !== -1) {
+                    this._keys.splice(index, 1);
+                    this.length--;
+                    return this._values.splice(index, 1)[0];
+                }
+                return null;
+            },
+            keys: function() {
+                return this._keys.slice();
+            },
+            values: function() {
+                return this._values.slice();
+            }
+        });
+        module.exports = Map;
+    },
+    x: function(require, module, exports, global) {
+        "use strict";
+        var Emitter = boxspring.Emitter;
+        var ViewController = boxspring.define("boxspring.ViewController", {
+            inherits: Emitter,
+            properties: {
+                view: {
+                    init: null
+                }
+            },
+            constructor: function() {
+                ViewController.parent.constructor.call(this);
+                this.loadView();
+                this.view.insertResponder(this);
+                this.on("touchcancel", this.bound("onTouchCancel"));
+                this.on("touchstart", this.bound("onTouchStart"));
+                this.on("touchmove", this.bound("onTouchMove"));
+                this.on("touchend", this.bound("onTouchEnd"));
+            },
+            destroy: function() {
+                this.off("touchcancel", this.bound("onTouchCancel"));
+                this.off("touchstart", this.bound("onTouchStart"));
+                this.off("touchmove", this.bound("onTouchMove"));
+                this.off("touchend", this.bound("onTouchEnd"));
+            },
+            loadView: function() {
+                this.view = new View;
+            },
+            onTouchCancel: function() {},
+            onTouchStart: function() {},
+            onTouchMove: function() {},
+            onTouchEnd: function() {}
+        });
+    },
+    y: function(require, module, exports, global) {
+        "use strict";
+        var Renderer = boxspring.Renderer;
+        var Window = boxspring.Window;
+        var ApplicationController = boxspring.define("boxspring.ApplicationController", {
+            inherits: "boxspring.ViewController",
+            renderer: null,
+            constructor: function(size) {
+                ApplicationController.parent.constructor.call(this);
+                return this;
+            },
+            loadView: function() {
+                this.view = new Window(320, 480);
+                if (global.document) this.renderer = new Renderer(this.view);
+            },
+            __onTouchCancel: function(e) {},
+            __onTouchStart: function(e) {},
+            __onTouchMove: function(e) {},
+            __onTouchEnd: function(e) {}
+        });
     }
 });
-
-
-var View = __classes__['boxspring.View'];
-
-console.log('View Prototype');
-console.log(Object.keys(View.prototype));
-
-console.log('View instance')
-var view = new View(10, 10, 50, 50);
-console.log(Object.keys(view));
-console.log(view);
-view.draw();
-
-console.draw();
-//console.log(view);
-//view.foo = "BAR";
-//console.log(view.opacity);
-//view.draw();
-//console.log(view.size.x);
-//
-////view.wat = "DSA"
-////var wat = view.wat;
-//console.log('View foo ' + view.foo);
-//console.log('View opacity ' + view.opacity);
-//console.log(view);
-//view.draw();
-
-
-//console.log(Point.PATATE);

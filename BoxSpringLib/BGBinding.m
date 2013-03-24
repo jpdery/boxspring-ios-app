@@ -17,6 +17,11 @@
 @synthesize jsContext;
 @synthesize jsObject;
 @synthesize jsPrototype;
+
+@synthesize jsBaseObject;
+@synthesize jsBasePrototype;
+@synthesize jsBaseConstructor;
+
 @synthesize boundSetters;
 @synthesize boundGetters;
 @synthesize boundFunctions;
@@ -105,28 +110,43 @@ BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
     return self;
 }
 
-- (id)initWithScriptView:(BGScriptView*)theScriptView andArguments:(size_t)argc argv:(const JSValueRef[])argv forPrototype:(JSObjectRef)theJSPrototype
+- (id)initWithScriptView:(BGScriptView*)theScriptView inherits:(JSObjectRef)jsPrototypeObject
 {
     self = [self initWithScriptView:theScriptView];
     if (self) {
     
-        jsPrototype = theJSPrototype;
+  //      jsBaseObject = jsBindingClass;
+//      jsBasePrototype = (JSObjectRef) JSObjectGetProperty(self.jsContext, jsBaseObject, JSStringCreateWithUTF8CString("prototype"), NULL);
+        jsBasePrototype = jsPrototypeObject;
+        jsBaseConstructor = (JSObjectRef) JSObjectGetProperty(self.jsContext, jsPrototypeObject , JSStringCreateWithUTF8CString("constructor"), NULL);
         
         JSObjectSetPrototype(
             self.jsContext,
             self.jsObject,
-            JSObjectCallAsConstructor(
-                self.jsContext,
-                jsPrototype,
-                argc,
-                argv,
-                NULL
-            )
+            self.jsBasePrototype
+        );
+    }
+        
+    return self;
+}
+
+- (id)initWithScriptView:(BGScriptView*)theScriptView inherits:(JSObjectRef)jsBindingClass argc:(size_t)argc argv:(const JSValueRef[])argv
+{
+    self = [self initWithScriptView:theScriptView inherits:jsBindingClass];
+    if (self) {
+        
+        JSObjectCallAsFunction(
+            self.jsContext,
+            self.jsBaseConstructor,
+            self.jsObject,
+            argc,
+            argv,
+            NULL
         );
         
         [self constructor:theScriptView.jsGlobalContext argc:argc argv:argv];
     }
-        
+
     return self;
 }
 
@@ -144,6 +164,15 @@ BG_DEFINE_BOUND_FUNCTION(destroy, destroy)
 
 - (JSValueRef)destructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    return NULL;
+}
+
+- (JSValueRef)callJSFunction:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
+{
+    JSObjectRef jsFunction = (JSObjectRef) JSObjectGetProperty(self.jsContext, self.jsObject, [name jsStringValue], NULL);
+    if (jsFunction) {
+       return JSObjectCallAsFunction(self.jsContext, jsFunction, self.jsObject, argc, argv, NULL);
+    }
     return NULL;
 }
 
