@@ -15,7 +15,7 @@
 
 @synthesize scriptView;
 @synthesize jsContext;
-@synthesize jsObject;
+@synthesize jsBinding;
 @synthesize jsParentObject;
 @synthesize jsParentPrototype;
 @synthesize jsParentConstructor;
@@ -90,7 +90,7 @@ BS_DEFINE_BOUND_FUNCTION(destroy, destroy)
         // jsClassDef.finalize = EJBindingBaseFinalize;
         JSClassRef jsBindingClass = JSClassCreate(&jsBindingClassDef);
 
-        jsObject = JSObjectMake(jsContext, jsBindingClass, self);
+        jsBinding = JSObjectMake(jsContext, jsBindingClass, self);
         
         free(jsValues);
         free(jsFunctions);        
@@ -119,7 +119,7 @@ BS_DEFINE_BOUND_FUNCTION(destroy, destroy)
         
         JSObjectSetPrototype(
             self.jsContext,
-            self.jsObject,
+            self.jsBinding,
             jsParentPrototype
         );
     }
@@ -143,9 +143,41 @@ BS_DEFINE_BOUND_FUNCTION(destroy, destroy)
     [super dealloc];
 }
 
+- (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
+{
+    return [self call:name argc:argc argv:argv ofObject:self.jsParentPrototype];
+}
+
+- (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv ofObject:(JSObjectRef)jsObject
+{
+    JSObjectRef jsFunction = (JSObjectRef) JSObjectGetProperty(self.jsContext, jsObject, [name jsStringValue], NULL);
+    if (JSObjectIsFunction(jsContext, jsFunction)) return JSObjectCallAsFunction(self.jsContext, jsFunction, self.jsBinding, argc, argv, NULL);
+    return self.scriptView.jsUndefinedValue;
+}
+
+- (void)setProperty:(NSString*)name value:(JSValueRef)jsValue
+{
+
+}
+
+- (void)setProperty:(NSString*)name value:(JSValueRef)jsValue ofObject:(JSObjectRef)jsObject
+{
+
+}
+
+- (JSValueRef)getProperty:(NSString*)name
+{
+    return NULL;
+}
+
+- (JSValueRef)getProperty:(NSString*)name ofObject:(JSObjectRef)jsObject
+{
+    return NULL;
+}
+
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    return [self parent:@"constructor" argc:argc argv:argv];
+    return [self call:@"constructor" argc:argc argv:argv];
 }
 
 - (JSValueRef)destructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
@@ -153,22 +185,6 @@ BS_DEFINE_BOUND_FUNCTION(destroy, destroy)
     return NULL;
 }
 
-- (JSValueRef)invoke:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
-{
-    JSObjectRef jsFunction = (JSObjectRef) JSObjectGetProperty(self.jsContext, self.jsObject, [name jsStringValue], NULL);
-    if (jsFunction) {
-       return JSObjectCallAsFunction(self.jsContext, jsFunction, self.jsObject, argc, argv, NULL);
-    }
-    return NULL;
-}
 
-- (JSValueRef)parent:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
-{
-    JSObjectRef jsFunction = (JSObjectRef) JSObjectGetProperty(self.jsContext, self.jsParentPrototype, [name jsStringValue], NULL);
-    if (jsFunction) {
-       return JSObjectCallAsFunction(self.jsContext, jsFunction, self.jsObject, argc, argv, NULL);
-    }
-    return NULL;
-}
 
 @end

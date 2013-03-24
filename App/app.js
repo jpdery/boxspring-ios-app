@@ -24,6 +24,7 @@ var w = new boxspring.Window(320, 460);
 //    if (k.indexOf('_') === 0) console.log('Key:' + k);
 //}
 
+console.log(w instanceof boxspring.Window);
 
 var view = new boxspring.View(100, 100, 50, 50);
 w.addChild(view);

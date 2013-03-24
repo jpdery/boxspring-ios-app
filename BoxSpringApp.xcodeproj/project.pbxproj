@@ -11,6 +11,7 @@
 		C735A79E16F8A735008A9CC2 /* BSWindowBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C735A79D16F8A735008A9CC2 /* BSWindowBinding.m */; };
 		C735A7A416F8FBB0008A9CC2 /* NSData+JavaScriptCore.m in Sources */ = {isa = PBXBuildFile; fileRef = C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */; };
 		C762867316FF76CB00A1B1C4 /* BSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = C762867216FF76CB00A1B1C4 /* BSWindow.m */; };
+		C762867616FFAE6F00A1B1C4 /* Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = C762867516FFAE6F00A1B1C4 /* Geometry.m */; };
 		C77EFBD916FA7CCF008BF1B8 /* BSView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77EFBD816FA7CCF008BF1B8 /* BSView.m */; };
 		C77EFBDC16FA843E008BF1B8 /* BSContextBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C77EFBDB16FA843E008BF1B8 /* BSContextBinding.m */; };
 		C783B7C216E9595500D393B3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7C116E9595500D393B3 /* UIKit.framework */; };
@@ -43,6 +44,8 @@
 		C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+JavaScriptCore.m"; path = "BoxSpringLib/NSData+JavaScriptCore.m"; sourceTree = "<group>"; };
 		C762867116FF76CB00A1B1C4 /* BSWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSWindow.h; sourceTree = "<group>"; };
 		C762867216FF76CB00A1B1C4 /* BSWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSWindow.m; sourceTree = "<group>"; };
+		C762867416FFAE6F00A1B1C4 /* Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geometry.h; sourceTree = "<group>"; };
+		C762867516FFAE6F00A1B1C4 /* Geometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Geometry.m; sourceTree = "<group>"; };
 		C77EFBD716FA7CCF008BF1B8 /* BSView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSView.h; sourceTree = "<group>"; };
 		C77EFBD816FA7CCF008BF1B8 /* BSView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSView.m; sourceTree = "<group>"; };
 		C77EFBDA16FA843E008BF1B8 /* BSContextBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSContextBinding.h; sourceTree = "<group>"; };
@@ -228,6 +231,8 @@
 				C783B80716ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m */,
 				C735A7A216F8FBB0008A9CC2 /* NSData+JavaScriptCore.h */,
 				C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */,
+				C762867416FFAE6F00A1B1C4 /* Geometry.h */,
+				C762867516FFAE6F00A1B1C4 /* Geometry.m */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -312,6 +317,7 @@
 				C77EFBD916FA7CCF008BF1B8 /* BSView.m in Sources */,
 				C77EFBDC16FA843E008BF1B8 /* BSContextBinding.m in Sources */,
 				C762867316FF76CB00A1B1C4 /* BSWindow.m in Sources */,
+				C762867616FFAE6F00A1B1C4 /* Geometry.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

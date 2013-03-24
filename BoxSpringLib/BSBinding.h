@@ -102,7 +102,7 @@
 
 @property (nonatomic, readonly) BSScriptView* scriptView;
 @property (nonatomic, readonly) JSContextRef jsContext;
-@property (nonatomic, readonly) JSObjectRef jsObject;
+@property (nonatomic, readonly) JSObjectRef jsBinding;
 @property (nonatomic, readonly) JSObjectRef jsParentObject;
 @property (nonatomic, readonly) JSObjectRef jsParentPrototype;
 @property (nonatomic, readonly) JSObjectRef jsParentConstructor;
@@ -112,8 +112,12 @@
 - (id)initWithScriptView:(BSScriptView*)theScriptView inherits:(JSObjectRef)jsParent;
 - (id)initWithScriptView:(BSScriptView*)theScriptView inherits:(JSObjectRef)jsParent argc:(size_t)argc argv:(const JSValueRef[])argv;
 
-- (JSValueRef)invoke:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
-- (JSValueRef)parent:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
+- (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
+- (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv ofObject:(JSObjectRef)jsObject;
+- (void)setProperty:(NSString*)name value:(JSValueRef)jsValue;
+- (void)setProperty:(NSString*)name value:(JSValueRef)jsValue ofObject:(JSObjectRef)jsObject;
+- (JSValueRef)getProperty:(NSString*)name;
+- (JSValueRef)getProperty:(NSString*)name ofObject:(JSObjectRef)jsObject;
 
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
 - (JSValueRef)destructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;

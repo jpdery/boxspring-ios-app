@@ -78,7 +78,7 @@ JSObjectRef BSBindingCallAsConstructor(JSContextRef jsContext, JSObjectRef jsObj
     }
 
     [data->view bind:binding];
-    JSObjectRef jsBoundObject = binding.jsObject;
+    JSObjectRef jsBoundObject = binding.jsBinding;
     [binding release];
     
     return jsBoundObject;
@@ -248,7 +248,7 @@ JSValueRef BSBindingManagerGetClass(JSContextRef jsContext, JSObjectRef jsObject
 
 - (void)bind:(BSBinding *)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject
 {
-    JSObjectSetProperty(self.jsGlobalContext, jsObject, [key jsStringValue], [binding jsObject], kJSClassAttributeNone, NULL);
+    JSObjectSetProperty(self.jsGlobalContext, jsObject, [key jsStringValue], [binding jsBinding], kJSClassAttributeNone, NULL);
     [self bind:binding];
 }
 

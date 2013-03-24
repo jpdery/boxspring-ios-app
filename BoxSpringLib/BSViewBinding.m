@@ -8,6 +8,7 @@
 
 #import "BSViewBinding.h"
 #import "BSView.h"
+#import "Geometry.h"
 
 @implementation BSViewBinding
 
@@ -29,8 +30,6 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
  */
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    NSLog(@"CAlling BSViewBinding constructor");
-
     double w = 0;
     double h = 0;
     double x = 0;
@@ -64,7 +63,7 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
         insertSubview:childViewBinding.view
         atIndex:index];
     
-    return [self parent:@"addChildAt" argc:argc argv:argv];
+    return [self call:@"addChildAt" argc:argc argv:argv];
 }
 
 /**
@@ -72,19 +71,29 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
  */
 - (JSValueRef)draw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    NSLog(@"ViewBindingDraw");
-
-    return [self parent:@"draw" argc:argc argv:argv];
+    return [self call:@"draw" argc:argc argv:argv];
 }
 
-
+/**
+ * Bound Method
+ */
 - (JSValueRef)reflow:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
     return NULL;
 }
 
+/**
+ * Bound Method
+ */
 - (JSValueRef)redraw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    CGRect rect;
+    if (argc == 1) {
+        rect = CGRectFromJSObject(jsContext, (JSObjectRef) argv[0]);
+    }
+
+    [self.view setNeedsDisplayInRect:rect];
+
     return NULL;
 }
 @end
