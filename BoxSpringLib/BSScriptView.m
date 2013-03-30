@@ -37,24 +37,6 @@ typedef struct {
     BSScriptView* view;
 } JSConstructorData;
 
-void JSCopyProperties(JSContextRef jsContext, JSObjectRef jsObject, JSObjectRef jsObjectFrom)
-{
-    JSPropertyNameArrayRef jsProperties = JSObjectCopyPropertyNames(jsContext, jsObjectFrom);
-        
-    size_t count = JSPropertyNameArrayGetCount(jsProperties);
-    
-    for (int i = 0; i < count; i++) {
-        JSStringRef jsProperty = JSPropertyNameArrayGetNameAtIndex(jsProperties, i);
-        JSObjectSetProperty(
-            jsContext,
-            jsObject,
-            jsProperty,
-            JSObjectGetProperty(jsContext, jsObjectFrom, jsProperty, NULL),
-            kJSPropertyAttributeNone,
-            NULL
-        );
-    }
-}
 
 JSObjectRef BSBindingCallAsConstructor(JSContextRef jsContext, JSObjectRef jsObject, size_t argc, const JSValueRef argv[], JSValueRef* exception)
 {
@@ -84,6 +66,12 @@ JSObjectRef BSBindingCallAsConstructor(JSContextRef jsContext, JSObjectRef jsObj
     return jsBoundObject;
 }
 
+JSValueRef BSBindingCallAsFunction(JSContextRef jsContext, JSObjectRef jsFunction, JSObjectRef jsThis, size_t argc, const JSValueRef argv[], JSValueRef* exception)
+{
+    NSLog(@"Called as function");
+    return NULL;
+}
+
 void BSBindingFinalize(JSObjectRef object)
 {
     NSLog(@"binding fini");
@@ -101,6 +89,7 @@ bool BSBindingManagerSetClass(JSContextRef jsContext, JSObjectRef jsObject, JSSt
         JSClassDefinition jsBoundConstructorClassDef = kJSClassDefinitionEmpty;
         jsBoundConstructorClassDef.className = [[class stringByAppendingString:@"Constructor"] UTF8String];
         jsBoundConstructorClassDef.callAsConstructor = BSBindingCallAsConstructor;
+        jsBoundConstructorClassDef.callAsFunction = BSBindingCallAsFunction;
         jsBoundConstructorClassDef.finalize = BSBindingFinalize;
         JSClassRef jsBoundConstructorClass = JSClassCreate(&jsBoundConstructorClassDef);
 
@@ -111,7 +100,7 @@ bool BSBindingManagerSetClass(JSContextRef jsContext, JSObjectRef jsObject, JSSt
         JSObjectRef jsBoundConstructor = JSObjectMake(jsContext, jsBoundConstructorClass, data);
         JSCopyProperties(jsContext, jsBoundConstructor, (JSObjectRef) jsVal);
         [jsBoundClasses setObject:[NSData dataWithJSObjectRef:jsBoundConstructor] forKey:name];
-        
+       
         return jsBoundConstructor;
     }
     
@@ -123,6 +112,29 @@ JSValueRef BSBindingManagerGetClass(JSContextRef jsContext, JSObjectRef jsObject
     NSString* name = [NSString stringWithJSString:jsKey];
     JSObjectRef binding = [[jsBoundClasses objectForKey:name] jsObject];
     return binding ? binding : [[jsPrimeClasses objectForKey:name] jsObject];
+}
+
+JSValueRef __log__(JSContextRef ctx, JSObjectRef function, JSObjectRef thisObject, size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception)
+{
+    NSLog(@"Log");
+    return NULL;
+}
+
+
+void testFinalized(JSContextRef jsContext, JSObjectRef jsObject)
+{
+
+}
+
+void testInitialized(JSContextRef jsContext, JSObjectRef jsObject)
+{
+    NSLog(@"initialized");
+//    return JSValueMakeUndefined(jsContext);
+}
+
+JSObjectRef testCallAsConstructor(JSContextRef jsContext, JSObjectRef jsObject, size_t argc, const JSValueRef argv[], JSValueRef* exception)
+{
+    return (JSObjectRef)JSValueMakeUndefined(jsContext);
 }
 
 - (id)initWithFrame:(CGRect)frame
@@ -174,6 +186,40 @@ JSValueRef BSBindingManagerGetClass(JSContextRef jsContext, JSObjectRef jsObject
         BSConsoleBinding* consoleBinding = [[BSConsoleBinding alloc] initWithScriptView:self];
         [self bind:consoleBinding toKey:@"console"];
         [consoleBinding release];
+        
+        //
+        // TESTS
+        //
+        /*
+        JSStaticFunction* jsFunctions = calloc(1 + 1, sizeof(JSStaticFunction));
+        jsFunctions[0].name = [@"log" UTF8String];
+        jsFunctions[0].attributes = kJSClassAttributeNone;
+        jsFunctions[0].callAsFunction = __log__;
+
+        JSClassDefinition jsBindingClassDef = kJSClassDefinitionEmpty;
+        jsBindingClassDef.className = [@"TestClass" UTF8String];
+        jsBindingClassDef.staticFunctions = jsFunctions;
+        jsBindingClassDef.initialize = testInitialized;
+        JSClassRef jsBindingClass = JSClassCreate(&jsBindingClassDef);
+        
+        JSObjectRef jsObject = JSObjectMake(self.jsGlobalContext, jsBindingClass, self);
+        
+        */
+        
+        
+        JSClassDefinition jsClassDef = kJSClassDefinitionEmpty;
+        jsClassDef.className = [@"TestClass" UTF8String];
+        JSClassRef jsClass = JSClassCreate(&jsClassDef);
+        
+//        JSObjectRef jsObject = JSObjectMakeConstructor(self.jsGlobalContext, jsClass, testCallAsConstructor);
+  
+        JSObjectRef jsObject = JSObjectMakeFunction(self.jsGlobalContext, JSStringCreateWithUTF8CString("thafunc"), 0, NULL, JSStringCreateWithUTF8CString(""), NULL, 0, NULL);
+  
+        
+        JSObjectSetProperty(self.jsGlobalContext, self.jsGlobalObject, JSStringCreateWithUTF8CString("testigne"), jsObject, kJSClassAttributeNone, NULL);
+       
+      
+       //JSLogProps(self.jsGlobalContext, jsObject);
     }
     
     return self;
@@ -267,3 +313,4 @@ JSValueRef BSBindingManagerGetClass(JSContextRef jsContext, JSObjectRef jsObject
 }
 
 @end
+

@@ -33,6 +33,7 @@
 		C783B80316E97BFA00D393B3 /* NSString+JavaScriptCoreString.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80216E97BFA00D393B3 /* NSString+JavaScriptCoreString.m */; };
 		C783B80516ECEFBE00D393B3 /* App in Resources */ = {isa = PBXBuildFile; fileRef = C783B80416ECEFBE00D393B3 /* App */; };
 		C783B80816ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80716ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m */; };
+		C7A741B217074AC7001125E5 /* JavaScriptCore.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A741B117074AC7001125E5 /* JavaScriptCore.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,6 +89,8 @@
 		C783B80416ECEFBE00D393B3 /* App */ = {isa = PBXFileReference; lastKnownFileType = folder; path = App; sourceTree = "<group>"; };
 		C783B80616ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+JavaScriptCoreObject.h"; path = "BoxSpringLib/NSObject+JavaScriptCoreObject.h"; sourceTree = "<group>"; };
 		C783B80716ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+JavaScriptCoreObject.m"; path = "BoxSpringLib/NSObject+JavaScriptCoreObject.m"; sourceTree = "<group>"; };
+		C7A741B017074AC7001125E5 /* JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScriptCore.h; sourceTree = "<group>"; };
+		C7A741B117074AC7001125E5 /* JavaScriptCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaScriptCore.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -233,6 +236,8 @@
 				C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */,
 				C762867416FFAE6F00A1B1C4 /* Geometry.h */,
 				C762867516FFAE6F00A1B1C4 /* Geometry.m */,
+				C7A741B017074AC7001125E5 /* JavaScriptCore.h */,
+				C7A741B117074AC7001125E5 /* JavaScriptCore.m */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -318,6 +323,7 @@
 				C77EFBDC16FA843E008BF1B8 /* BSContextBinding.m in Sources */,
 				C762867316FF76CB00A1B1C4 /* BSWindow.m in Sources */,
 				C762867616FFAE6F00A1B1C4 /* Geometry.m in Sources */,
+				C7A741B217074AC7001125E5 /* JavaScriptCore.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
