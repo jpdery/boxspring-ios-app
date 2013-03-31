@@ -13,28 +13,31 @@
         */
 
 
-//var w = new boxspring.Window(320, 460);
+boxspring.define('boxspring.View', {
 
-////console.log(w.__children);
-////console.log(w.children);
-////console.log(w.__children);
-//
-//for (var k in w) {
-////    console.log('Key:' + k + ' : ' + w[k]);
-//    if (k.indexOf('_') === 0) console.log('Key:' + k);
-//}
+    constructor: function() {
+        console.log('JavaScript View constructor')
+    }
 
-//console.log(w instanceof boxspring.Window);
-//
-//var view = new boxspring.View(100, 100, 50, 50);
-//w.addChild(view);
-//
-//var view = new boxspring.View(200, 300, 55, 50);
-//w.addChild(view);
-//
+})
 
-var view = new boxspring.View(200, 300, 55, 50);
-//view.moveTo(10, 10);
-//view.moveTo(10, 10);
-//view.moveTo(10, 10);
+boxspring.define('boxspring.Button', {
 
+    inherits: boxspring.View,
+
+    constructor: function() {
+        boxspring.Button.parent.constructor.call(this)
+        console.log('JavaScript Button Constructor')
+    }  
+
+});
+//
+//console.log(boxspring.View.prototype.constructor === boxspring.View);
+
+//var view = new boxspring.View(300, 300);
+
+var button = new boxspring.Button(300, 300);
+
+//view.draw();
+
+//console.log('TEST');

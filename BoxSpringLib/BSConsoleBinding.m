@@ -17,7 +17,9 @@ BS_DEFINE_BOUND_FUNCTION(log, log)
 {
     NSMutableArray* args = [[NSMutableArray alloc] initWithCapacity: argc];
     for (int i = 0; i < argc; i++) {
-        [args addObject:[NSString stringWithJSValue:argv[i] fromContext:self.scriptView.jsGlobalContext]];
+        NSString* obj = [NSString stringWithJSValue:argv[i] fromContext:self.scriptView.jsGlobalContext];
+        if (obj) [args addObject:obj];
+        else [args addObject:@"JCHEPAS"];
     }
     NSString* output = [args componentsJoinedByString:@","];
     NSLog(@"JS: %@", output);

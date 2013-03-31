@@ -30,6 +30,8 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
  */
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"Native View Constructor");
+
     double w = 0;
     double h = 0;
     double x = 0;
@@ -71,6 +73,7 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
  */
 - (JSValueRef)draw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"Draw called");
     return [self call:@"draw" argc:argc argv:argv];
 }
 

@@ -10,6 +10,10 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "BSScriptView.h"
 
+void JSStoreBindingByObject(JSObjectRef jsObject, BSBinding* binding);
+BSBinding* JSRetrieveBindingByObject(JSObjectRef jsObject);
+
+
 #define _BS_CREATE_POINTER_TO(NAME) \
 	+ (void *)_ptr_to##NAME { \
 		return (void *)&NAME; \
@@ -27,7 +31,7 @@
 		JSValueRef value, \
 		JSValueRef* exception \
 	) { \
-		id instance = (id)JSObjectGetPrivate(object); \
+		id instance = (id)JSRetrieveBindingByObject(object); \
 		objc_msgSend(instance, @selector(_setter_##name:value:), ctx, value); \
 		return true; \
 	} \
@@ -45,7 +49,7 @@
 		JSStringRef propertyName, \
 		JSValueRef* exception \
 	) { \
-		id instance = (id)JSObjectGetPrivate(object); \
+		id instance = (id)JSRetrieveBindingByObject(object); \
 		return (JSValueRef)objc_msgSend(instance, @selector(_getter_##name:), ctx); \
 	} \
 	_BS_CREATE_POINTER_TO(_getter_##name)\
@@ -65,7 +69,8 @@
 		const JSValueRef argv[], \
 		JSValueRef* exception \
 	) { \
-		id instance = (id)JSObjectGetPrivate(object); \
+        NSLog(@"Attempting to call " @ #FUNCTION_NAME); \
+		id instance = (id)JSRetrieveBindingByObject(object); \
 		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(BOUND_NAME:argc:argv:), ctx, argc, argv); \
         return ret ? ret : ((BSBinding*)instance).scriptView.jsUndefinedValue; \
 	} \
@@ -96,21 +101,14 @@
 
 @interface BSBinding : NSObject
 
-@property (nonatomic, readonly) NSMutableArray* boundSetters;
-@property (nonatomic, readonly) NSMutableArray* boundGetters;
-@property (nonatomic, readonly) NSMutableArray* boundFunctions;
-
 @property (nonatomic, readonly) BSScriptView* scriptView;
+@property (nonatomic, readonly) JSObjectRef jsBoundObject;
+@property (nonatomic, readonly) JSObjectRef jsBoundPrototype;
 @property (nonatomic, readonly) JSContextRef jsContext;
-@property (nonatomic, readonly) JSObjectRef jsBinding;
-@property (nonatomic, readonly) JSObjectRef jsParentObject;
-@property (nonatomic, readonly) JSObjectRef jsParentPrototype;
-@property (nonatomic, readonly) JSObjectRef jsParentConstructor;
 
-- (id)initWithContext:(JSContextRef)theJSContext;
 - (id)initWithScriptView:(BSScriptView*)theScriptView;
-- (id)initWithScriptView:(BSScriptView*)theScriptView inherits:(JSObjectRef)jsParent;
-- (id)initWithScriptView:(BSScriptView*)theScriptView inherits:(JSObjectRef)jsParent argc:(size_t)argc argv:(const JSValueRef[])argv;
+- (id)initWithScriptView:(BSScriptView*)theScriptView andObject:(JSObjectRef)theJSBoundObject;
+- (id)initWithScriptView:(BSScriptView*)theScriptView andObject:(JSObjectRef)theJSBoundObject argc:(size_t)argc argv:(const JSValueRef[])argv;
 
 - (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
 - (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv ofObject:(JSObjectRef)jsObject;
@@ -120,6 +118,8 @@
 - (JSValueRef)getProperty:(NSString*)name ofObject:(JSObjectRef)jsObject;
 
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
-- (JSValueRef)destructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
+- (JSValueRef)destroy:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
+
++ (JSClassDefinition)jsBoundClassDefinition;
 
 @end
