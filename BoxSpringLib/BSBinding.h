@@ -18,9 +18,9 @@
 
 /**
  * Macro to define a setter binding as:
- * - (void)binding:(JSContextRef)jsContext value:(JSValueRef)jsValue
+ * - (void)BOUND_NAME:(JSContextRef)jsContext value:(JSValueRef)jsValue
  */
-#define BS_DEFINE_BOUND_SETTER(SETTER_NAME, CONTEXT_NAME, VALUE_NAME) \
+#define BS_DEFINE_BOUND_SETTER(SETTER_NAME, BOUND_NAME) \
 	static bool _setter_##SETTER_NAME( \
 		JSContextRef jsContext, \
 		JSObjectRef jsObject, \
@@ -29,33 +29,31 @@
 		JSValueRef* jsException \
 	) { \
 		BSBinding* instance = [BSBindingManager bindingAssociatedToObject:jsObject ofContext:jsContext]; \
-		objc_msgSend(instance, @selector(_setter_##SETTER_NAME:value:), jsContext, jsVal); \
+		objc_msgSend(instance, @selector(BOUND_NAME:value:), jsContext, jsVal); \
 		return true; \
 	} \
 	_BS_CREATE_POINTER_TO(_setter_##SETTER_NAME) \
-    - (void)_setter_##SETTER_NAME:(JSContextRef)CONTEXT_NAME value:(JSValueRef)VALUE_NAME
 
 /**
  * Macro to define a getter binding as:
- * - (JSValueRef)binding:(JSContextRef)jsContext
+ * - (JSValueRef)BOUND_NAME:(JSContextRef)jsContext
  */
-#define BS_DEFINE_BOUND_GETTER(GETTER_NAME, CONTEXT_NAME) \
+#define BS_DEFINE_BOUND_GETTER(GETTER_NAME, BOUND_NAME) \
 	static JSValueRef _getter_##GETTER_NAME( \
 		JSContextRef jsContext, \
 		JSObjectRef jsObject, \
 		JSStringRef jsKey, \
 		JSValueRef* jsException \
 	) { \
-		BSBinding* instance = [BSBindingManager bindingAssociatedToObject:object jsObject:jsContext]; \
-		return (JSValueRef)objc_msgSend(instance, @selector(_getter_##GETTER_NAME:), jsContext); \
+		BSBinding* instance = [BSBindingManager bindingAssociatedToObject:jsObject ofContext:jsContext]; \
+		return (JSValueRef)objc_msgSend(instance, @selector(BOUND_NAME:), jsContext); \
 	} \
 	_BS_CREATE_POINTER_TO(_getter_##GETTER_NAME)\
-    - (JSValueRef)_getter_##GETTER_NAME:(JSContextRef)CONTEXT_NAME
 
 /**
  * Macro to define a function binding as:
  * (Replace BOUND_NAME with the name of your objective-c method)
- * - (JSValueRef)BOUND_NAME:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
+ * 
  */
 #define BS_DEFINE_BOUND_FUNCTION(FUNCTION_NAME, BOUND_NAME) \
 	static JSValueRef _function_##FUNCTION_NAME( \

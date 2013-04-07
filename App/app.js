@@ -1,6 +1,4 @@
 
-console.log('TEST');
-
 var Button = boxspring.define('boxspring.Button', {
 
     inherits: boxspring.View,

@@ -72,6 +72,7 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
 - (JSValueRef)draw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
 //    return [self call:@"draw" argc:argc argv:argv];
+    return NULL;
 }
 
 /**
