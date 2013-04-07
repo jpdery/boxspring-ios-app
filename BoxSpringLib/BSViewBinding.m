@@ -7,8 +7,6 @@
 //
 
 #import "BSViewBinding.h"
-#import "BSView.h"
-#import "Geometry.h"
 
 @implementation BSViewBinding
 
@@ -30,8 +28,8 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
  */
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    NSLog(@"Native View Constructor");
-
+    JSValueRef jsThis = [super constructor:jsContext argc:argc argv:argv];
+    
     double w = 0;
     double h = 0;
     double x = 0;
@@ -43,13 +41,13 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
     }
 
     if (argc == 4) {
-        x = JSValueToNumber(jsContext, argv[0], NULL);
-        y = JSValueToNumber(jsContext, argv[1], NULL);
+        x = JSValueToNumber(jsContext, argv[2], NULL);
+        y = JSValueToNumber(jsContext, argv[3], NULL);
     }
     
     [self loadViewWithRect:CGRectMake(x, y, w, h)];
-
-    return [super constructor:jsContext argc:argc argv:argv];
+    
+    return jsThis;
 }
 
 /**
@@ -59,13 +57,13 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
 {
     int index = JSValueToNumber(jsContext, argv[1], NULL);
     
-    BSViewBinding* childViewBinding = JSObjectGetPrivate((JSObjectRef)argv[0]);
-    
+    BSViewBinding* childViewBinding = (BSViewBinding*)[BSBindingManager bindingAssociatedToObject:(JSObjectRef)argv[0] ofContext:self.jsGlobalContext];
+
     [self.view
         insertSubview:childViewBinding.view
         atIndex:index];
     
-    return [self call:@"addChildAt" argc:argc argv:argv];
+    return [self callParent:@"addChildAt" argc:argc argv:argv];
 }
 
 /**
@@ -73,8 +71,7 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
  */
 - (JSValueRef)draw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    NSLog(@"Draw called");
-    return [self call:@"draw" argc:argc argv:argv];
+//    return [self call:@"draw" argc:argc argv:argv];
 }
 
 /**
@@ -90,12 +87,12 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
  */
 - (JSValueRef)redraw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    CGRect rect;
-    if (argc == 1) {
-        rect = CGRectFromJSObject(jsContext, (JSObjectRef) argv[0]);
-    }
+//    CGRect rect;
+//    if (argc == 1) {
+//        rect = CGRectFromJSObject(jsContext, (JSObjectRef) argv[0]);
+//    }
 
-    [self.view setNeedsDisplayInRect:rect];
+//    [self.view setNeedsDisplayInRect:rect];
 
     return NULL;
 }

@@ -11,7 +11,7 @@
 		C735A79E16F8A735008A9CC2 /* BSWindowBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C735A79D16F8A735008A9CC2 /* BSWindowBinding.m */; };
 		C735A7A416F8FBB0008A9CC2 /* NSData+JavaScriptCore.m in Sources */ = {isa = PBXBuildFile; fileRef = C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */; };
 		C762867316FF76CB00A1B1C4 /* BSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = C762867216FF76CB00A1B1C4 /* BSWindow.m */; };
-		C762867616FFAE6F00A1B1C4 /* Geometry.m in Sources */ = {isa = PBXBuildFile; fileRef = C762867516FFAE6F00A1B1C4 /* Geometry.m */; };
+		C762867616FFAE6F00A1B1C4 /* Geometry+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = C762867516FFAE6F00A1B1C4 /* Geometry+Extras.m */; };
 		C77EFBD916FA7CCF008BF1B8 /* BSView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77EFBD816FA7CCF008BF1B8 /* BSView.m */; };
 		C77EFBDC16FA843E008BF1B8 /* BSContextBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C77EFBDB16FA843E008BF1B8 /* BSContextBinding.m */; };
 		C783B7C216E9595500D393B3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7C116E9595500D393B3 /* UIKit.framework */; };
@@ -30,11 +30,10 @@
 		C783B7FA16E9781200D393B3 /* BSConsoleBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7F916E9781200D393B3 /* BSConsoleBinding.m */; };
 		C783B7FC16E9784600D393B3 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7FB16E9784600D393B3 /* libicucore.dylib */; };
 		C783B7FE16E9784C00D393B3 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7FD16E9784C00D393B3 /* libstdc++.dylib */; };
-		C783B80316E97BFA00D393B3 /* NSString+JavaScriptCoreString.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80216E97BFA00D393B3 /* NSString+JavaScriptCoreString.m */; };
+		C783B80316E97BFA00D393B3 /* NSString+JavaScriptCore.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80216E97BFA00D393B3 /* NSString+JavaScriptCore.m */; };
 		C783B80516ECEFBE00D393B3 /* App in Resources */ = {isa = PBXBuildFile; fileRef = C783B80416ECEFBE00D393B3 /* App */; };
-		C783B80816ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80716ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m */; };
-		C7A741B217074AC7001125E5 /* JavaScriptCore.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A741B117074AC7001125E5 /* JavaScriptCore.m */; };
-		C7A741B517078909001125E5 /* ClassExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A741B417078909001125E5 /* ClassExtras.m */; };
+		C78CA301170DCB1D00213BA9 /* BSBindingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C78CA300170DCB1D00213BA9 /* BSBindingManager.m */; };
+		C7A741B217074AC7001125E5 /* JavaScriptCore+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,8 +45,8 @@
 		C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+JavaScriptCore.m"; path = "BoxSpringLib/NSData+JavaScriptCore.m"; sourceTree = "<group>"; };
 		C762867116FF76CB00A1B1C4 /* BSWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSWindow.h; sourceTree = "<group>"; };
 		C762867216FF76CB00A1B1C4 /* BSWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSWindow.m; sourceTree = "<group>"; };
-		C762867416FFAE6F00A1B1C4 /* Geometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Geometry.h; sourceTree = "<group>"; };
-		C762867516FFAE6F00A1B1C4 /* Geometry.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Geometry.m; sourceTree = "<group>"; };
+		C762867416FFAE6F00A1B1C4 /* Geometry+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Geometry+Extras.h"; sourceTree = "<group>"; };
+		C762867516FFAE6F00A1B1C4 /* Geometry+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Geometry+Extras.m"; sourceTree = "<group>"; };
 		C77EFBD716FA7CCF008BF1B8 /* BSView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSView.h; sourceTree = "<group>"; };
 		C77EFBD816FA7CCF008BF1B8 /* BSView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSView.m; sourceTree = "<group>"; };
 		C77EFBDA16FA843E008BF1B8 /* BSContextBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSContextBinding.h; sourceTree = "<group>"; };
@@ -85,15 +84,13 @@
 		C783B7F916E9781200D393B3 /* BSConsoleBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSConsoleBinding.m; sourceTree = "<group>"; };
 		C783B7FB16E9784600D393B3 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		C783B7FD16E9784C00D393B3 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
-		C783B80116E97BFA00D393B3 /* NSString+JavaScriptCoreString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+JavaScriptCoreString.h"; path = "BoxSpringLib/NSString+JavaScriptCoreString.h"; sourceTree = "<group>"; };
-		C783B80216E97BFA00D393B3 /* NSString+JavaScriptCoreString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+JavaScriptCoreString.m"; path = "BoxSpringLib/NSString+JavaScriptCoreString.m"; sourceTree = "<group>"; };
+		C783B80116E97BFA00D393B3 /* NSString+JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+JavaScriptCore.h"; path = "BoxSpringLib/NSString+JavaScriptCore.h"; sourceTree = "<group>"; };
+		C783B80216E97BFA00D393B3 /* NSString+JavaScriptCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+JavaScriptCore.m"; path = "BoxSpringLib/NSString+JavaScriptCore.m"; sourceTree = "<group>"; };
 		C783B80416ECEFBE00D393B3 /* App */ = {isa = PBXFileReference; lastKnownFileType = folder; path = App; sourceTree = "<group>"; };
-		C783B80616ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+JavaScriptCoreObject.h"; path = "BoxSpringLib/NSObject+JavaScriptCoreObject.h"; sourceTree = "<group>"; };
-		C783B80716ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+JavaScriptCoreObject.m"; path = "BoxSpringLib/NSObject+JavaScriptCoreObject.m"; sourceTree = "<group>"; };
-		C7A741B017074AC7001125E5 /* JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaScriptCore.h; sourceTree = "<group>"; };
-		C7A741B117074AC7001125E5 /* JavaScriptCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaScriptCore.m; sourceTree = "<group>"; };
-		C7A741B317078909001125E5 /* ClassExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassExtras.h; sourceTree = "<group>"; };
-		C7A741B417078909001125E5 /* ClassExtras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassExtras.m; sourceTree = "<group>"; };
+		C78CA2FF170DCB1D00213BA9 /* BSBindingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSBindingManager.h; sourceTree = "<group>"; };
+		C78CA300170DCB1D00213BA9 /* BSBindingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSBindingManager.m; sourceTree = "<group>"; };
+		C7A741B017074AC7001125E5 /* JavaScriptCore+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JavaScriptCore+Extras.h"; sourceTree = "<group>"; };
+		C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "JavaScriptCore+Extras.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -177,6 +174,8 @@
 				C783B7E316E95B3B00D393B3 /* BSScriptViewController.m */,
 				C783B7DF16E95B2C00D393B3 /* BSScriptView.h */,
 				C783B7E016E95B2C00D393B3 /* BSScriptView.m */,
+				C78CA2FF170DCB1D00213BA9 /* BSBindingManager.h */,
+				C78CA300170DCB1D00213BA9 /* BSBindingManager.m */,
 				C783B7E516E95B8200D393B3 /* BSBinding.h */,
 				C783B7E616E95B8200D393B3 /* BSBinding.m */,
 				C783B7F816E9781200D393B3 /* BSConsoleBinding.h */,
@@ -231,18 +230,14 @@
 		C783B7FF16E97B6C00D393B3 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
-				C783B80116E97BFA00D393B3 /* NSString+JavaScriptCoreString.h */,
-				C783B80216E97BFA00D393B3 /* NSString+JavaScriptCoreString.m */,
-				C783B80616ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.h */,
-				C783B80716ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m */,
+				C783B80116E97BFA00D393B3 /* NSString+JavaScriptCore.h */,
+				C783B80216E97BFA00D393B3 /* NSString+JavaScriptCore.m */,
 				C735A7A216F8FBB0008A9CC2 /* NSData+JavaScriptCore.h */,
 				C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */,
-				C762867416FFAE6F00A1B1C4 /* Geometry.h */,
-				C762867516FFAE6F00A1B1C4 /* Geometry.m */,
-				C7A741B017074AC7001125E5 /* JavaScriptCore.h */,
-				C7A741B117074AC7001125E5 /* JavaScriptCore.m */,
-				C7A741B317078909001125E5 /* ClassExtras.h */,
-				C7A741B417078909001125E5 /* ClassExtras.m */,
+				C7A741B017074AC7001125E5 /* JavaScriptCore+Extras.h */,
+				C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */,
+				C762867416FFAE6F00A1B1C4 /* Geometry+Extras.h */,
+				C762867516FFAE6F00A1B1C4 /* Geometry+Extras.m */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -319,17 +314,16 @@
 				C783B7E416E95B3B00D393B3 /* BSScriptViewController.m in Sources */,
 				C783B7E716E95B8200D393B3 /* BSBinding.m in Sources */,
 				C783B7FA16E9781200D393B3 /* BSConsoleBinding.m in Sources */,
-				C783B80316E97BFA00D393B3 /* NSString+JavaScriptCoreString.m in Sources */,
-				C783B80816ED1A3800D393B3 /* NSObject+JavaScriptCoreObject.m in Sources */,
+				C783B80316E97BFA00D393B3 /* NSString+JavaScriptCore.m in Sources */,
 				C71CA51A16F7D990006467FF /* BSViewBinding.m in Sources */,
 				C735A79E16F8A735008A9CC2 /* BSWindowBinding.m in Sources */,
 				C735A7A416F8FBB0008A9CC2 /* NSData+JavaScriptCore.m in Sources */,
 				C77EFBD916FA7CCF008BF1B8 /* BSView.m in Sources */,
 				C77EFBDC16FA843E008BF1B8 /* BSContextBinding.m in Sources */,
 				C762867316FF76CB00A1B1C4 /* BSWindow.m in Sources */,
-				C762867616FFAE6F00A1B1C4 /* Geometry.m in Sources */,
-				C7A741B217074AC7001125E5 /* JavaScriptCore.m in Sources */,
-				C7A741B517078909001125E5 /* ClassExtras.m in Sources */,
+				C762867616FFAE6F00A1B1C4 /* Geometry+Extras.m in Sources */,
+				C7A741B217074AC7001125E5 /* JavaScriptCore+Extras.m in Sources */,
+				C78CA301170DCB1D00213BA9 /* BSBindingManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

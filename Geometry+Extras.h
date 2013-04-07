@@ -9,6 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScript.h>
 
-CGPoint CGPointFromJSObject(JSContextRef jsContext, JSObjectRef jsObject);
-CGSize CGSizeFromJSObject(JSContextRef jsContext, JSObjectRef jsObject);
-CGRect CGRectFromJSObject(JSContextRef jsContext, JSObjectRef jsObject);
+CGPoint
+CGPointFromJSObject(JSContextRef jsContext, JSObjectRef jsObject);
+
+CGSize
+CGSizeFromJSObject(JSContextRef jsContext, JSObjectRef jsObject);
+
+CGRect
+CGRectFromJSObject(JSContextRef jsContext, JSObjectRef jsObject);

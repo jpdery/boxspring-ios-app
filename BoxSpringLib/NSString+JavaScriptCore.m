@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "NSString+JavaScriptCoreString.h"
+#import "NSString+JavaScriptCore.h"
 
 @implementation NSString (JavaScriptCoreString)
 

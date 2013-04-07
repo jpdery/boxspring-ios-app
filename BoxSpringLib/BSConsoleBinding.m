@@ -6,8 +6,9 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
+#import "NSString+JavaScriptCore.h"
+#import "NSData+JavaScriptCore.h"
 #import "BSConsoleBinding.h"
-#import "NSString+JavaScriptCoreString.h"
 
 @implementation BSConsoleBinding
 

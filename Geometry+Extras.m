@@ -6,9 +6,10 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "Geometry.h"
+#import "Geometry+Extras.h"
 
-CGPoint CGPointFromJSObject(JSContextRef jsContext, JSObjectRef jsObject)
+CGPoint
+CGPointFromJSObject(JSContextRef jsContext, JSObjectRef jsObject)
 {
     JSValueRef jsX = JSObjectGetProperty(jsContext, jsObject, JSStringCreateWithUTF8CString("x"), NULL);
     JSValueRef jsY = JSObjectGetProperty(jsContext, jsObject, JSStringCreateWithUTF8CString("y"), NULL);
@@ -18,7 +19,8 @@ CGPoint CGPointFromJSObject(JSContextRef jsContext, JSObjectRef jsObject)
     );
 }
 
-CGSize CGSizeFromJSObject(JSContextRef jsContext, JSObjectRef jsObject)
+CGSize
+CGSizeFromJSObject(JSContextRef jsContext, JSObjectRef jsObject)
 {
     JSValueRef jsX = JSObjectGetProperty(jsContext, jsObject, JSStringCreateWithUTF8CString("x"), NULL);
     JSValueRef jsY = JSObjectGetProperty(jsContext, jsObject, JSStringCreateWithUTF8CString("y"), NULL);
@@ -28,7 +30,8 @@ CGSize CGSizeFromJSObject(JSContextRef jsContext, JSObjectRef jsObject)
     );
 }
 
-CGRect CGRectFromJSObject(JSContextRef jsContext, JSObjectRef jsObject)
+CGRect
+CGRectFromJSObject(JSContextRef jsContext, JSObjectRef jsObject)
 {
     JSObjectRef jsOrigin = (JSObjectRef) JSObjectGetProperty(jsContext, jsObject, JSStringCreateWithUTF8CString("origin"), NULL);
     JSObjectRef jsSize = (JSObjectRef) JSObjectGetProperty(jsContext, jsObject, JSStringCreateWithUTF8CString("size"), NULL);

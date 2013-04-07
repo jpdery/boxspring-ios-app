@@ -11,7 +11,7 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 
 @class BSBinding;
-@class BSWindow;
+@class BSBindingManager;
 
 @interface BSScriptView : UIView
    
@@ -19,20 +19,14 @@
 @property(nonatomic, readonly) JSObjectRef jsGlobalObject;
 @property(nonatomic, readonly) JSValueRef jsUndefinedValue;
 @property(nonatomic, readonly) JSValueRef jsNullValue;
-@property(nonatomic, readonly) JSValueRef jsTrueValue;
-@property(nonatomic, readonly) JSValueRef jsFalseValue;
-@property(nonatomic, copy) NSMutableArray* bindings;
+@property(nonatomic, readonly) BSBindingManager* bindingManager;
 
 - (void)loadScript:(NSString*)path;
 - (void)evalScript:(NSString*)source;
 
-- (void)bind:(BSBinding*)binding;
 - (void)bind:(BSBinding*)binding toKey:(NSString*)key;
 - (void)bind:(BSBinding*)binding toKey:(NSString*)key ofObject:(JSObjectRef)jsObject;
 
 - (void)log:(JSValueRef)jsException;
-
-// temp
-+ (NSString*)binding:(NSString*)name;
 
 @end

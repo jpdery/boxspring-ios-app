@@ -7,19 +7,6 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "BoxSpringLib/BSBinding.m"
-         timestampString = "384637470.059848"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "15"
-         endingLineNumber = "15"
-         landmarkName = "@implementation BSBinding"
-         landmarkType = "3">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
          filePath = "BoxSpringLib/BSRScriptView.m"
          timestampString = "385416118.973882"
          startingColumnNumber = "9223372036854775807"
@@ -46,14 +33,12 @@
          shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
-         filePath = "BoxSpringLib/BSScriptView.m"
-         timestampString = "386456754.881304"
+         filePath = "App/main.js"
+         timestampString = "387063298.38429"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "154"
-         endingLineNumber = "154"
-         landmarkName = "BSClassesSet()"
-         landmarkType = "7">
+         startingLineNumber = "1113"
+         endingLineNumber = "1113">
       </FileBreakpoint>
    </FileBreakpoints>
 </Bucket>

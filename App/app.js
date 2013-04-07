@@ -1,43 +1,23 @@
 
-/*
-          var appController = new boxspring.ApplicationController();
+console.log('TEST');
 
-
-        var View         = boxspring.View
-
-        var view = new View(320, 480)
-        view.style.backgroundColor = 'rgba(255, 0, 0, 0.5)'
-
-        appController.view.addChild(view)
-        
-        */
-
-
-boxspring.define('boxspring.View', {
-
-    constructor: function() {
-        console.log('JavaScript View constructor')
-    }
-
-})
-
-boxspring.define('boxspring.Button', {
+var Button = boxspring.define('boxspring.Button', {
 
     inherits: boxspring.View,
-
+    
     constructor: function() {
-        boxspring.Button.parent.constructor.call(this)
-        console.log('JavaScript Button Constructor')
-    }  
+        console.log('boxspring.Button constructor called');
+        Button.parent.constructor.apply(this, arguments);
+        return this;
+    }
 
 });
+
+var w = new boxspring.Window(320, 480);
+var v = new boxspring.View(115, 75, 11, 7)
+w.addChild(v);
 //
-//console.log(boxspring.View.prototype.constructor === boxspring.View);
+//console.log(boxspring.Button);
 
-//var view = new boxspring.View(300, 300);
-
-var button = new boxspring.Button(300, 300);
-
-//view.draw();
-
-//console.log('TEST');
+var b = new boxspring.Button(50, 50, 100, 100);
+w.addChild(b);

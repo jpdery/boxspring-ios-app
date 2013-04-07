@@ -6,14 +6,8 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import <JavaScriptCore/JavaScriptCore.h>
 #import "BSBinding.h"
 
 @interface BSConsoleBinding : BSBinding
-
-static void mange()
-{
-
-}
 
 @end
