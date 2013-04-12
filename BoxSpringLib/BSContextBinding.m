@@ -13,24 +13,12 @@
 @synthesize context;
 
 /*
- * Initialization
- */
-- (id)initWithScriptView:(BSScriptView *)theScriptView andContext:(CGContextRef)theContext
-{
-    if (self = [self initWithScriptView:theScriptView]) {
-        context = theContext;
-        CGContextRetain(theContext);
-    }
-    return self;
-}
-
-/*
  * Deallocation
  */
 
 - (void)dealloc
 {
-    CGContextRelease(context);
+    if (context) CGContextRelease(context);
     [super dealloc];
 }
 
@@ -54,18 +42,19 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
 /**
  * Bound Method
  *
- * DESCRIPTION
+ * The fillStyle property sets or returns the color, gradient, or pattern used 
+ * to fill the drawing.
  *
- * ARGUMENTS
- *
- * RETURN
+ * @type color    A CSS color value that indicates the fill color of the drawing. Default value is #000000
+ *       gradient A gradient object (linear or radial) used to fill the drawing
+ *       pattern  A pattern object to use to fill the drawing
  *
  * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
  * @since  0.0.1
  */
 - (void)setFillStyle:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    NSString* color = [NSString stringWithJSString:JSValueToStringCopy(jsContext, jsValue, NULL)];
 }
 
 /**

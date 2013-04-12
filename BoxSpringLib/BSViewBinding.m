@@ -7,21 +7,25 @@
 //
 
 #import "BSViewBinding.h"
+#import "Geometry+Extras.h"
 
 @implementation BSViewBinding
 
 @synthesize view;
-
-BS_DEFINE_BOUND_FUNCTION(addChildAt, addChildAt);
-BS_DEFINE_BOUND_FUNCTION(draw, draw);
-BS_DEFINE_BOUND_FUNCTION(redraw, redraw);
-BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
 
 - (void)loadViewWithRect:(CGRect)rect
 {
     self.view = [[BSView alloc] initWithFrame:rect];
     self.view.backgroundColor = [UIColor redColor];
 }
+
+/*
+ * Bound Methods
+ */
+
+BS_DEFINE_BOUND_FUNCTION(addChildAt, addChildAt);
+BS_DEFINE_BOUND_FUNCTION(redraw, redraw);
+BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
 
 /**
  * Bound Method
@@ -57,22 +61,13 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
 {
     int index = JSValueToNumber(jsContext, argv[1], NULL);
     
-    BSViewBinding* childViewBinding = (BSViewBinding*)[BSBindingManager bindingAssociatedToObject:(JSObjectRef)argv[0] ofContext:self.jsGlobalContext];
+    BSViewBinding* childViewBinding = (BSViewBinding*)JSObjectGetBoundObject(jsContext, (JSObjectRef)argv[0]);
 
     [self.view
         insertSubview:childViewBinding.view
         atIndex:index];
     
-    return [self callParent:@"addChildAt" argc:argc argv:argv];
-}
-
-/**
- * Bound Method
- */
-- (JSValueRef)draw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
-{
-//    return [self call:@"draw" argc:argc argv:argv];
-    return NULL;
+    return [self call:@"addChildAt" argc:argc argv:argv];
 }
 
 /**
@@ -88,12 +83,14 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
  */
 - (JSValueRef)redraw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-//    CGRect rect;
-//    if (argc == 1) {
-//        rect = CGRectFromJSObject(jsContext, (JSObjectRef) argv[0]);
-//    }
+    CGRect rect;
+    if (argc == 1) {
+        rect = CGRectFromJSObject(jsContext, (JSObjectRef)argv[0]);
+    } else {
+        rect = self.view.frame;
+    }
 
-//    [self.view setNeedsDisplayInRect:rect];
+    [self.view setNeedsDisplayInRect:rect];
 
     return NULL;
 }

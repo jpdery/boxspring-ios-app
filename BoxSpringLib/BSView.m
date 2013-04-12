@@ -7,17 +7,36 @@
 //
 
 #import "BSView.h"
+#import "BSViewBinding.h"
+#import "BSContextBinding.h"
 
 @implementation BSView
+
+@synthesize binding;
+@synthesize context;
 
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code
+
     }
     return self;
 }
 
+- (id)initWithFrame:(CGRect)frame andBinding:(BSViewBinding*)theBinding
+{
+    if (self = [self initWithFrame:frame]) {
+        binding = theBinding;
+
+    }
+    return self;
+}
+
+- (void)drawRect:(CGRect)rect
+{
+
+ 
+}
 
 @end

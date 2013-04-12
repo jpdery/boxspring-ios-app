@@ -6,16 +6,15 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
+#import <JavaScriptCore/JavaScriptCore.h>
+#import "NSString+JavaScriptCore.h"
+#import "NSData+JavaScriptCore.h"
+
 #import "BSBinding.h"
 
 @interface BSContextBinding : BSBinding
 
-@property (nonatomic, readonly) CGContextRef context;
-
-/*
- * Initialization
- */
-- (id)initWithScriptView:(BSScriptView *)theScriptView andContext:(CGContextRef)theContext;
+@property (nonatomic) CGContextRef context;
 
 /*
  * Colors, Styles, and Shadows

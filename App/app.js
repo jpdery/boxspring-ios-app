@@ -12,7 +12,7 @@ var Button = boxspring.define('boxspring.Button', {
 });
 
 var w = new boxspring.Window(320, 480);
-var v = new boxspring.View(115, 75, 11, 7)
+var v = new boxspring.View(215, 75, 11, 7)
 w.addChild(v);
 //
 //console.log(boxspring.Button);

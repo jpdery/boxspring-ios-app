@@ -12,7 +12,7 @@
 #import "BSBinding.h"
 
 /* 
- * Setting Properties 
+ * Properties
  */
 
 void
@@ -87,22 +87,49 @@ JSObjectCopyProperties(JSContextRef jsContext, JSObjectRef jsFrom, JSObjectRef j
 }
 
 /* 
- * Creating Objects
+ * Bindings
  */
 
-JSObjectRef
-JSObjectCreate(JSContextRef jsContext, JSObjectRef jsPrototype)
+static NSMutableDictionary* jsObjectMapping = nil;
+
+void
+JSObjectSetBoundObject(JSContextRef jsContext, JSObjectRef jsObject, BSBinding* binding)
 {
-    JSClassDefinition jsClassDef = kJSClassDefinitionEmpty;
-    jsClassDef.attributes = kJSClassAttributeNoAutomaticPrototype;
-    JSClassRef jsClass = JSClassCreate(&jsClassDef);
-    JSObjectRef jsObject = JSObjectMake(jsContext, jsClass, NULL);
-    JSObjectSetPrototype(jsContext, jsObject, (JSValueRef)jsPrototype);
-    return jsObject;
+    static int instances = 0;
+
+    if (jsObjectMapping == nil) {
+        jsObjectMapping = [NSMutableDictionary new];
+    }
+
+    NSString* identifier = [NSString stringWithFormat:@"instance#%i", instances++];
+
+    JSObjectSetProperty(
+        jsContext,
+        jsObject,
+        JSStringCreateWithUTF8CString("__instance_id"),
+        JSValueMakeString(jsContext, [identifier jsStringValue]),
+        kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly,
+        NULL
+    );
+    
+    [jsObjectMapping setObject:binding forKey:identifier];
+}
+
+BSBinding*
+JSObjectGetBoundObject(JSContextRef jsContext, JSObjectRef jsObject)
+{
+    if (jsObjectMapping == nil)
+        return nil;
+
+    JSValueRef jsIntanceId = JSObjectGetProperty(jsContext, jsObject, JSStringCreateWithUTF8CString("__instance_id"), NULL);
+    if (jsIntanceId == NULL)
+        return nil;
+
+    return [jsObjectMapping objectForKey:[NSString stringWithJSString:JSValueToStringCopy(jsContext, jsIntanceId, NULL)]];
 }
 
 /*
- *
+ * Convenience 
  */
 
 void
@@ -128,7 +155,7 @@ JSObjectInheritObject(JSContextRef jsContext, JSObjectRef jsObject)
 }
 
 /* 
- * Creating Classes
+ * Classes
  */
 
 JSClassDefinition
@@ -195,6 +222,7 @@ JSClassDefinitionFrom(Class binding)
 /* 
  * Log
  */
+ 
 void
 JSObjectLogProperties(JSContextRef jsContext, JSObjectRef jsObject)
 {

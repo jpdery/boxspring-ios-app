@@ -6,11 +6,14 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
+#import <objc/message.h>
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
+@class BSBinding;
+
 /* 
- * Setting Properties 
+ * Properties
  */
 
 void
@@ -35,21 +38,24 @@ void
 JSObjectCopyProperties(JSContextRef jsContext, JSObjectRef jsFrom, JSObjectRef jsDest);
 
 /* 
- * Creating Objects
- */
-
-JSObjectRef
-JSObjectCreate(JSContextRef jsContext, JSObjectRef jsPrototype);
-
-/* 
- * Creating Classes
+ * Classes
  */
 
 JSClassDefinition
 JSClassDefinitionFrom(Class class);
 
 /* 
- * ?
+ * Bindings
+ */
+
+void
+JSObjectSetBoundObject(JSContextRef jsContext, JSObjectRef jsObject, BSBinding* binding);
+
+BSBinding*
+JSObjectGetBoundObject(JSContextRef jsContext, JSObjectRef jsObject);
+
+/* 
+ * Convenience
  */
 
 void
@@ -59,7 +65,8 @@ void
 JSObjectInheritObject(JSContextRef jsContext, JSObjectRef jsObject);
 
 /* 
- * Log
+ * Logging
  */
+
 void
 JSObjectLogProperties(JSContextRef jsContext, JSObjectRef jsObject);

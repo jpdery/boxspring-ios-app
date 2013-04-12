@@ -8,8 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
+#import "JavaScriptCore+Extras.h"
 #import "BSScriptView.h"
-#import "BSBindingManager.h"
 
 #define _BS_CREATE_POINTER_TO(NAME) \
 	+ (void *)_ptr_to##NAME { \
@@ -28,7 +28,7 @@
 		JSValueRef jsVal, \
 		JSValueRef* jsException \
 	) { \
-		BSBinding* instance = [BSBindingManager bindingAssociatedToObject:jsObject ofContext:jsContext]; \
+		BSBinding* instance = JSObjectGetBoundObject(jsContext, jsObject); \
 		objc_msgSend(instance, @selector(BOUND_NAME:value:), jsContext, jsVal); \
 		return true; \
 	} \
@@ -45,15 +45,14 @@
 		JSStringRef jsKey, \
 		JSValueRef* jsException \
 	) { \
-		BSBinding* instance = [BSBindingManager bindingAssociatedToObject:jsObject ofContext:jsContext]; \
+		BSBinding* instance = JSObjectGetBoundObject(jsContext, jsObject); \
 		return (JSValueRef)objc_msgSend(instance, @selector(BOUND_NAME:), jsContext); \
 	} \
 	_BS_CREATE_POINTER_TO(_getter_##GETTER_NAME)\
 
 /**
  * Macro to define a function binding as:
- * (Replace BOUND_NAME with the name of your objective-c method)
- * 
+ * - (JSValueRef)BOUND_NAME:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
  */
 #define BS_DEFINE_BOUND_FUNCTION(FUNCTION_NAME, BOUND_NAME) \
 	static JSValueRef _function_##FUNCTION_NAME( \
@@ -64,7 +63,7 @@
 		const JSValueRef argv[], \
 		JSValueRef* exception \
 	) { \
-		BSBinding* instance = [BSBindingManager bindingAssociatedToObject:jsObject ofContext:jsContext]; \
+		BSBinding* instance = JSObjectGetBoundObject(jsContext, jsObject); \
 		JSValueRef ret = (JSValueRef)objc_msgSend(instance, @selector(BOUND_NAME:argc:argv:), jsContext, argc, argv); \
         return ret ? ret : instance.scriptView.jsUndefinedValue; \
 	} \
@@ -92,31 +91,31 @@
 	} \
 	_BS_CREATE_POINTER_TO(_function_##name)
 
-
 @interface BSBinding : NSObject
 
 @property (nonatomic, readonly) BSScriptView* scriptView;
-@property (nonatomic, readonly) JSContextRef jsGlobalContext;
-@property (nonatomic, readonly) JSObjectRef jsGlobalObject;
+@property (nonatomic, readonly) JSContextRef jsContext;
 @property (nonatomic, readonly) JSObjectRef jsBoundObject;
 @property (nonatomic, readonly) JSObjectRef jsBoundObjectPrototype;
 
 /*
- * Initialize binding
+ * Initialization
  */
+ 
 - (id)initWithScriptView:(BSScriptView*)theScriptView;
-- (id)initWithScriptView:(BSScriptView*)theScriptView andBoundObject:(JSObjectRef)theJSBoundObject;
+- (id)initWithScriptView:(BSScriptView *)theScriptView andPrototypeObject:(JSObjectRef)jsPrototypeObject;
 
 /*
- * Access javascript
+ * Bridge
  */
+ 
 - (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
 - (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv ofObject:(JSObjectRef)jsObject;
-- (JSValueRef)callParent:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
 
  /*
-  * Default bindings
+  * Bound Methods
   */
+  
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
 
 @end

@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
+@class BSViewBinding;
+@class BSContextBinding;
+
 @interface BSView : UIView
+
+@property (nonatomic, readonly) BSViewBinding* binding;
+@property (nonatomic, readonly) BSContextBinding* context;
+
+- (id)initWithFrame:(CGRect)frame andBinding:(BSViewBinding*)binding;
 
 @end

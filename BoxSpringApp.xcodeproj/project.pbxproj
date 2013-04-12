@@ -32,8 +32,8 @@
 		C783B7FE16E9784C00D393B3 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7FD16E9784C00D393B3 /* libstdc++.dylib */; };
 		C783B80316E97BFA00D393B3 /* NSString+JavaScriptCore.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80216E97BFA00D393B3 /* NSString+JavaScriptCore.m */; };
 		C783B80516ECEFBE00D393B3 /* App in Resources */ = {isa = PBXBuildFile; fileRef = C783B80416ECEFBE00D393B3 /* App */; };
-		C78CA301170DCB1D00213BA9 /* BSBindingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C78CA300170DCB1D00213BA9 /* BSBindingManager.m */; };
 		C7A741B217074AC7001125E5 /* JavaScriptCore+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */; };
+		C7F00F5C1718A4A100A672E2 /* Bindings.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7F00F5B1718A4A100A672E2 /* Bindings.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -87,10 +87,9 @@
 		C783B80116E97BFA00D393B3 /* NSString+JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+JavaScriptCore.h"; path = "BoxSpringLib/NSString+JavaScriptCore.h"; sourceTree = "<group>"; };
 		C783B80216E97BFA00D393B3 /* NSString+JavaScriptCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+JavaScriptCore.m"; path = "BoxSpringLib/NSString+JavaScriptCore.m"; sourceTree = "<group>"; };
 		C783B80416ECEFBE00D393B3 /* App */ = {isa = PBXFileReference; lastKnownFileType = folder; path = App; sourceTree = "<group>"; };
-		C78CA2FF170DCB1D00213BA9 /* BSBindingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSBindingManager.h; sourceTree = "<group>"; };
-		C78CA300170DCB1D00213BA9 /* BSBindingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSBindingManager.m; sourceTree = "<group>"; };
 		C7A741B017074AC7001125E5 /* JavaScriptCore+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JavaScriptCore+Extras.h"; sourceTree = "<group>"; };
 		C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "JavaScriptCore+Extras.m"; sourceTree = "<group>"; };
+		C7F00F5B1718A4A100A672E2 /* Bindings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Bindings.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +112,7 @@
 		C783B7B516E9595500D393B3 = {
 			isa = PBXGroup;
 			children = (
+				C7F00F5B1718A4A100A672E2 /* Bindings.plist */,
 				C783B80416ECEFBE00D393B3 /* App */,
 				C783B7C716E9595500D393B3 /* BoxSpringApp */,
 				C783B7DE16E95ABD00D393B3 /* BoxSpringLib */,
@@ -174,8 +174,6 @@
 				C783B7E316E95B3B00D393B3 /* BSScriptViewController.m */,
 				C783B7DF16E95B2C00D393B3 /* BSScriptView.h */,
 				C783B7E016E95B2C00D393B3 /* BSScriptView.m */,
-				C78CA2FF170DCB1D00213BA9 /* BSBindingManager.h */,
-				C78CA300170DCB1D00213BA9 /* BSBindingManager.m */,
 				C783B7E516E95B8200D393B3 /* BSBinding.h */,
 				C783B7E616E95B8200D393B3 /* BSBinding.m */,
 				C783B7F816E9781200D393B3 /* BSConsoleBinding.h */,
@@ -298,6 +296,7 @@
 				C783B7D616E9595500D393B3 /* Default@2x.png in Resources */,
 				C783B7D816E9595500D393B3 /* Default-568h@2x.png in Resources */,
 				C783B7CC16E9595500D393B3 /* InfoPlist.strings in Resources */,
+				C7F00F5C1718A4A100A672E2 /* Bindings.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -323,7 +322,6 @@
 				C762867316FF76CB00A1B1C4 /* BSWindow.m in Sources */,
 				C762867616FFAE6F00A1B1C4 /* Geometry+Extras.m in Sources */,
 				C7A741B217074AC7001125E5 /* JavaScriptCore+Extras.m in Sources */,
-				C78CA301170DCB1D00213BA9 /* BSBindingManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
