@@ -54,7 +54,8 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (void)setFillStyle:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-    NSString* color = [NSString stringWithJSString:JSValueToStringCopy(jsContext, jsValue, NULL)];
+    jsFillStyle = jsValue;
+    CGContextSetFillColorWithColor(self.context, JSValueToCGColor(jsContext, jsFillStyle));
 }
 
 /**
@@ -71,7 +72,7 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (JSValueRef)getFillStyle:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsFillStyle;
 }
 
 /**
@@ -88,7 +89,8 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (void)setStrokeStyle:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsStrokeStyle = jsValue;
+    CGContextSetStrokeColorWithColor(self.context, JSValueToCGColor(jsContext, jsStrokeStyle));
 }
 
 /**
@@ -105,7 +107,7 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (JSValueRef)getStrokeStyle:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsStrokeStyle;
 }
 
 /**
@@ -122,7 +124,9 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (void)setShadowColor:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsShadowColor = jsValue;
+    shadowColor = JSValueToCGColor(jsContext, jsShadowColor);
+    [self applyShadow];  
 }
 
 /**
@@ -139,7 +143,7 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (JSValueRef)getShadowColor:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsShadowColor;
 }
 
 /**
@@ -156,7 +160,9 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (void)setShadowBlur:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsShadowBlur = jsValue;
+    shadowBlur = JSValueToNumber(jsContext, jsShadowBlur, NULL);
+    [self applyShadow];
 }
 
 /**
@@ -173,7 +179,7 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (JSValueRef)getShadowBlur:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsShadowBlur;
 }
 
 /**
@@ -190,7 +196,9 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (void)setShadowOffsetX:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsShadowOffsetX = jsValue;
+    shadowOffsetX = JSValueToNumber(jsContext, jsShadowOffsetX, NULL);
+    [self applyShadow];
 }
 
 /**
@@ -207,7 +215,7 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (JSValueRef)getShadowOffsetX:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsShadowOffsetX;
 }
 
 /**
@@ -224,7 +232,9 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
  */
 - (void)setShadowOffsetY:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsShadowOffsetY = jsValue;
+    shadowOffsetY = JSValueToNumber(jsContext, jsShadowOffsetY, NULL);
+    [self applyShadow];
 }
 
 /**
@@ -242,6 +252,11 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
 - (JSValueRef)getShadowOffsetY:(JSContextRef)jsContext
 {
     return NULL;
+}
+
+- (void)applyShadow
+{
+    CGContextSetShadowWithColor(self.context, CGSizeMake(shadowOffsetX, shadowOffsetY), shadowBlur, shadowColor);
 }
 
 /*
@@ -510,6 +525,18 @@ BS_DEFINE_BOUND_FUNCTION(clearRect, clearRect)
  */
 - (JSValueRef)fillRect:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"fillRect");
+
+    if (argc == 4) {
+    
+        double x = JSValueToNumber(jsContext, argv[0], NULL);
+        double y = JSValueToNumber(jsContext, argv[1], NULL);
+        double w = JSValueToNumber(jsContext, argv[2], NULL);
+        double h = JSValueToNumber(jsContext, argv[3], NULL);
+        
+        CGContextFillRect(self.context, CGRectMake(x, y, w, h));    
+    }
+    
     return NULL;
 }
 

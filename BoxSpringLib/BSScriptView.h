@@ -13,13 +13,70 @@
 
 @interface BSScriptView : UIView
 
+/**
+ * The global context
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 @property(nonatomic, readonly) JSGlobalContextRef jsGlobalContext;
+
+/**
+ * The global object
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 @property(nonatomic, readonly) JSObjectRef jsGlobalObject;
+
+/**
+ * JavaScript undefined value
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 @property(nonatomic, readonly) JSValueRef jsUndefinedValue;
+
+/**
+ * JavaScript null value
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 @property(nonatomic, readonly) JSValueRef jsNullValue;
+
+/**
+ * JavaScript classes defined using boxspring.define
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 @property(nonatomic, readonly, copy) NSMutableDictionary* primeConstructors;
+
+/**
+ * JavaScript classes defined using boxspring.define that are bound to a native 
+ * objective-c class
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 @property(nonatomic, readonly, copy) NSMutableDictionary* boundConstructors;
+
+/**
+ * All binding instances
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 @property(nonatomic, readonly, copy) NSMutableArray* boundInstances;
+
+/**
+ * A dictionnary that associate javascript classes names to their objective-c
+ * binding class names
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 @property(nonatomic, readonly, copy) NSDictionary* bindings;
 
 /**

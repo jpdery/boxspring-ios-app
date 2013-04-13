@@ -1266,9 +1266,10 @@
                 return x >= o.x && x <= o.x + s.x && y >= o.y && y <= o.y + s.y;
             },
             draw: function(context, area) {
-                if (this.style) {
-                    this.style.draw(context, area);
-                }
+             
+                context.fillStyle = '#518d88';
+                context.fillRect(area.origin.x, area.origin.y, area.size.x, area.size.y);
+             
                 return this;
             },
             redraw: function(area) {
@@ -1377,7 +1378,14 @@
             onRemove: function(view) {
                 Window.parent.onRemove.call(this, view);
                 view.__setWindow(null);
-            }
+            },
+          draw: function(context, area) {
+             
+                context.fillStyle = '#c0dedb';
+                context.fillRect(area.origin.x, area.origin.y, area.size.x, area.size.y);
+             
+                return this;
+            },
         });
     },
     v: function(require, module, exports, global) {

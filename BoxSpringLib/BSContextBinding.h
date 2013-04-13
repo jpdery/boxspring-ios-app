@@ -12,7 +12,20 @@
 
 #import "BSBinding.h"
 
-@interface BSContextBinding : BSBinding
+@interface BSContextBinding : BSBinding {
+
+    JSValueRef jsFillStyle;
+    JSValueRef jsStrokeStyle;
+    JSValueRef jsShadowColor;
+    JSValueRef jsShadowBlur;
+    JSValueRef jsShadowOffsetX;
+    JSValueRef jsShadowOffsetY;
+
+    CGColorRef shadowColor;
+    double shadowBlur;
+    double shadowOffsetX;
+    double shadowOffsetY;
+}
 
 @property (nonatomic) CGContextRef context;
 
@@ -32,6 +45,7 @@
 - (JSValueRef)getShadowOffsetX:(JSContextRef)jsContext;
 - (void)setShadowOffsetY:(JSContextRef)jsContext value:(JSValueRef)jsValue;
 - (JSValueRef)getShadowOffsetY:(JSContextRef)jsContext;
+- (void)applyShadow;
 
 /*
  * Line Styles

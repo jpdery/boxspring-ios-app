@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C70063BE1719A4A300C0FF53 /* BSBoundView.m in Sources */ = {isa = PBXBuildFile; fileRef = C70063BD1719A4A300C0FF53 /* BSBoundView.m */; };
+		C70063C11719A62B00C0FF53 /* BSBoundWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = C70063C01719A62B00C0FF53 /* BSBoundWindow.m */; };
 		C71CA51A16F7D990006467FF /* BSViewBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C71CA51916F7D990006467FF /* BSViewBinding.m */; };
 		C735A79E16F8A735008A9CC2 /* BSWindowBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C735A79D16F8A735008A9CC2 /* BSWindowBinding.m */; };
 		C735A7A416F8FBB0008A9CC2 /* NSData+JavaScriptCore.m in Sources */ = {isa = PBXBuildFile; fileRef = C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */; };
-		C762867316FF76CB00A1B1C4 /* BSWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = C762867216FF76CB00A1B1C4 /* BSWindow.m */; };
 		C762867616FFAE6F00A1B1C4 /* Geometry+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = C762867516FFAE6F00A1B1C4 /* Geometry+Extras.m */; };
-		C77EFBD916FA7CCF008BF1B8 /* BSView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77EFBD816FA7CCF008BF1B8 /* BSView.m */; };
 		C77EFBDC16FA843E008BF1B8 /* BSContextBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C77EFBDB16FA843E008BF1B8 /* BSContextBinding.m */; };
 		C783B7C216E9595500D393B3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7C116E9595500D393B3 /* UIKit.framework */; };
 		C783B7C416E9595500D393B3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7C316E9595500D393B3 /* Foundation.framework */; };
@@ -37,18 +37,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C70063BC1719A4A300C0FF53 /* BSBoundView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSBoundView.h; sourceTree = "<group>"; };
+		C70063BD1719A4A300C0FF53 /* BSBoundView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSBoundView.m; sourceTree = "<group>"; };
+		C70063BF1719A62B00C0FF53 /* BSBoundWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSBoundWindow.h; sourceTree = "<group>"; };
+		C70063C01719A62B00C0FF53 /* BSBoundWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSBoundWindow.m; sourceTree = "<group>"; };
 		C71CA51816F7D990006467FF /* BSViewBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSViewBinding.h; sourceTree = "<group>"; };
 		C71CA51916F7D990006467FF /* BSViewBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSViewBinding.m; sourceTree = "<group>"; };
 		C735A79C16F8A735008A9CC2 /* BSWindowBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSWindowBinding.h; sourceTree = "<group>"; };
 		C735A79D16F8A735008A9CC2 /* BSWindowBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSWindowBinding.m; sourceTree = "<group>"; };
 		C735A7A216F8FBB0008A9CC2 /* NSData+JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+JavaScriptCore.h"; path = "BoxSpringLib/NSData+JavaScriptCore.h"; sourceTree = "<group>"; };
 		C735A7A316F8FBB0008A9CC2 /* NSData+JavaScriptCore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+JavaScriptCore.m"; path = "BoxSpringLib/NSData+JavaScriptCore.m"; sourceTree = "<group>"; };
-		C762867116FF76CB00A1B1C4 /* BSWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSWindow.h; sourceTree = "<group>"; };
-		C762867216FF76CB00A1B1C4 /* BSWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSWindow.m; sourceTree = "<group>"; };
 		C762867416FFAE6F00A1B1C4 /* Geometry+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Geometry+Extras.h"; sourceTree = "<group>"; };
 		C762867516FFAE6F00A1B1C4 /* Geometry+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Geometry+Extras.m"; sourceTree = "<group>"; };
-		C77EFBD716FA7CCF008BF1B8 /* BSView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSView.h; sourceTree = "<group>"; };
-		C77EFBD816FA7CCF008BF1B8 /* BSView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSView.m; sourceTree = "<group>"; };
 		C77EFBDA16FA843E008BF1B8 /* BSContextBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSContextBinding.h; sourceTree = "<group>"; };
 		C77EFBDB16FA843E008BF1B8 /* BSContextBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSContextBinding.m; sourceTree = "<group>"; };
 		C783B7BE16E9595500D393B3 /* BoxSpringApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BoxSpringApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -184,10 +184,10 @@
 				C735A79D16F8A735008A9CC2 /* BSWindowBinding.m */,
 				C77EFBDA16FA843E008BF1B8 /* BSContextBinding.h */,
 				C77EFBDB16FA843E008BF1B8 /* BSContextBinding.m */,
-				C77EFBD716FA7CCF008BF1B8 /* BSView.h */,
-				C77EFBD816FA7CCF008BF1B8 /* BSView.m */,
-				C762867116FF76CB00A1B1C4 /* BSWindow.h */,
-				C762867216FF76CB00A1B1C4 /* BSWindow.m */,
+				C70063BC1719A4A300C0FF53 /* BSBoundView.h */,
+				C70063BD1719A4A300C0FF53 /* BSBoundView.m */,
+				C70063BF1719A62B00C0FF53 /* BSBoundWindow.h */,
+				C70063C01719A62B00C0FF53 /* BSBoundWindow.m */,
 			);
 			path = BoxSpringLib;
 			sourceTree = "<group>";
@@ -317,11 +317,11 @@
 				C71CA51A16F7D990006467FF /* BSViewBinding.m in Sources */,
 				C735A79E16F8A735008A9CC2 /* BSWindowBinding.m in Sources */,
 				C735A7A416F8FBB0008A9CC2 /* NSData+JavaScriptCore.m in Sources */,
-				C77EFBD916FA7CCF008BF1B8 /* BSView.m in Sources */,
 				C77EFBDC16FA843E008BF1B8 /* BSContextBinding.m in Sources */,
-				C762867316FF76CB00A1B1C4 /* BSWindow.m in Sources */,
 				C762867616FFAE6F00A1B1C4 /* Geometry+Extras.m in Sources */,
 				C7A741B217074AC7001125E5 /* JavaScriptCore+Extras.m in Sources */,
+				C70063BE1719A4A300C0FF53 /* BSBoundView.m in Sources */,
+				C70063C11719A62B00C0FF53 /* BSBoundWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

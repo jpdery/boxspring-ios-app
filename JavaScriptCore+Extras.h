@@ -9,6 +9,7 @@
 #import <objc/message.h>
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
+#import "NSString+JavaScriptCore.h"
 
 @class BSBinding;
 
@@ -70,3 +71,6 @@ JSObjectInheritObject(JSContextRef jsContext, JSObjectRef jsObject);
 
 void
 JSObjectLogProperties(JSContextRef jsContext, JSObjectRef jsObject);
+
+
+CGColorRef JSValueToCGColor(JSContextRef ctx, JSValueRef value);

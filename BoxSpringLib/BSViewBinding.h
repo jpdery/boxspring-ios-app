@@ -7,11 +7,12 @@
 //
 
 #import "BSBinding.h"
-#import "BSView.h"
+
+@class BSBoundView;
 
 @interface BSViewBinding : BSBinding
 
-@property (nonatomic, retain) BSView* view;
+@property (nonatomic, retain) BSBoundView* view;
 
 - (void)loadViewWithRect:(CGRect)rect;
 

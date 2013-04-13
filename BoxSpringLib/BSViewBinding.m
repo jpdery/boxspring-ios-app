@@ -6,8 +6,9 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BSViewBinding.h"
 #import "Geometry+Extras.h"
+#import "BSBoundView.h"
+#import "BSViewBinding.h"
 
 @implementation BSViewBinding
 
@@ -15,7 +16,7 @@
 
 - (void)loadViewWithRect:(CGRect)rect
 {
-    self.view = [[BSView alloc] initWithFrame:rect];
+    self.view = [[BSBoundView alloc] initWithFrame:rect andViewBinding:self];
     self.view.backgroundColor = [UIColor redColor];
 }
 
@@ -32,6 +33,8 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
  */
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"BSViewBinding constructor called");
+
     JSValueRef jsThis = [super constructor:jsContext argc:argc argv:argv];
     
     double w = 0;
@@ -62,6 +65,8 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
     int index = JSValueToNumber(jsContext, argv[1], NULL);
     
     BSViewBinding* childViewBinding = (BSViewBinding*)JSObjectGetBoundObject(jsContext, (JSObjectRef)argv[0]);
+
+    NSLog(@"Adding binding %@", childViewBinding);
 
     [self.view
         insertSubview:childViewBinding.view

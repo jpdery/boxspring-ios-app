@@ -6,14 +6,14 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
+#import "BSBoundWindow.h"
 #import "BSWindowBinding.h"
-#import "BSWindow.h"
 
 @implementation BSWindowBinding
 
 - (void)loadViewWithRect:(CGRect)rect
 {
-    self.view = [[BSWindow alloc] initWithFrame:rect];
+    self.view = [[BSBoundWindow alloc] initWithFrame:rect andViewBinding:self];
     self.view.backgroundColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0.5];
 }
 

@@ -1,14 +1,14 @@
 //
-//  BSWindow.m
+//  BSWindowBindingWindow.m
 //  BoxSpringApp
 //
-//  Created by Jean-Philippe Déry on 2013-03-24.
+//  Created by Jean-Philippe Déry on 2013-04-13.
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BSWindow.h"
+#import "BSBoundWindow.h"
 
-@implementation BSWindow
+@implementation BSBoundWindow
 
 - (id)initWithFrame:(CGRect)frame
 {
