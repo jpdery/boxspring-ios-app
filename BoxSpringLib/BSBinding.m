@@ -19,49 +19,48 @@
 
 @synthesize scriptView;
 @synthesize jsContext;
+@synthesize jsThisObject;
 @synthesize jsBoundObject;
 @synthesize jsBoundObjectPrototype;
-@synthesize jsParentObject;
-
-/*
- * Initialization
- */
 
 - (id)initWithScriptView:(BSScriptView*)theScriptView
 {
     if (self = [self init]) {
-
         scriptView = [theScriptView retain];
-
         jsContext = theScriptView.jsGlobalContext;
-
         JSClassDefinition jsBindingClassDef = JSClassDefinitionFrom(self.class);
         jsBindingClassDef.attributes = kJSClassAttributeNoAutomaticPrototype;
         JSClassRef jsBindingClass = JSClassCreate(&jsBindingClassDef);
-
         jsBoundObject = JSObjectMake(self.jsContext, jsBindingClass, self);
         jsBoundObjectPrototype = (JSObjectRef)JSObjectGetPrototype(self.jsContext, jsBoundObject);
         JSObjectInheritObject(self.jsContext, jsBoundObject);
         JSObjectSetBoundObject(self.jsContext, jsBoundObject, self);
+        jsThisObject = jsBoundObject;
     }
 
     return self;
 }
 
-- (id)initWithScriptView:(BSScriptView *)theScriptView andPrototypeObject:(JSObjectRef)jsPrototypeObject;
+- (id)initWithScriptView:(BSScriptView *)theScriptView prototype:(JSObjectRef)theJSPrototypeObject;
 {
     if (self = [self initWithScriptView:theScriptView]) {
-        jsBoundObjectPrototype = jsPrototypeObject;
-        JSObjectSetPrototype(self.jsContext, self.jsBoundObject, self.jsBoundObjectPrototype);
+        
+        jsBoundObjectPrototype = theJSPrototypeObject;
+        
+        JSObjectSetPrototype(
+            self.jsContext,
+            self.jsBoundObject,
+            self.jsBoundObjectPrototype
+        );
     }
     
     return self;
 }
 
-- (id)initWithScriptView:(BSScriptView *)theScriptView andPrototypeObject:(JSObjectRef)jsPrototypeObject andParentObject:(JSObjectRef)jsParent
+- (id)initWithScriptView:(BSScriptView *)theScriptView prototype:(JSObjectRef)theJSPrototypeObject this:(JSObjectRef)theJSSelfObject
 {
-    if (self = [self initWithScriptView:theScriptView andPrototypeObject:jsPrototypeObject]) {
-        jsParentObject = jsParent;
+    if (self = [self initWithScriptView:theScriptView prototype:theJSPrototypeObject]) {
+        jsThisObject = theJSSelfObject;
     }
     return self;
 }
@@ -72,30 +71,33 @@
     [super dealloc];
 }
 
-/*
- * Bridge
- */
-
 - (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
 {
-    return [self call:name argc:argc argv:argv ofObject:self.jsBoundObjectPrototype];
+    return [self call:name argc:argc argv:argv from:kBSBindingContextObjectParent];
 }
 
-- (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv ofObject:(JSObjectRef)jsObject
+- (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv from:(BSBindingContextObject)context
 {
+    JSObjectRef jsContextObject;
+
+    switch (context) {
+        case kBSBindingContextObjectParent:
+            jsContextObject = self.jsBoundObjectPrototype;
+            break;
+        case kBSBindingContextObjectSelf:
+            jsContextObject = self.jsThisObject;
+            break;
+    }
+
     return JSObjectCallAsFunction(
         self.jsContext,
-        (JSObjectRef) JSObjectGetProperty(self.jsContext, jsObject, [name jsStringValue], NULL),
-        self.jsBoundObject,
+        (JSObjectRef) JSObjectGetProperty(self.jsContext, jsContextObject, [name jsStringValue], NULL),
+        self.jsThisObject,
         argc,
         argv,
         NULL
     );
 }
-
- /*
-  * Bound Methods
-  */
 
 BS_DEFINE_BOUND_FUNCTION(__constructor, constructor)
 

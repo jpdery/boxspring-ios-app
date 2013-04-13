@@ -179,27 +179,56 @@
     [self bind:binding toKey:key ofObject:self.jsGlobalObject];
 }
 
-- (BSBinding*)newBindingNamed:(NSString*)name
+/**
+ * TODO
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
+- (BSBinding*)createBinding:(NSString*)name
 {
+    JSObjectRef jsPrimeConstructor = [[primeConstructors objectForKey:name] jsObject];
     JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] jsObject];
     JSObjectRef jsBoundConstructorPrototype = JSObjectGetPrototypeProperty(self.jsGlobalContext, jsBoundConstructor);
-    return [self newBindingNamed:name withPrototypeObject:jsBoundConstructorPrototype];
+   
+    Class class = NSClassFromString([bindings objectForKey:name]);
+    if (class == nil) {
+        NSLog(@"The object %@ does not have a binding", name);
+        return nil;
+    }
+    
+    BSBinding* instance = [(BSBinding*)[class alloc] initWithScriptView:self prototype:jsBoundConstructorPrototype];
+    instance.jsPrimeConstructor = jsPrimeConstructor;
+    instance.jsBoundConstructor = jsBoundConstructor;
+    [boundInstances addObject:instance];
+    
+    return [instance autorelease];
 }
 
-- (BSBinding*)newBindingNamed:(NSString*)name withPrototypeObject:(JSObjectRef)jsPrototype
+/**
+ * TODO
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
+- (BSBinding*)createBinding:(NSString*)name prototype:(JSObjectRef)jsPrototypeObject this:(JSObjectRef)jsThisObject
 {
+    JSObjectRef jsPrimeConstructor = [[primeConstructors objectForKey:name] jsObject];
+    JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] jsObject];
+    JSObjectRef jsBoundConstructorPrototype = JSObjectGetPrototypeProperty(self.jsGlobalContext, jsBoundConstructor);
+   
     Class class = NSClassFromString([bindings objectForKey:name]);
-    BSBinding* binding = [(BSBinding*)[class alloc] initWithScriptView:self andPrototypeObject:jsPrototype];
-    [boundInstances addObject:binding];
-    return [binding autorelease];
-}
-
-- (BSBinding*)newBindingNamed:(NSString*)name withPrototypeObject:(JSObjectRef)jsPrototype andParentObject:(JSObjectRef)jsParent
-{
-    Class class = NSClassFromString([bindings objectForKey:name]);
-    BSBinding* binding = [(BSBinding*)[class alloc] initWithScriptView:self andPrototypeObject:jsPrototype andParentObject:jsParent];
-    [boundInstances addObject:binding];
-    return [binding autorelease];
+    if (class == nil) {
+        NSLog(@"The object %@ does not have a binding", name);
+        return nil;
+    }
+    
+    BSBinding* instance = [(BSBinding*)[class alloc] initWithScriptView:self prototype:jsBoundConstructorPrototype this:jsThisObject];
+    instance.jsPrimeConstructor = jsPrimeConstructor;
+    instance.jsBoundConstructor = jsBoundConstructor;
+    [boundInstances addObject:instance];
+    
+    return [instance autorelease];
 }
 
 /**
@@ -316,20 +345,21 @@
 
     JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] jsObject];
     JSObjectRef jsBoundConstructorPrototype = JSObjectGetPrototypeProperty(self.jsGlobalContext, jsBoundConstructor);
-    JSObjectRef jsProto = (JSObjectRef)JSObjectGetPrototype(self.jsGlobalContext, jsObject);
-    JSObjectRef jsProtoOwner = jsObject;
-
-    while (jsProto) {
     
-        if (jsProto == jsBoundConstructorPrototype) {
-            BSBinding* binding = [self newBindingNamed:name withPrototypeObject:jsBoundConstructorPrototype andParentObject:jsObject];
-            JSObjectSetPrototype(self.jsGlobalContext, jsProtoOwner, binding.jsBoundObject);
+    JSObjectRef jsPrototype = (JSObjectRef)JSObjectGetPrototype(self.jsGlobalContext, jsObject);
+    JSObjectRef jsPrototypeOwner = jsObject;
+
+    while (jsPrototype) {
+    
+        if (jsPrototype == jsBoundConstructorPrototype) {
+            BSBinding* binding = [self createBinding:name prototype:jsBoundConstructorPrototype this:jsObject];
+            JSObjectSetPrototype(self.jsGlobalContext, jsPrototypeOwner, binding.jsBoundObject);
             JSObjectRef ret = (JSObjectRef)[binding constructor:self.jsGlobalContext argc:argc argv:argv];
             return ret ? ret : binding.jsBoundObject;
         }
         
-        jsProtoOwner = jsProto;
-        jsProto = (JSObjectRef)JSObjectGetPrototype(self.jsGlobalContext, jsProto);
+        jsPrototypeOwner = jsPrototype;
+        jsPrototype = (JSObjectRef)JSObjectGetPrototype(self.jsGlobalContext, jsPrototype);
     }
     
     return NULL;
@@ -350,7 +380,7 @@
  */
 - (JSObjectRef)didCallObjectAsConstructor:(JSObjectRef)jsObject name:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
 {
-    BSBinding* binding = [self newBindingNamed:name];
+    BSBinding* binding = [self createBinding:name];
     [binding constructor:self.jsGlobalContext argc:argc argv:argv];
     return binding.jsBoundObject;
 }

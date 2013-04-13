@@ -7,17 +7,43 @@
 //
 
 #import "Geometry+Extras.h"
+#import "BSContextBinding.h"
 #import "BSBoundView.h"
 #import "BSViewBinding.h"
 
 @implementation BSViewBinding
 
 @synthesize view;
+@synthesize context;
 
 - (void)loadViewWithRect:(CGRect)rect
 {
     self.view = [[BSBoundView alloc] initWithFrame:rect andViewBinding:self];
-    self.view.backgroundColor = [UIColor redColor];
+}
+
+- (void)viewDidDraw:(BSBoundView*)view inRect:(CGRect)rect
+{
+    if (self.context == nil) {
+        self.context = [[BSContextBinding alloc] initWithScriptView:self.scriptView];
+    }
+
+    JSObjectRef jsRectConstructor = [[self.scriptView.primeConstructors objectForKey:@"boxspring.Rect"] jsObject];
+    
+    JSValueRef argv[4];
+    argv[0] = JSValueMakeNumber(self.jsContext, rect.origin.x);
+    argv[1] = JSValueMakeNumber(self.jsContext, rect.origin.y);
+    argv[2] = JSValueMakeNumber(self.jsContext, rect.size.width);
+    argv[3] = JSValueMakeNumber(self.jsContext, rect.size.height);
+
+    JSObjectRef jsRect = JSObjectCallAsConstructor(self.jsContext, jsRectConstructor, 4, argv, NULL);
+    
+    self.context.context = UIGraphicsGetCurrentContext();
+
+    JSValueRef drawArgv[2];
+    drawArgv[0] = self.context.jsBoundObject;
+    drawArgv[1] = jsRect;
+
+    [self call:@"draw" argc:2 argv:drawArgv from:kBSBindingContextObjectSelf];
 }
 
 /*

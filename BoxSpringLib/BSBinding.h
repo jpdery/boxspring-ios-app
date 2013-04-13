@@ -91,33 +91,31 @@
 	} \
 	_BS_CREATE_POINTER_TO(_function_##name)
 
+
+enum BSBindingContextObject {
+   kBSBindingContextObjectSelf,
+   kBSBindingContextObjectParent
+};
+
+typedef enum BSBindingContextObject BSBindingContextObject;
+
 @interface BSBinding : NSObject
 
 @property (nonatomic, readonly) BSScriptView* scriptView;
 @property (nonatomic, readonly) JSContextRef jsContext;
+@property (nonatomic, readonly) JSObjectRef jsThisObject;
 @property (nonatomic, readonly) JSObjectRef jsBoundObject;
 @property (nonatomic, readonly) JSObjectRef jsBoundObjectPrototype;
-@property (nonatomic, readonly) JSObjectRef jsParentObject;
+@property (nonatomic) JSObjectRef jsPrimeConstructor;
+@property (nonatomic) JSObjectRef jsBoundConstructor;
 
-/*
- * Initialization
- */
- 
 - (id)initWithScriptView:(BSScriptView*)theScriptView;
-- (id)initWithScriptView:(BSScriptView *)theScriptView andPrototypeObject:(JSObjectRef)jsPrototypeObject;
-- (id)initWithScriptView:(BSScriptView *)theScriptView andPrototypeObject:(JSObjectRef)jsPrototypeObject andParentObject:(JSObjectRef)jsParent;
+- (id)initWithScriptView:(BSScriptView*)theScriptView prototype:(JSObjectRef)theJSPrototypeObject;
+- (id)initWithScriptView:(BSScriptView*)theScriptView prototype:(JSObjectRef)theJSPrototypeObject this:(JSObjectRef)theJSThisObject;
 
-/*
- * Bridge
- */
- 
 - (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv;
-- (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv ofObject:(JSObjectRef)jsObject;
+- (JSValueRef)call:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv from:(BSBindingContextObject)context;
 
- /*
-  * Bound Methods
-  */
-  
 - (JSValueRef)constructor:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv;
 
 @end

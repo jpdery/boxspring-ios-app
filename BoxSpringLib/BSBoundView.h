@@ -9,12 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @class BSViewBinding;
-@class BSContextBinding;
 
 @interface BSBoundView : UIView
 
 @property(nonatomic, readonly) BSViewBinding* viewBinding;
-@property(nonatomic, readonly) BSContextBinding* contextBinding;
 
 - (id)initWithFrame:(CGRect)frame andViewBinding:(BSViewBinding*)theViewBinding;
 

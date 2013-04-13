@@ -113,6 +113,22 @@
 - (void)log:(JSValueRef)jsException;
 
 /**
+ * TODO
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
+- (BSBinding*)createBinding:(NSString*)name;
+
+/**
+ * TODO
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
+- (BSBinding*)createBinding:(NSString*)name prototype:(JSObjectRef)jsPrototypeObject this:(JSObjectRef)jsThisObject;
+
+/**
  * Binds a binding instance to a given key of the global object
  *
  * @param  binding The binding instance
