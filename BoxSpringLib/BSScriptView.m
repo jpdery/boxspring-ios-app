@@ -26,6 +26,13 @@
 @synthesize jsUndefinedValue;
 @synthesize jsNullValue;
 
+/**
+ * Initialize the view, create the javascript context and monitors class 
+ * definitions
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -67,6 +74,12 @@
     return self;
 }
 
+/**
+ * Executed when the view is deallocated
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 - (void)dealloc
 {
     JSValueUnprotect(jsGlobalContext, jsNullValue);
@@ -81,6 +94,15 @@
     [super dealloc];
 }
 
+/**
+ * Load and evaluate a script at a specified path within the app folder
+ *
+ * @param  source The file to evaluate
+ * @return void
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 - (void)loadScript:(NSString *)source
 {
     source = [NSString stringWithFormat:@"%@/App/%@", [[NSBundle mainBundle] resourcePath], source];
@@ -94,6 +116,15 @@
     [self evalString:script];
 }
 
+/**
+ * Execute a string of javascript
+ *
+ * @param  string The string to evaluate
+ * @return void
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 - (void)evalString:(NSString *)string
 {
     JSValueRef jsException = NULL;
@@ -101,6 +132,15 @@
     [self log:jsException];
 }
 
+/**
+ * Log an exception to the console
+ *
+ * @param  jsException The javascript exception object.
+ * @return void
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 - (void)log:(JSValueRef)jsException
 {
     if (!jsException)
@@ -124,17 +164,48 @@
     JSStringRelease(jsFilePropertyName);
 }
 
+/**
+ * Binds a binding instance to a given key of the global object
+ *
+ * @param  binding The binding instance
+ * @param  key The key of the global object used to store the binding
+ * @return void
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 - (void)bind:(BSBinding *)binding toKey:(NSString *)key
 {
     [self bind:binding toKey:key ofObject:self.jsGlobalObject];
 }
 
+/**
+ * Binds a binding instance to a given key of a specified object
+ *
+ * @param  binding The binding instance
+ * @param  key The key of the specified object used to store the binding
+ * @param  jsObject The javascript object the binding will be assigned to
+ * @return void
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 - (void)bind:(BSBinding *)binding toKey:(NSString *)key ofObject:(JSObjectRef)jsObject
 {
     JSObjectSetProperty(self.jsGlobalContext, jsObject, [key jsStringValue], [binding jsBoundObject], kJSPropertyAttributeDontDelete, NULL);
     [boundInstances addObject:binding];
 }
 
+/**
+ * Called when an javascript class object is defined using boxspring.define
+ *
+ * @param  jsObject The javascript object that has been defined
+ * @param  name The name of the javascript class object
+ * @return void
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 - (void)didDefineObject:(JSObjectRef)jsObject name:(NSString*)name
 {
     [primeConstructors setValue:[NSData dataWithJSObjectRef:jsObject] forKey:name];
@@ -197,6 +268,18 @@
     }
 }
 
+/**
+ * Called when a javascript class object is called as a function
+ *
+ * @param  jsObject The javascript object that has been called
+ * @param  name The name of the javascript class object
+ * @param  argc The ammount of arguments given to the function
+ * @param  argv The values of each arguments
+ * @return The object the function returns
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 - (JSObjectRef)didCallObjectAsFunction:(JSObjectRef)jsObject name:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
 {
     BSBinding* instance = (BSBinding*)JSObjectGetBoundObject(self.jsGlobalContext, jsObject);
@@ -232,6 +315,19 @@
     return NULL;
 }
 
+/**
+ * Called when a javascript class object is called as a constructor using the 
+ * new keyword
+ *
+ * @param  jsObject The javascript object that has been called
+ * @param  name The name of the javascript class object
+ * @param  argc The ammount of arguments given to the function
+ * @param  argv The values of each arguments
+ * @return The object the function returns
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 - (JSObjectRef)didCallObjectAsConstructor:(JSObjectRef)jsObject name:(NSString*)name argc:(size_t)argc argv:(const JSValueRef[])argv
 {
     JSObjectRef jsBindingConstructor = [[boundConstructors objectForKey:name] jsObject];
@@ -245,20 +341,23 @@
     return ret;
 }
 
-- (void)didCreateBinding:(BSBinding*)binding
-{
-
-}
-
-/*
- * C Bindings
+/**
+ * Data structure passed to bound javascript objects.
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
  */
-
 typedef struct {
     NSString* name;
     BSScriptView* view;
 } BSBindingData;
 
+/**
+ * JavaScriptCore Binding
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 static bool
 BSScriptViewClassSet(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef jsVal, JSValueRef* jsException)
 {
@@ -267,6 +366,12 @@ BSScriptViewClassSet(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef j
     return true;
 }
 
+/**
+ * JavaScriptCore Binding
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 static JSValueRef
 BSScriptViewClassGet(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef* jsException)
 {
@@ -281,6 +386,12 @@ BSScriptViewClassGet(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef j
         : [[primeConstructors objectForKey:name] jsObject];
 }
 
+/**
+ * JavaScriptCore Binding
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 static JSValueRef
 BSScriptViewObjectCallAsFunction(JSContextRef jsContext, JSObjectRef jsFunction, JSObjectRef jsObject, size_t argc, const JSValueRef argv[], JSValueRef* exception)
 {
@@ -288,6 +399,12 @@ BSScriptViewObjectCallAsFunction(JSContextRef jsContext, JSObjectRef jsFunction,
     return [data->view didCallObjectAsFunction:jsObject name:data->name argc:argc argv:argv];
 }
 
+/**
+ * JavaScriptCore Binding
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1
+ */
 static JSObjectRef
 BSScriptViewObjectCallAsConstructor(JSContextRef jsContext, JSObjectRef jsObject, size_t argc, const JSValueRef argv[], JSValueRef* exception)
 {
