@@ -54,7 +54,7 @@
     drawArgv[0] = contextBinding.jsBoundObject;
     drawArgv[1] = jsRect;
 
-    [self.viewBinding call:@"draw" argc:2 argv:drawArgv];
+    [self.viewBinding call:@"draw" argc:2 argv:drawArgv ofObject:self.viewBinding.jsParentObject ? self.viewBinding.jsParentObject : self.viewBinding.jsBoundObject];
 
 }
 

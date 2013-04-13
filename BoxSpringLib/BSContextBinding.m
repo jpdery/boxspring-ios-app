@@ -286,7 +286,15 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
  */
 - (void)setLineCap:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsLineCap = jsValue;
+    NSString* lineCap = [[NSString stringWithJSString:JSValueToStringCopy(jsContext, jsLineCap, NULL)] lowercaseString];
+    if ([lineCap isEqualToString:@"butt"]) {
+        CGContextSetLineCap(self.context, kCGLineCapButt);
+    } else if ([lineCap isEqualToString:@"round"]) {
+        CGContextSetLineCap(self.context, kCGLineCapRound);
+    } else if ([lineCap isEqualToString:@"square"]) {
+        CGContextSetLineCap(self.context, kCGLineCapSquare);
+    }
 }
 
 /**
@@ -303,7 +311,7 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
  */
 - (JSValueRef)getLineCap:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsLineCap;
 }
 
 /**
@@ -320,7 +328,15 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
  */
 - (void)setLineJoin:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsLineJoin = jsValue;
+    NSString* lineCap = [[NSString stringWithJSString:JSValueToStringCopy(jsContext, jsLineJoin, NULL)] lowercaseString];
+    if ([lineCap isEqualToString:@"miter"]) {
+        CGContextSetLineJoin(self.context, kCGLineJoinMiter);
+    } else if ([lineCap isEqualToString:@"round"]) {
+        CGContextSetLineJoin(self.context, kCGLineJoinRound);
+    } else if ([lineCap isEqualToString:@"bevel"]) {
+        CGContextSetLineJoin(self.context, kCGLineJoinBevel);
+    }    
 }
 
 /**
@@ -337,7 +353,7 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
  */
 - (JSValueRef)getLineJoin:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsLineJoin;
 }
 
 /**
@@ -354,7 +370,8 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
  */
 - (void)setLineWidth:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsLineWidth = jsValue;
+    CGContextSetLineWidth(self.context, JSValueToNumber(jsContext, jsLineWidth, NULL));
 }
 
 /**
@@ -371,7 +388,7 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
  */
 - (JSValueRef)getLineWidth:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsLineWidth;
 }
 
 /**
@@ -388,7 +405,8 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
  */
 - (void)setMiterLimit:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsMiterLimit = jsValue;
+    CGContextSetMiterLimit(self.context, JSValueToNumber(jsContext, jsMiterLimit, NULL));
 }
 
 /**
@@ -405,7 +423,7 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
  */
 - (JSValueRef)getMiterLimit:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsMiterLimit;
 }
 
 /*
@@ -431,6 +449,7 @@ BS_DEFINE_BOUND_FUNCTION(addColorStop, addColorStop)
  */
 - (JSValueRef)createLinearGradient:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"Method '' has not yet been implemented");
     return NULL;
 }
 
@@ -448,6 +467,7 @@ BS_DEFINE_BOUND_FUNCTION(addColorStop, addColorStop)
  */
 - (JSValueRef)createPattern:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"Method '' has not yet been implemented");
     return NULL;
 }
 
@@ -465,6 +485,7 @@ BS_DEFINE_BOUND_FUNCTION(addColorStop, addColorStop)
  */
 - (JSValueRef)createRadialGradient:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"Method '' has not yet been implemented");
     return NULL;
 }
 
@@ -482,6 +503,7 @@ BS_DEFINE_BOUND_FUNCTION(addColorStop, addColorStop)
  */
 - (JSValueRef)addColorStop:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"Method '' has not yet been implemented");
     return NULL;
 }
 
@@ -508,6 +530,11 @@ BS_DEFINE_BOUND_FUNCTION(clearRect, clearRect)
  */
 - (JSValueRef)rect:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    double w = JSValueToNumber(jsContext, argv[2], NULL);
+    double h = JSValueToNumber(jsContext, argv[3], NULL);
+    CGContextAddRect(self.context, CGRectMake(x, y, w, h));
     return NULL;
 }
 
@@ -525,18 +552,11 @@ BS_DEFINE_BOUND_FUNCTION(clearRect, clearRect)
  */
 - (JSValueRef)fillRect:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    NSLog(@"fillRect");
-
-    if (argc == 4) {
-    
-        double x = JSValueToNumber(jsContext, argv[0], NULL);
-        double y = JSValueToNumber(jsContext, argv[1], NULL);
-        double w = JSValueToNumber(jsContext, argv[2], NULL);
-        double h = JSValueToNumber(jsContext, argv[3], NULL);
-        
-        CGContextFillRect(self.context, CGRectMake(x, y, w, h));    
-    }
-    
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    double w = JSValueToNumber(jsContext, argv[2], NULL);
+    double h = JSValueToNumber(jsContext, argv[3], NULL);
+    CGContextFillRect(self.context, CGRectMake(x, y, w, h));
     return NULL;
 }
 
@@ -554,6 +574,12 @@ BS_DEFINE_BOUND_FUNCTION(clearRect, clearRect)
  */
 - (JSValueRef)strokeRect:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    double w = JSValueToNumber(jsContext, argv[2], NULL);
+    double h = JSValueToNumber(jsContext, argv[3], NULL);
+    CGContextAddRect(self.context, CGRectMake(x, y, w, h));
+    CGContextStrokePath(self.context);
     return NULL;
 }
 
@@ -571,6 +597,11 @@ BS_DEFINE_BOUND_FUNCTION(clearRect, clearRect)
  */
 - (JSValueRef)clearRect:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    double w = JSValueToNumber(jsContext, argv[2], NULL);
+    double h = JSValueToNumber(jsContext, argv[3], NULL);
+    CGContextClearRect(self.context, CGRectMake(x, y, w, h));
     return NULL;
 }
 
@@ -605,6 +636,7 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)fill:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    CGContextFillPath(self.context);
     return NULL;
 }
 
@@ -622,6 +654,7 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)stroke:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    CGContextStrokePath(self.context);
     return NULL;
 }
 
@@ -639,6 +672,7 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)beginPath:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    CGContextBeginPath(self.context);
     return NULL;
 }
 
@@ -656,6 +690,9 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)moveTo:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    CGContextMoveToPoint(self.context, x, y);
     return NULL;
 }
 
@@ -673,6 +710,7 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)closePath:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    CGContextClosePath(self.context);
     return NULL;
 }
 
@@ -690,6 +728,9 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)lineTo:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    CGContextAddLineToPoint(self.context, x, y);
     return NULL;
 }
 
@@ -707,6 +748,11 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)clip:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    double w = JSValueToNumber(jsContext, argv[2], NULL);
+    double h = JSValueToNumber(jsContext, argv[3], NULL);
+    CGContextClipToRect(self.context, CGRectMake(x, y, w, h));
     return NULL;
 }
 
@@ -724,6 +770,11 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)quadraticCurveTo:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double cpx = JSValueToNumber(jsContext, argv[0], NULL);
+    double cpy = JSValueToNumber(jsContext, argv[1], NULL);
+    double x = JSValueToNumber(jsContext, argv[2], NULL);
+    double y = JSValueToNumber(jsContext, argv[3], NULL);
+    CGContextAddQuadCurveToPoint(self.context, cpx, cpy, x, y);
     return NULL;
 }
 
@@ -741,6 +792,13 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)bezierCurveTo:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double cp1x = JSValueToNumber(jsContext, argv[0], NULL);
+    double cp1y = JSValueToNumber(jsContext, argv[1], NULL);
+    double cp2x = JSValueToNumber(jsContext, argv[2], NULL);
+    double cp2y = JSValueToNumber(jsContext, argv[3], NULL);
+    double x = JSValueToNumber(jsContext, argv[4], NULL);
+    double y = JSValueToNumber(jsContext, argv[5], NULL);
+    CGContextAddCurveToPoint(self.context, cp1x, cp1y, cp2x, cp2y, x, y);
     return NULL;
 }
 
@@ -758,6 +816,13 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)arc:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    double r = JSValueToNumber(jsContext, argv[2], NULL);
+    double sa = JSValueToNumber(jsContext, argv[3], NULL);
+    double ea = JSValueToNumber(jsContext, argv[4], NULL);
+    int acw = JSValueToNumber(jsContext, argv[5], NULL);
+    CGContextAddArc(self.context, x, y, r, sa, ea, acw);
     return NULL;
 }
 
@@ -775,6 +840,12 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)arcTo:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double x1 = JSValueToNumber(jsContext, argv[0], NULL);
+    double y1 = JSValueToNumber(jsContext, argv[1], NULL);
+    double x2 = JSValueToNumber(jsContext, argv[2], NULL);
+    double y2 = JSValueToNumber(jsContext, argv[3], NULL);
+    double r = JSValueToNumber(jsContext, argv[4], NULL);
+    CGContextAddArcToPoint(self.context, x1, y1, x2, y2, r);
     return NULL;
 }
 
@@ -792,7 +863,9 @@ BS_DEFINE_BOUND_FUNCTION(isPointInPath, isPointInPath)
  */
 - (JSValueRef)isPointInPath:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
-    return NULL;
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    return JSValueMakeBoolean(jsContext, CGContextPathContainsPoint(self.context, CGPointMake(x, y), kCGPathFill));
 }
 
 /*
@@ -819,6 +892,9 @@ BS_DEFINE_BOUND_FUNCTION(setTransform, setTransform)
  */
 - (JSValueRef)scale:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    CGContextScaleCTM(self.context, x, y);
     return NULL;
 }
 
@@ -836,6 +912,8 @@ BS_DEFINE_BOUND_FUNCTION(setTransform, setTransform)
  */
 - (JSValueRef)rotate:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double a = JSValueToNumber(jsContext, argv[0], NULL);
+    CGContextRotateCTM(self.context, a);
     return NULL;
 }
 
@@ -853,6 +931,9 @@ BS_DEFINE_BOUND_FUNCTION(setTransform, setTransform)
  */
 - (JSValueRef)translate:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    double x = JSValueToNumber(jsContext, argv[0], NULL);
+    double y = JSValueToNumber(jsContext, argv[1], NULL);
+    CGContextTranslateCTM(self.context, x, y);
     return NULL;
 }
 
@@ -870,6 +951,14 @@ BS_DEFINE_BOUND_FUNCTION(setTransform, setTransform)
  */
 - (JSValueRef)transform:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    CGAffineTransform transform;
+    transform.a = JSValueToNumber(jsContext, argv[0], NULL);
+    transform.b = JSValueToNumber(jsContext, argv[1], NULL);
+    transform.c = JSValueToNumber(jsContext, argv[2], NULL);
+    transform.d = JSValueToNumber(jsContext, argv[3], NULL);
+    transform.tx = JSValueToNumber(jsContext, argv[4], NULL);
+    transform.ty = JSValueToNumber(jsContext, argv[5], NULL);
+    CGContextConcatCTM(self.context, transform);
     return NULL;
 }
 
@@ -887,6 +976,17 @@ BS_DEFINE_BOUND_FUNCTION(setTransform, setTransform)
  */
 - (JSValueRef)setTransform:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    CGAffineTransform transform;
+    transform.a = JSValueToNumber(jsContext, argv[0], NULL);
+    transform.b = JSValueToNumber(jsContext, argv[1], NULL);
+    transform.c = JSValueToNumber(jsContext, argv[2], NULL);
+    transform.d = JSValueToNumber(jsContext, argv[3], NULL);
+    transform.tx = JSValueToNumber(jsContext, argv[4], NULL);
+    transform.ty = JSValueToNumber(jsContext, argv[5], NULL);
+    CGAffineTransform current = CGContextGetCTM(self.context);
+    CGAffineTransform invert = CGAffineTransformInvert(current);
+    CGContextConcatCTM(self.context, invert);
+    CGContextConcatCTM(self.context, transform);
     return NULL;
 }
 
@@ -919,7 +1019,7 @@ BS_DEFINE_BOUND_FUNCTION(measureText, measureText)
  */
 - (void)setFont:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    NSLog(@"Property 'font' has not yet been implemented");
 }
 
 /**
@@ -936,6 +1036,7 @@ BS_DEFINE_BOUND_FUNCTION(measureText, measureText)
  */
 - (JSValueRef)getFont:(JSContextRef)jsContext
 {
+    NSLog(@"Property 'font' has not yet been implemented");
     return NULL;
 }
 
@@ -953,7 +1054,7 @@ BS_DEFINE_BOUND_FUNCTION(measureText, measureText)
  */
 - (void)setTextAlign:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    NSLog(@"Property 'textAlign' has not yet been implemented");
 }
 
 /**
@@ -970,6 +1071,7 @@ BS_DEFINE_BOUND_FUNCTION(measureText, measureText)
  */
 - (JSValueRef)getTextAlign:(JSContextRef)jsContext
 {
+    NSLog(@"Property 'textAlign' has not yet been implemented");
     return NULL;
 }
 
@@ -987,7 +1089,7 @@ BS_DEFINE_BOUND_FUNCTION(measureText, measureText)
  */
 - (void)setTextBaseline:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    NSLog(@"Property 'textBaseline' has not yet been implemented");
 }
 
 /**
@@ -1004,6 +1106,7 @@ BS_DEFINE_BOUND_FUNCTION(measureText, measureText)
  */
 - (JSValueRef)getTextBaseline:(JSContextRef)jsContext
 {
+    NSLog(@"Property 'textBaseline' has not yet been implemented");
     return NULL;
 }
 
@@ -1021,6 +1124,7 @@ BS_DEFINE_BOUND_FUNCTION(measureText, measureText)
  */
 - (JSValueRef)fillText:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"Method 'fillText' has not yet been implemented");
     return NULL;
 }
 
@@ -1038,6 +1142,7 @@ BS_DEFINE_BOUND_FUNCTION(measureText, measureText)
  */
 - (JSValueRef)strokeText:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"Method 'strokeText' has not yet been implemented");
     return NULL;
 }
 
@@ -1055,6 +1160,7 @@ BS_DEFINE_BOUND_FUNCTION(measureText, measureText)
  */
 - (JSValueRef)measureText:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    NSLog(@"Method 'measureText' has not yet been implemented");
     return NULL;
 }
 
@@ -1163,7 +1269,8 @@ BS_DEFINE_BOUND_GETTER(globalCompositeOperation, getGlobalCompositeOperation)
  */
 - (void)setGlobalAlpha:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsGlobalAlpha = jsValue;
+    CGContextSetAlpha(self.context, JSValueToNumber(jsContext, jsGlobalAlpha, NULL));
 }
 
 /**
@@ -1180,7 +1287,7 @@ BS_DEFINE_BOUND_GETTER(globalCompositeOperation, getGlobalCompositeOperation)
  */
 - (JSValueRef)getGlobalAplha:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsGlobalAlpha;
 }
 
 /**
@@ -1197,7 +1304,33 @@ BS_DEFINE_BOUND_GETTER(globalCompositeOperation, getGlobalCompositeOperation)
  */
 - (void)setGlobalCompositeOperation:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
-
+    jsGlobalCompositeOperation = jsValue;
+    NSString* mode = [NSString stringWithJSString:JSValueToStringCopy(jsContext, jsGlobalCompositeOperation, NULL)];
+    if ([mode isEqualToString:@"source-over"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeNormal);
+    } else if ([mode isEqualToString:@"source-in"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeSourceIn);
+    } else if ([mode isEqualToString:@"source-out"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeSourceOut);
+    } else if ([mode isEqualToString:@"source-atop"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeSourceAtop);
+    } else if ([mode isEqualToString:@"destination-over"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeDestinationOver);
+    } else if ([mode isEqualToString:@"destination-in"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeDestinationIn);
+    } else if ([mode isEqualToString:@"destination-out"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeDestinationOut);
+    } else if ([mode isEqualToString:@"destination-atop"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeDestinationAtop);
+    } else if ([mode isEqualToString:@"lighter"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeLighten);
+    } else if ([mode isEqualToString:@"darker"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeDarken);
+    } else if ([mode isEqualToString:@"copy"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeCopy);
+    } else if ([mode isEqualToString:@"xor"]) {
+        CGContextSetBlendMode(self.context, kCGBlendModeXOR);
+    }
 }
 
 /**
@@ -1214,7 +1347,7 @@ BS_DEFINE_BOUND_GETTER(globalCompositeOperation, getGlobalCompositeOperation)
  */
 - (JSValueRef)getGlobalCompositeOperation:(JSContextRef)jsContext
 {
-    return NULL;
+    return jsGlobalCompositeOperation;
 }
 
 /*
@@ -1238,6 +1371,28 @@ BS_DEFINE_BOUND_FUNCTION(restore, restore)
  */
 - (JSValueRef)save:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+
+//    NSMutableDictionary* state = [NSMutableDictionary new];
+
+/*    JSValueRef jsFillStyle;
+    JSValueRef jsStrokeStyle;
+    JSValueRef jsShadowColor;
+    JSValueRef jsShadowBlur;
+    JSValueRef jsShadowOffsetX;
+    JSValueRef jsShadowOffsetY;
+    JSValueRef jsLineCap;
+    JSValueRef jsLineJoin;
+    JSValueRef jsLineWidth;
+    JSValueRef jsMiterLimit;
+    JSValueRef jsGlobalAlpha;
+    JSValueRef jsGlobalCompositeOperation;
+
+    CGColorRef shadowColor;
+    double shadowBlur;
+    double shadowOffsetX;
+    double shadowOffsetY;*/
+
+    CGContextSaveGState(self.context);
     return NULL;
 }
 
@@ -1255,6 +1410,7 @@ BS_DEFINE_BOUND_FUNCTION(restore, restore)
  */
 - (JSValueRef)restore:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+    CGContextRestoreGState(self.context);
     return NULL;
 }
 

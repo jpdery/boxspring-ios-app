@@ -7,6 +7,28 @@ var Button = boxspring.define('boxspring.Button', {
         console.log('boxspring.Button constructor called');
         Button.parent.constructor.apply(this, arguments);
         return this;
+    },
+    
+    draw: function(context, area) {
+        
+        console.log("Hum, hum");
+        
+        context.fillStyle = '#496865';
+        context.fillRect(
+            area.origin.x,
+            area.origin.y,
+            area.size.x / 2,
+            area.size.y
+        );
+
+        context.fillStyle = '#164d48';
+        context.fillRect(
+            area.origin.x + area.size.x / 2,
+            area.origin.y,
+            area.size.x / 2,
+            area.size.y
+        );
+    
     }
 
 });
@@ -21,5 +43,5 @@ var w = new boxspring.Window(320, 480);
 //
 //console.log(boxspring.Button);
 
-var b = new boxspring.Button(50, 50, 100, 200);
+var b = new boxspring.Button(120, 120, 100, 200);
 w.addChild(b);

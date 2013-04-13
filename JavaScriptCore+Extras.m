@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
+#import "UIColor+HTMLColors.h"
 #import "NSString+JavaScriptCore.h"
 #import "NSData+JavaScriptCore.h"
 #import "JavaScriptCore+Extras.h"
@@ -234,16 +235,13 @@ JSObjectLogProperties(JSContextRef jsContext, JSObjectRef jsObject)
     }
 }
 
+/* 
+ * Color
+ */
 
-CGColorRef JSValueToCGColor(JSContextRef ctx, JSValueRef value) {
-	
-	JSStringRef jsString = JSValueToStringCopy( ctx, value, NULL );
-	
-    NSString* hexString = [NSString stringWithJSString:jsString];
-    
-    unsigned rgbValue = 0;
-    NSScanner *scanner = [NSScanner scannerWithString:hexString];
-    [scanner setScanLocation:1]; // bypass '#' character
-    [scanner scanHexInt:&rgbValue];
-    return [[UIColor colorWithRed:((rgbValue & 0xFF0000) >> 16)/255.0 green:((rgbValue & 0xFF00) >> 8)/255.0 blue:(rgbValue & 0xFF)/255.0 alpha:1.0] CGColor];
+CGColorRef JSValueToCGColor(JSContextRef jsContext, JSValueRef jsVal)
+{
+    NSString* name = [NSString stringWithJSString:JSValueToStringCopy(jsContext, jsVal, NULL)];
+    UIColor* color = [UIColor colorWithCSS:name];
+    return [color CGColor];    
 }

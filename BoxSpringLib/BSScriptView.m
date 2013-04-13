@@ -194,6 +194,14 @@
     return [binding autorelease];
 }
 
+- (BSBinding*)newBindingNamed:(NSString*)name withPrototypeObject:(JSObjectRef)jsPrototype andParentObject:(JSObjectRef)jsParent
+{
+    Class class = NSClassFromString([bindings objectForKey:name]);
+    BSBinding* binding = [(BSBinding*)[class alloc] initWithScriptView:self andPrototypeObject:jsPrototype andParentObject:jsParent];
+    [boundInstances addObject:binding];
+    return [binding autorelease];
+}
+
 /**
  * Binds a binding instance to a given key of a specified object
  *
@@ -314,7 +322,7 @@
     while (jsProto) {
     
         if (jsProto == jsBoundConstructorPrototype) {
-            BSBinding* binding = [self newBindingNamed:name withPrototypeObject:jsBoundConstructorPrototype];
+            BSBinding* binding = [self newBindingNamed:name withPrototypeObject:jsBoundConstructorPrototype andParentObject:jsObject];
             JSObjectSetPrototype(self.jsGlobalContext, jsProtoOwner, binding.jsBoundObject);
             JSObjectRef ret = (JSObjectRef)[binding constructor:self.jsGlobalContext argc:argc argv:argv];
             return ret ? ret : binding.jsBoundObject;

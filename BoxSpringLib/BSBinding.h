@@ -97,6 +97,7 @@
 @property (nonatomic, readonly) JSContextRef jsContext;
 @property (nonatomic, readonly) JSObjectRef jsBoundObject;
 @property (nonatomic, readonly) JSObjectRef jsBoundObjectPrototype;
+@property (nonatomic, readonly) JSObjectRef jsParentObject;
 
 /*
  * Initialization
@@ -104,6 +105,7 @@
  
 - (id)initWithScriptView:(BSScriptView*)theScriptView;
 - (id)initWithScriptView:(BSScriptView *)theScriptView andPrototypeObject:(JSObjectRef)jsPrototypeObject;
+- (id)initWithScriptView:(BSScriptView *)theScriptView andPrototypeObject:(JSObjectRef)jsPrototypeObject andParentObject:(JSObjectRef)jsParent;
 
 /*
  * Bridge

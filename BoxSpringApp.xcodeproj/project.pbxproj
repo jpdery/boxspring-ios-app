@@ -33,6 +33,7 @@
 		C783B80316E97BFA00D393B3 /* NSString+JavaScriptCore.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80216E97BFA00D393B3 /* NSString+JavaScriptCore.m */; };
 		C783B80516ECEFBE00D393B3 /* App in Resources */ = {isa = PBXBuildFile; fileRef = C783B80416ECEFBE00D393B3 /* App */; };
 		C7A741B217074AC7001125E5 /* JavaScriptCore+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */; };
+		C7E5C77E1719E92C000BF9AC /* UIColor+HTMLColors.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E5C77D1719E92C000BF9AC /* UIColor+HTMLColors.m */; };
 		C7F00F5C1718A4A100A672E2 /* Bindings.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7F00F5B1718A4A100A672E2 /* Bindings.plist */; };
 /* End PBXBuildFile section */
 
@@ -89,6 +90,8 @@
 		C783B80416ECEFBE00D393B3 /* App */ = {isa = PBXFileReference; lastKnownFileType = folder; path = App; sourceTree = "<group>"; };
 		C7A741B017074AC7001125E5 /* JavaScriptCore+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JavaScriptCore+Extras.h"; sourceTree = "<group>"; };
 		C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "JavaScriptCore+Extras.m"; sourceTree = "<group>"; };
+		C7E5C77C1719E92C000BF9AC /* UIColor+HTMLColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+HTMLColors.h"; sourceTree = "<group>"; };
+		C7E5C77D1719E92C000BF9AC /* UIColor+HTMLColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HTMLColors.m"; sourceTree = "<group>"; };
 		C7F00F5B1718A4A100A672E2 /* Bindings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Bindings.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -228,6 +231,8 @@
 		C783B7FF16E97B6C00D393B3 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
+				C7E5C77C1719E92C000BF9AC /* UIColor+HTMLColors.h */,
+				C7E5C77D1719E92C000BF9AC /* UIColor+HTMLColors.m */,
 				C783B80116E97BFA00D393B3 /* NSString+JavaScriptCore.h */,
 				C783B80216E97BFA00D393B3 /* NSString+JavaScriptCore.m */,
 				C735A7A216F8FBB0008A9CC2 /* NSData+JavaScriptCore.h */,
@@ -322,6 +327,7 @@
 				C7A741B217074AC7001125E5 /* JavaScriptCore+Extras.m in Sources */,
 				C70063BE1719A4A300C0FF53 /* BSBoundView.m in Sources */,
 				C70063C11719A62B00C0FF53 /* BSBoundWindow.m in Sources */,
+				C7E5C77E1719E92C000BF9AC /* UIColor+HTMLColors.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

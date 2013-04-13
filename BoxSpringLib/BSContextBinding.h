@@ -20,11 +20,19 @@
     JSValueRef jsShadowBlur;
     JSValueRef jsShadowOffsetX;
     JSValueRef jsShadowOffsetY;
+    JSValueRef jsLineCap;
+    JSValueRef jsLineJoin;
+    JSValueRef jsLineWidth;
+    JSValueRef jsMiterLimit;
+    JSValueRef jsGlobalAlpha;
+    JSValueRef jsGlobalCompositeOperation;
 
     CGColorRef shadowColor;
     double shadowBlur;
     double shadowOffsetX;
     double shadowOffsetY;
+    
+    NSMutableArray* states;
 }
 
 @property (nonatomic) CGContextRef context;

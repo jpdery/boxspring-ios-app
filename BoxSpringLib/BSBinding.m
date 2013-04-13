@@ -21,6 +21,7 @@
 @synthesize jsContext;
 @synthesize jsBoundObject;
 @synthesize jsBoundObjectPrototype;
+@synthesize jsParentObject;
 
 /*
  * Initialization
@@ -54,6 +55,14 @@
         JSObjectSetPrototype(self.jsContext, self.jsBoundObject, self.jsBoundObjectPrototype);
     }
     
+    return self;
+}
+
+- (id)initWithScriptView:(BSScriptView *)theScriptView andPrototypeObject:(JSObjectRef)jsPrototypeObject andParentObject:(JSObjectRef)jsParent
+{
+    if (self = [self initWithScriptView:theScriptView andPrototypeObject:jsPrototypeObject]) {
+        jsParentObject = jsParent;
+    }
     return self;
 }
 
