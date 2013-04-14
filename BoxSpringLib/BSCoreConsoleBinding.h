@@ -8,6 +8,6 @@
 
 #import "BSBinding.h"
 
-@interface BSConsoleBinding : BSBinding
+@interface BSCoreConsoleBinding : BSBinding
 
 @end

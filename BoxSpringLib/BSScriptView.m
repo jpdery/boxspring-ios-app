@@ -9,11 +9,12 @@
 #import "NSString+JavaScriptCore.h"
 #import "NSData+JavaScriptCore.h"
 #import "JavaScriptCore+Extras.h"
-#import "BSScriptView.h"
-#import "BSViewBinding.h"
+#import "BSCoreWindowBinding.h"
+#import "BSCoreConsoleBinding.h"
 #import "BSWindowBinding.h"
-#import "BSConsoleBinding.h"
+#import "BSViewBinding.h"
 #import "BSBinding.h"
+#import "BSScriptView.h"
 
 @implementation BSScriptView
 
@@ -45,6 +46,8 @@
         JSValueProtect(jsGlobalContext, jsUndefinedValue);
         JSValueProtect(jsGlobalContext, jsNullValue);
 
+        JSObjectSetProperty(jsGlobalContext,jsGlobalObject, JSStringCreateWithUTF8CString("window"), jsGlobalObject, kJSPropertyAttributeDontDelete, NULL);
+
         bindings = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Bindings" ofType:@"plist"]];
         boundInstances = [NSMutableArray new];
         boundConstructors = [NSMutableDictionary new];
@@ -65,10 +68,7 @@
             kJSPropertyAttributeNone,
             NULL
         );
-        
-        BSConsoleBinding* console = [[BSConsoleBinding alloc] initWithScriptView:self];
-        [self bind:console toKey:@"console"];
-        [console release];
+      
     }
     
     return self;
@@ -315,6 +315,8 @@
             kJSPropertyAttributeDontDelete,
             NULL
         );
+
+        JSValueProtect(self.jsGlobalContext, jsBindingConstructor);
 
         [boundConstructors setValue:[NSData dataWithJSObjectRef:jsBindingConstructor] forKey:name];
     }

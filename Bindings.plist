@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>core.Window</key>
+	<string>BSCoreWindowBinding</string>
+	<key>core.Image</key>
+	<string>BSCoreImageBinding</string>
+	<key>core.Console</key>
+	<string>BSCoreConsoleBinding</string>
 	<key>boxspring.Window</key>
 	<string>BSWindowBinding</string>
 	<key>boxspring.View</key>

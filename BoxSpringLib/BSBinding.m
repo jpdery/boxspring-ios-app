@@ -36,6 +36,8 @@
         JSObjectInheritObject(self.jsContext, jsBoundObject);
         JSObjectSetBoundObject(self.jsContext, jsBoundObject, self);
         jsThisObject = jsBoundObject;
+        
+        JSValueProtect(self.jsContext, jsBoundObject);
     }
 
     return self;

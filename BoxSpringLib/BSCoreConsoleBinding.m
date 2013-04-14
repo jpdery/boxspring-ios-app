@@ -8,9 +8,9 @@
 
 #import "NSString+JavaScriptCore.h"
 #import "NSData+JavaScriptCore.h"
-#import "BSConsoleBinding.h"
+#import "BSCoreConsoleBinding.h"
 
-@implementation BSConsoleBinding
+@implementation BSCoreConsoleBinding
 
 BS_DEFINE_BOUND_FUNCTION(log, log)
 

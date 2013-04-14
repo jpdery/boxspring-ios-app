@@ -27,14 +27,16 @@
 		C783B7E416E95B3B00D393B3 /* BSScriptViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E316E95B3B00D393B3 /* BSScriptViewController.m */; };
 		C783B7E716E95B8200D393B3 /* BSBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7E616E95B8200D393B3 /* BSBinding.m */; };
 		C783B7F716E9779A00D393B3 /* libiOSJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7F616E9779A00D393B3 /* libiOSJavaScriptCore.a */; };
-		C783B7FA16E9781200D393B3 /* BSConsoleBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7F916E9781200D393B3 /* BSConsoleBinding.m */; };
+		C783B7FA16E9781200D393B3 /* BSCoreConsoleBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B7F916E9781200D393B3 /* BSCoreConsoleBinding.m */; };
 		C783B7FC16E9784600D393B3 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7FB16E9784600D393B3 /* libicucore.dylib */; };
 		C783B7FE16E9784C00D393B3 /* libstdc++.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C783B7FD16E9784C00D393B3 /* libstdc++.dylib */; };
 		C783B80316E97BFA00D393B3 /* NSString+JavaScriptCore.m in Sources */ = {isa = PBXBuildFile; fileRef = C783B80216E97BFA00D393B3 /* NSString+JavaScriptCore.m */; };
 		C783B80516ECEFBE00D393B3 /* App in Resources */ = {isa = PBXBuildFile; fileRef = C783B80416ECEFBE00D393B3 /* App */; };
 		C7A741B217074AC7001125E5 /* JavaScriptCore+Extras.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */; };
-		C7E5C77E1719E92C000BF9AC /* UIColor+HTMLColors.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E5C77D1719E92C000BF9AC /* UIColor+HTMLColors.m */; };
 		C7F00F5C1718A4A100A672E2 /* Bindings.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7F00F5B1718A4A100A672E2 /* Bindings.plist */; };
+		C7FC9C48171A2129008B021E /* BSCoreImageBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FC9C47171A2129008B021E /* BSCoreImageBinding.m */; };
+		C7FC9C4B171A2239008B021E /* BSCoreWindowBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FC9C4A171A2239008B021E /* BSCoreWindowBinding.m */; };
+		C7FC9C4F171AE490008B021E /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FC9C4E171AE490008B021E /* UIColor+Hex.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,8 +83,8 @@
 		C783B7F416E9779A00D393B3 /* JSValueRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSValueRef.h; sourceTree = "<group>"; };
 		C783B7F516E9779A00D393B3 /* WebKitAvailability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebKitAvailability.h; sourceTree = "<group>"; };
 		C783B7F616E9779A00D393B3 /* libiOSJavaScriptCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libiOSJavaScriptCore.a; sourceTree = "<group>"; };
-		C783B7F816E9781200D393B3 /* BSConsoleBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSConsoleBinding.h; sourceTree = "<group>"; };
-		C783B7F916E9781200D393B3 /* BSConsoleBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSConsoleBinding.m; sourceTree = "<group>"; };
+		C783B7F816E9781200D393B3 /* BSCoreConsoleBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSCoreConsoleBinding.h; sourceTree = "<group>"; };
+		C783B7F916E9781200D393B3 /* BSCoreConsoleBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSCoreConsoleBinding.m; sourceTree = "<group>"; };
 		C783B7FB16E9784600D393B3 /* libicucore.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.dylib; path = usr/lib/libicucore.dylib; sourceTree = SDKROOT; };
 		C783B7FD16E9784C00D393B3 /* libstdc++.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.dylib"; path = "usr/lib/libstdc++.dylib"; sourceTree = SDKROOT; };
 		C783B80116E97BFA00D393B3 /* NSString+JavaScriptCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+JavaScriptCore.h"; path = "BoxSpringLib/NSString+JavaScriptCore.h"; sourceTree = "<group>"; };
@@ -90,9 +92,13 @@
 		C783B80416ECEFBE00D393B3 /* App */ = {isa = PBXFileReference; lastKnownFileType = folder; path = App; sourceTree = "<group>"; };
 		C7A741B017074AC7001125E5 /* JavaScriptCore+Extras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "JavaScriptCore+Extras.h"; sourceTree = "<group>"; };
 		C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "JavaScriptCore+Extras.m"; sourceTree = "<group>"; };
-		C7E5C77C1719E92C000BF9AC /* UIColor+HTMLColors.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIColor+HTMLColors.h"; sourceTree = "<group>"; };
-		C7E5C77D1719E92C000BF9AC /* UIColor+HTMLColors.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIColor+HTMLColors.m"; sourceTree = "<group>"; };
 		C7F00F5B1718A4A100A672E2 /* Bindings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Bindings.plist; sourceTree = "<group>"; };
+		C7FC9C46171A2129008B021E /* BSCoreImageBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSCoreImageBinding.h; sourceTree = "<group>"; };
+		C7FC9C47171A2129008B021E /* BSCoreImageBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSCoreImageBinding.m; sourceTree = "<group>"; };
+		C7FC9C49171A2239008B021E /* BSCoreWindowBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSCoreWindowBinding.h; sourceTree = "<group>"; };
+		C7FC9C4A171A2239008B021E /* BSCoreWindowBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSCoreWindowBinding.m; sourceTree = "<group>"; };
+		C7FC9C4D171AE490008B021E /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Hex.h"; path = "BoxSpringLib/UIColor+Hex.h"; sourceTree = "<group>"; };
+		C7FC9C4E171AE490008B021E /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Hex.m"; path = "BoxSpringLib/UIColor+Hex.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,14 +185,18 @@
 				C783B7E016E95B2C00D393B3 /* BSScriptView.m */,
 				C783B7E516E95B8200D393B3 /* BSBinding.h */,
 				C783B7E616E95B8200D393B3 /* BSBinding.m */,
-				C783B7F816E9781200D393B3 /* BSConsoleBinding.h */,
-				C783B7F916E9781200D393B3 /* BSConsoleBinding.m */,
 				C71CA51816F7D990006467FF /* BSViewBinding.h */,
 				C71CA51916F7D990006467FF /* BSViewBinding.m */,
 				C735A79C16F8A735008A9CC2 /* BSWindowBinding.h */,
 				C735A79D16F8A735008A9CC2 /* BSWindowBinding.m */,
 				C77EFBDA16FA843E008BF1B8 /* BSContextBinding.h */,
 				C77EFBDB16FA843E008BF1B8 /* BSContextBinding.m */,
+				C7FC9C49171A2239008B021E /* BSCoreWindowBinding.h */,
+				C7FC9C4A171A2239008B021E /* BSCoreWindowBinding.m */,
+				C783B7F816E9781200D393B3 /* BSCoreConsoleBinding.h */,
+				C783B7F916E9781200D393B3 /* BSCoreConsoleBinding.m */,
+				C7FC9C46171A2129008B021E /* BSCoreImageBinding.h */,
+				C7FC9C47171A2129008B021E /* BSCoreImageBinding.m */,
 				C70063BC1719A4A300C0FF53 /* BSBoundView.h */,
 				C70063BD1719A4A300C0FF53 /* BSBoundView.m */,
 				C70063BF1719A62B00C0FF53 /* BSBoundWindow.h */,
@@ -231,8 +241,6 @@
 		C783B7FF16E97B6C00D393B3 /* Extras */ = {
 			isa = PBXGroup;
 			children = (
-				C7E5C77C1719E92C000BF9AC /* UIColor+HTMLColors.h */,
-				C7E5C77D1719E92C000BF9AC /* UIColor+HTMLColors.m */,
 				C783B80116E97BFA00D393B3 /* NSString+JavaScriptCore.h */,
 				C783B80216E97BFA00D393B3 /* NSString+JavaScriptCore.m */,
 				C735A7A216F8FBB0008A9CC2 /* NSData+JavaScriptCore.h */,
@@ -241,6 +249,8 @@
 				C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */,
 				C762867416FFAE6F00A1B1C4 /* Geometry+Extras.h */,
 				C762867516FFAE6F00A1B1C4 /* Geometry+Extras.m */,
+				C7FC9C4D171AE490008B021E /* UIColor+Hex.h */,
+				C7FC9C4E171AE490008B021E /* UIColor+Hex.m */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -317,7 +327,7 @@
 				C783B7E116E95B2C00D393B3 /* BSScriptView.m in Sources */,
 				C783B7E416E95B3B00D393B3 /* BSScriptViewController.m in Sources */,
 				C783B7E716E95B8200D393B3 /* BSBinding.m in Sources */,
-				C783B7FA16E9781200D393B3 /* BSConsoleBinding.m in Sources */,
+				C783B7FA16E9781200D393B3 /* BSCoreConsoleBinding.m in Sources */,
 				C783B80316E97BFA00D393B3 /* NSString+JavaScriptCore.m in Sources */,
 				C71CA51A16F7D990006467FF /* BSViewBinding.m in Sources */,
 				C735A79E16F8A735008A9CC2 /* BSWindowBinding.m in Sources */,
@@ -327,7 +337,9 @@
 				C7A741B217074AC7001125E5 /* JavaScriptCore+Extras.m in Sources */,
 				C70063BE1719A4A300C0FF53 /* BSBoundView.m in Sources */,
 				C70063C11719A62B00C0FF53 /* BSBoundWindow.m in Sources */,
-				C7E5C77E1719E92C000BF9AC /* UIColor+HTMLColors.m in Sources */,
+				C7FC9C48171A2129008B021E /* BSCoreImageBinding.m in Sources */,
+				C7FC9C4B171A2239008B021E /* BSCoreWindowBinding.m in Sources */,
+				C7FC9C4F171AE490008B021E /* UIColor+Hex.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -413,7 +425,9 @@
 					"\"$(SRCROOT)/Libs\"",
 					"\"$(SRCROOT)/Libs/\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "armv6 armv7";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -430,7 +444,9 @@
 					"\"$(SRCROOT)/Libs\"",
 					"\"$(SRCROOT)/Libs/\"",
 				);
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALID_ARCHS = "armv6 armv7";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

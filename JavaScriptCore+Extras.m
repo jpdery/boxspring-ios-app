@@ -6,7 +6,7 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "UIColor+HTMLColors.h"
+#import "UIColor+Hex.h"
 #import "NSString+JavaScriptCore.h"
 #import "NSData+JavaScriptCore.h"
 #import "JavaScriptCore+Extras.h"

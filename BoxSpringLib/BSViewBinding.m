@@ -92,8 +92,6 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
     
     BSViewBinding* childViewBinding = (BSViewBinding*)JSObjectGetBoundObject(jsContext, (JSObjectRef)argv[0]);
 
-    NSLog(@"Adding binding %@", childViewBinding);
-
     [self.view
         insertSubview:childViewBinding.view
         atIndex:index];
@@ -114,11 +112,12 @@ BS_DEFINE_BOUND_FUNCTION(reflow, reflow);
  */
 - (JSValueRef)redraw:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+
     CGRect rect;
     if (argc == 1) {
         rect = CGRectFromJSObject(jsContext, (JSObjectRef)argv[0]);
     } else {
-        rect = self.view.frame;
+        rect = self.view.bounds;
     }
 
     [self.view setNeedsDisplayInRect:rect];
