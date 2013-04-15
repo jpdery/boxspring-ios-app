@@ -10,6 +10,13 @@
 #import "NSData+JavaScriptCore.h"
 #import "BSCoreWindowBinding.h"
 
+@implementation BSTimerInfo
+    @synthesize jsCallback;
+    @synthesize jsInterval;
+    @synthesize identifier;
+    @synthesize repeat;
+@end
+
 @implementation BSCoreWindowBinding
 
 BS_DEFINE_BOUND_FUNCTION(setInterval, setInterval);
@@ -28,36 +35,30 @@ BS_DEFINE_BOUND_FUNCTION(clearTimeout, clearTimeout);
 
 - (JSValueRef)setInterval:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef[])argv
 {
-    NSLog(@"Set Interval");
+    JSValueRef jsCallback = argv[0];
+    JSValueRef jsInterval = argv[1];
+    double interval = JSValueToNumber(jsContext, jsInterval, NULL);
 
-    JSValueRef jsFunction = argv[0];
-    JSValueRef jsDelay = argv[1];
-    double delay = JSValueToNumber(jsContext, jsDelay, NULL);
+    lastIntervalId++;
 
-    JSValueProtect(jsContext, jsFunction);
+    BSTimerInfo* infos = [BSTimerInfo new];
+    infos.jsCallback = jsCallback;
+    infos.jsInterval = jsInterval;
+    infos.identifier = lastIntervalId;
+    infos.repeat = YES;
 
-    lastTimerId++;
-
-    NSDictionary* data = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSData dataWithJSObjectRef:(JSObjectRef)jsFunction], @"callback",
-        [NSNumber numberWithInt:lastTimerId], @"identifier",
-        nil];
-
-    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:(delay / 1000) target:self selector:@selector(tick:) userInfo:data repeats:YES];
-    [timers setObject:timer forKey:@(lastTimerId)];
-
-
-
+    JSValueProtect(jsContext, jsCallback);
+    
+    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:(interval / 1000) target:self selector:@selector(tick:) userInfo:infos repeats:YES];
+    [timers setObject:timer forKey:@(lastIntervalId)];
+   
     return JSValueMakeNumber(jsContext, lastTimerId);
 }
 
 - (JSValueRef)clearInterval:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef[])argv
 {
-    NSLog(@"Clear Interval");
-    JSValueRef jsIdentifier = argv[0];
-    
-    int identifier = JSValueToNumber(jsContext, jsIdentifier, NULL);
-    
+    int identifier = JSValueToNumber(jsContext, argv[0], NULL);
+
     NSTimer* timer = [timers objectForKey:@(identifier)];
     [timer invalidate];
     [timers removeObjectForKey:@(identifier)];
@@ -65,35 +66,32 @@ BS_DEFINE_BOUND_FUNCTION(clearTimeout, clearTimeout);
     return NULL;
 }
 
-
 - (JSValueRef)setTimeout:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef[])argv
 {
-    JSValueRef jsFunction = argv[0];
-    JSValueRef jsDelay = argv[1];
-    double delay = JSValueToNumber(jsContext, jsDelay, NULL);
+    JSValueRef jsCallback = argv[0];
+    JSValueRef jsInterval = argv[1];
+    double interval = JSValueToNumber(jsContext, jsInterval, NULL);
 
-    JSValueProtect(jsContext, jsFunction);
+    lastIntervalId++;
 
-    lastTimerId++;
+    BSTimerInfo* infos = [BSTimerInfo new];
+    infos.jsCallback = jsCallback;
+    infos.jsInterval = jsInterval;
+    infos.identifier = lastIntervalId;
+    infos.repeat = NO;
 
-    NSDictionary* data = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSData dataWithJSObjectRef:(JSObjectRef)jsFunction], @"callback",
-        [NSNumber numberWithInt:lastTimerId], @"identifier",
-        nil];
-
-    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:(delay / 1000) target:self selector:@selector(tick:) userInfo:data repeats:NO];
-    [timers setObject:timer forKey:@(lastTimerId)];
-
+    JSValueProtect(jsContext, jsCallback);
+    
+    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:(interval / 1000) target:self selector:@selector(tick:) userInfo:infos repeats:YES];
+    [timers setObject:timer forKey:@(lastIntervalId)];
+   
     return JSValueMakeNumber(jsContext, lastTimerId);
 }
 
-
 - (JSValueRef)clearTimeout:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef[])argv
 {
-    JSValueRef jsIdentifier = argv[0];
-    
-    int identifier = JSValueToNumber(jsContext, jsIdentifier, NULL);
-    
+    int identifier = JSValueToNumber(jsContext, argv[0], NULL);
+
     NSTimer* timer = [timers objectForKey:@(identifier)];
     [timer invalidate];
     [timers removeObjectForKey:@(identifier)];
@@ -103,21 +101,20 @@ BS_DEFINE_BOUND_FUNCTION(clearTimeout, clearTimeout);
 
 - (void)tick:(NSTimer*)timer
 {
-//    static int count = 0;
-    
-//    NSLog(@"Tick %i", ++count);
+    BSTimerInfo* info = (BSTimerInfo*)[timer userInfo];
 
-    NSDictionary* data = [timer userInfo];
-    JSObjectRef jsCallback = [[data objectForKey:@"callback"] jsObject];
-    //NSNumber* identifier = [data objectForKey:@"identifier"];
-   // int ident = [identifier intValue];
-    
-    //[timers removeObjectForKey:@(ident)];
-    
-//    NSLog(@"Callback %@", jsCallback ? @"Yes" : @"no");
-    
-    JSObjectCallAsFunction(self.jsContext, jsCallback, NULL, 0, NULL, NULL);
-    
+    JSObjectRef jsCallback = (JSObjectRef)info.jsCallback;
+
+    JSObjectCallAsFunction(
+        self.jsContext,
+        jsCallback,
+        NULL, 0, NULL, NULL
+    );
+
+    if (info.repeat == NO) {
+        [timer invalidate];
+        [timers removeObjectForKey:@(info.identifier)];
+    }
 }
 
 @end

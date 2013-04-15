@@ -8,9 +8,17 @@
 
 #import "BSBinding.h"
 
+@interface BSTimerInfo : NSObject
+    @property(nonatomic) JSValueRef jsCallback;
+    @property(nonatomic) JSValueRef jsInterval;
+    @property(nonatomic, assign) int identifier;
+    @property(nonatomic, assign) BOOL repeat;
+@end
+
 @interface BSCoreWindowBinding : BSBinding {
     NSMutableDictionary* timers;
     int lastTimerId;
+    int lastIntervalId;
 }
 
 - (void)tick:(NSTimer*)timer;

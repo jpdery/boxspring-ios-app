@@ -14,7 +14,6 @@
 - (void)loadViewWithRect:(CGRect)rect
 {
     self.view = [[BSBoundWindow alloc] initWithFrame:rect andViewBinding:self];
-    self.view.backgroundColor = [UIColor colorWithRed:0.5 green:0.5 blue:0.5 alpha:0.5];
 }
 
 /**

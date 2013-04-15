@@ -336,12 +336,12 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
 - (void)setLineJoin:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
     jsLineJoin = jsValue;
-    NSString* lineCap = [[NSString stringWithJSString:JSValueToStringCopy(jsContext, jsLineJoin, NULL)] lowercaseString];
-    if ([lineCap isEqualToString:@"miter"]) {
+    NSString* lineJoin = [[NSString stringWithJSString:JSValueToStringCopy(jsContext, jsLineJoin, NULL)] lowercaseString];
+    if ([lineJoin isEqualToString:@"miter"]) {
         CGContextSetLineJoin(self.context, kCGLineJoinMiter);
-    } else if ([lineCap isEqualToString:@"round"]) {
+    } else if ([lineJoin isEqualToString:@"round"]) {
         CGContextSetLineJoin(self.context, kCGLineJoinRound);
-    } else if ([lineCap isEqualToString:@"bevel"]) {
+    } else if ([lineJoin isEqualToString:@"bevel"]) {
         CGContextSetLineJoin(self.context, kCGLineJoinBevel);
     }    
 }

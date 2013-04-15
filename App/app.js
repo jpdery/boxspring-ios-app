@@ -94,7 +94,7 @@ var PingPongView = boxspring.define('boxspring.PingPongView', {
         x += xdir;
         y += ydir;
                                 
-        context.fillStyle = 'rgba(255, 0, 0, 0.5)';
+        context.fillStyle = 'rgba(255, 255, 0, 0.75)';
         context.fillRect(x, y, sizex, sizey);
     }
 
