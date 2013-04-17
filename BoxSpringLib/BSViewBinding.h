@@ -14,7 +14,7 @@
 @interface BSViewBinding : BSBinding
 
 @property (nonatomic, retain) BSBoundView* view;
-@property (nonatomic, retain) BSContextBinding* context;
+@property (nonatomic, retain) BSContextBinding* viewContextBinding;
 
 - (void)loadViewWithRect:(CGRect)rect;
 - (void)viewDidDraw:(BSBoundView*)view inRect:(CGRect)rect;

@@ -14,7 +14,7 @@
 @implementation BSViewBinding
 
 @synthesize view;
-@synthesize context;
+@synthesize viewContextBinding;
 
 - (void)loadViewWithRect:(CGRect)rect
 {
@@ -23,8 +23,8 @@
 
 - (void)viewDidDraw:(BSBoundView*)view inRect:(CGRect)rect
 {
-    if (self.context == nil) {
-        self.context = [[BSContextBinding alloc] initWithScriptView:self.scriptView];
+    if (self.viewContextBinding == nil) {
+        self.viewContextBinding = [[BSContextBinding alloc] initWithScriptView:self.scriptView];
     }
 
     JSObjectRef jsRectConstructor = [[self.scriptView.primeConstructors objectForKey:@"boxspring.Rect"] jsObject];
@@ -37,10 +37,10 @@
 
     JSObjectRef jsRect = JSObjectCallAsConstructor(self.jsContext, jsRectConstructor, 4, argv, NULL);
     
-    self.context.context = UIGraphicsGetCurrentContext();
+    self.viewContextBinding.context = UIGraphicsGetCurrentContext();
 
     JSValueRef drawArgv[2];
-    drawArgv[0] = self.context.jsBoundObject;
+    drawArgv[0] = self.viewContextBinding.jsBoundObject;
     drawArgv[1] = jsRect;
 
     [self call:@"draw" argc:2 argv:drawArgv from:kBSBindingContextObjectSelf];
