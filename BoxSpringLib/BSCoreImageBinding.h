@@ -6,8 +6,13 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "BSBinding.h"
+#import "BSEventBinding.h"
 
-@interface BSCoreImageBinding : BSBinding
+@interface BSCoreImageBinding : BSEventBinding {
+    JSValueRef jsSrc;
+}
+
+@property (nonatomic, retain) UIImage* image;
+@property (nonatomic, assign) BOOL loaded;
 
 @end

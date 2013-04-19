@@ -12,8 +12,8 @@
 
 @interface BSBoundView : UIView
 
-@property(nonatomic, readonly) BSViewBinding* viewBinding;
+@property(nonatomic, readonly) BSViewBinding* binding;
 
-- (id)initWithFrame:(CGRect)frame andViewBinding:(BSViewBinding*)theViewBinding;
+- (id)initWithFrame:(CGRect)frame binding:(BSViewBinding*)theBinding;
 
 @end

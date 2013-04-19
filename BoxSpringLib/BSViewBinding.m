@@ -18,7 +18,7 @@
 
 - (void)loadViewWithRect:(CGRect)rect
 {
-    self.view = [[BSBoundView alloc] initWithFrame:rect andViewBinding:self];
+    self.view = [[BSBoundView alloc] initWithFrame:rect binding:self];
 }
 
 - (void)viewDidDraw:(BSBoundView*)view inRect:(CGRect)rect

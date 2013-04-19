@@ -12,6 +12,15 @@
 
 @class BSBinding;
 
+/**
+ * Creates a string from a javascript string
+ *
+ * @param string The string.
+ * @return The javascript string.
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1 
+ */
 JSStringRef
 NSStringToJSString(NSString* string);
 
@@ -20,20 +29,7 @@ NSStringToJSString(NSString* string);
  *
  * @param jsContext The javascript context
  * @param jsString The javascript string
- * @return The new string.
- *
- * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
- * @since  0.0.1 
- */
-JSStringRef
-JSStringCreateWithNSString(NSString* string);
-
-/**
- * Convert a javascript string into a NSString
- *
- * @param jsContext The javascript context
- * @param jsString The javascript string
- * @return The new string.
+ * @return The NSString
  *
  * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
  * @since  0.0.1 
@@ -42,11 +38,11 @@ NSString*
 JSStringToNSString(JSContextRef jsContext, JSStringRef jsString);
 
 /**
- * Convert a javascript value into a NSString
+ * Creates a NSString from a javascript value.
  *
  * @param jsContext The javascript context
  * @param jsValue The javascript value
- * @return The new string.
+ * @return The NSString
  *
  * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
  * @since  0.0.1 
@@ -67,11 +63,11 @@ NSDictionary*
 JSValueToNSDictionary(JSContextRef jsContext, JSValueRef jsValue);
 
 /**
- * Convert a javascript value into a CGColorRef
+ * Creates a CGColor instance from a javascript value.
  *
  * @param jsContext The javascript context
  * @param jsValue The javascript value
- * @return The color
+ * @return The CGColor
  *
  * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
  * @since  0.0.1 
@@ -182,10 +178,6 @@ JSObjectGetBoundObject(JSContextRef jsContext, JSObjectRef jsObject);
 
 JSClassDefinition
 JSClassDefinitionFromClass(Class class);
-
-/*
- * Logging
- */
 
 void
 JSObjectLogProperties(JSContextRef jsContext, JSObjectRef jsObject);

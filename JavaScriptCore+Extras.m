@@ -6,10 +6,18 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "UIColor+Hex.h"
 #import "JavaScriptCore+Extras.h"
 #import "BSBinding.h"
 
+/**
+ * Creates a string from a javascript string
+ *
+ * @param string The string.
+ * @return The javascript string.
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1 
+ */
 JSStringRef
 NSStringToJSString(NSString* string)
 {
@@ -21,23 +29,7 @@ NSStringToJSString(NSString* string)
  *
  * @param jsContext The javascript context
  * @param jsString The javascript string
- * @return The new string.
- *
- * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
- * @since  0.0.1 
- */
-JSStringRef
-JSStringCreateWithNSString(NSString* string)
-{
-    return JSStringCreateWithCFString((CFStringRef)string);
-}
-
-/**
- * Convert a javascript string into a NSString
- *
- * @param jsContext The javascript context
- * @param jsString The javascript string
- * @return The new string.
+ * @return The NSString
  *
  * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
  * @since  0.0.1 
@@ -51,11 +43,11 @@ JSStringToNSString(JSContextRef jsContext, JSStringRef jsString)
 }
 
 /**
- * Convert a javascript value into a NSString
+ * Creates a NSString from a javascript value.
  *
  * @param jsContext The javascript context
  * @param jsValue The javascript value
- * @return The new string.
+ * @return The NSString
  *
  * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
  * @since  0.0.1 
@@ -94,11 +86,11 @@ JSValueToNSDictionary(JSContextRef jsContext, JSValueRef jsValue)
 }
 
 /**
- * Convert a javascript value into a CGColorRef
+ * Creates a CGColor instance from a javascript value.
  *
  * @param jsContext The javascript context
  * @param jsValue The javascript value
- * @return The color
+ * @return The CGColor
  *
  * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
  * @since  0.0.1 
@@ -106,9 +98,64 @@ JSValueToNSDictionary(JSContextRef jsContext, JSValueRef jsValue)
 CGColorRef
 JSValueToCGColor(JSContextRef jsContext, JSValueRef jsValue)
 {
-    NSString* name = JSValueToNSString(jsContext, jsValue);
-    UIColor* color = [UIColor colorWithCSS:name];
-    return [color CGColor];    
+    NSString* css = JSValueToNSString(jsContext, jsValue);
+
+    if (css == nil || [css length] == 0)
+		return [[UIColor blackColor] CGColor];
+       
+    if ([css hasPrefix:@"#"]) {
+        
+        css = [css stringByReplacingOccurrencesOfString:@"#" withString:@""];
+        if (css.length == 3) {
+            css = [css stringByAppendingString:css];
+        }
+
+        uint hex = strtol(css.UTF8String, NULL, 16);
+
+        CGFloat r, g, b;
+        r = ((CGFloat)((hex >> 16) & 0xFF)) / ((CGFloat)0xFF);
+        g = ((CGFloat)((hex >> 8)  & 0xFF)) / ((CGFloat)0xFF);
+        b = ((CGFloat)((hex >> 0)  & 0xFF)) / ((CGFloat)0xFF);
+        return [[UIColor colorWithRed:r green:g blue:b alpha:1.0] CGColor];
+    }
+    
+    if ([css hasPrefix:@"rgba"]) {
+        
+        int r;
+        int g;
+        int b;
+        float a;
+          
+        NSScanner* scanner = [NSScanner scannerWithString:css];
+        [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@"\n, "]];
+        [scanner scanString:@"rgba(" intoString:nil];
+        [scanner scanInt:&r];
+        [scanner scanInt:&g];
+        [scanner scanInt:&b];
+        [scanner scanFloat:&a];
+        [scanner scanString:@")" intoString:nil];
+
+        return [[UIColor colorWithRed:(r / 255) green:(g / 255) blue:(b / 255 * 100) alpha:a] CGColor];
+    }      
+
+    if ([css hasPrefix:@"rgb"]) {
+    
+        int r;
+        int g;
+        int b;
+    
+        NSScanner* scanner = [NSScanner scannerWithString:css];
+        [scanner setCharactersToBeSkipped:[NSCharacterSet characterSetWithCharactersInString:@"\n, "]];
+        [scanner scanString:@"rgba(" intoString:nil];
+        [scanner scanInt:&r];
+        [scanner scanInt:&g];
+        [scanner scanInt:&b];
+        [scanner scanString:@")" intoString:nil];
+        
+        return [[UIColor colorWithRed:(r / 255) green:(g / 255) blue:(b / 255 * 100) alpha:1] CGColor];
+    }  
+    
+    return [[UIColor blackColor] CGColor];
 }
 
 /**
@@ -335,7 +382,3 @@ JSObjectLogProperties(JSContextRef jsContext, JSObjectRef jsObject)
         NSLog(@"Property: %@", JSStringToNSString(jsContext, jsProperty));
     }
 }
-
-
-
-

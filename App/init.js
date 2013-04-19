@@ -1,8 +1,9 @@
 
+window = this;
+
 boxspring.define('core.Window',  {inherits: null})
 boxspring.define('core.Console', {inherits: null})
-
-//boxspring.define('core.Image', {inherits: null});
+boxspring.define('core.Image', {inherits: null});
 
 // console
 var _console = new core.Console();
@@ -16,3 +17,6 @@ window.clearTimeout = function(id){ return _window.clearTimeout(id); };
 window.clearInterval = function(id){ return _window.clearInterval(id); };
 window.requestAnimationFrame = function(cb, element){ return _window.setTimeout(cb, 16); };
 
+window.Image = function Image() {
+    return new core.Image();
+}

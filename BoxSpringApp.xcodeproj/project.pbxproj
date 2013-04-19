@@ -35,7 +35,6 @@
 		C7F00F5C1718A4A100A672E2 /* Bindings.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7F00F5B1718A4A100A672E2 /* Bindings.plist */; };
 		C7FC9C48171A2129008B021E /* BSCoreImageBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FC9C47171A2129008B021E /* BSCoreImageBinding.m */; };
 		C7FC9C4B171A2239008B021E /* BSCoreWindowBinding.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FC9C4A171A2239008B021E /* BSCoreWindowBinding.m */; };
-		C7FC9C4F171AE490008B021E /* UIColor+Hex.m in Sources */ = {isa = PBXBuildFile; fileRef = C7FC9C4E171AE490008B021E /* UIColor+Hex.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -94,8 +93,6 @@
 		C7FC9C47171A2129008B021E /* BSCoreImageBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSCoreImageBinding.m; sourceTree = "<group>"; };
 		C7FC9C49171A2239008B021E /* BSCoreWindowBinding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BSCoreWindowBinding.h; sourceTree = "<group>"; };
 		C7FC9C4A171A2239008B021E /* BSCoreWindowBinding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BSCoreWindowBinding.m; sourceTree = "<group>"; };
-		C7FC9C4D171AE490008B021E /* UIColor+Hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Hex.h"; path = "BoxSpringLib/UIColor+Hex.h"; sourceTree = "<group>"; };
-		C7FC9C4E171AE490008B021E /* UIColor+Hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Hex.m"; path = "BoxSpringLib/UIColor+Hex.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -244,8 +241,6 @@
 				C7A741B117074AC7001125E5 /* JavaScriptCore+Extras.m */,
 				C762867416FFAE6F00A1B1C4 /* Geometry+Extras.h */,
 				C762867516FFAE6F00A1B1C4 /* Geometry+Extras.m */,
-				C7FC9C4D171AE490008B021E /* UIColor+Hex.h */,
-				C7FC9C4E171AE490008B021E /* UIColor+Hex.m */,
 			);
 			name = Extras;
 			sourceTree = "<group>";
@@ -332,7 +327,6 @@
 				C70063C11719A62B00C0FF53 /* BSBoundWindow.m in Sources */,
 				C7FC9C48171A2129008B021E /* BSCoreImageBinding.m in Sources */,
 				C7FC9C4B171A2239008B021E /* BSCoreWindowBinding.m in Sources */,
-				C7FC9C4F171AE490008B021E /* UIColor+Hex.m in Sources */,
 				C75D3853171E2230002ADF8F /* BSEventBinding.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

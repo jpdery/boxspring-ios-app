@@ -20,6 +20,14 @@ var DiceView = boxspring.define('boxspring.PingPongView', {
 
         setInterval(draw, 250);
 
+var image = new Image()
+image.addEventListener('load', function() {
+    console.log('Loaded');
+});
+image.src = 'image.png';
+
+    this.image = image;
+
         return this
     },
     
@@ -43,7 +51,10 @@ var DiceView = boxspring.define('boxspring.PingPongView', {
 
         context.fillStyle = colorize();
         context.arc(40, this.size.y - 40, 20, 0, Math.PI * 2, true);
-        context.fill();   
+        context.fill();
+        
+        context.drawImage(this.image, 50, 50);
+        context.drawImage(this.image, 0, 0);
     }
 
 })
@@ -56,6 +67,4 @@ var ppv = new boxspring.PingPongView(
 );
 
 w.addChild(ppv);
-
-
 

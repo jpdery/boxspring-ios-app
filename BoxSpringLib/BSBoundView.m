@@ -12,27 +12,25 @@
 
 @implementation BSBoundView
 
-@synthesize viewBinding;
+@synthesize binding;
 
-- (id)initWithFrame:(CGRect)frame andViewBinding:(BSViewBinding*)theViewBinding
+- (id)initWithFrame:(CGRect)frame binding:(BSViewBinding*)theBinding
 {
     if (self = [self initWithFrame:frame]) {
-        viewBinding = [theViewBinding retain];
+        binding = [theBinding retain];
     }
-    
     return self;
 }
 
 - (void)dealloc
 {
-    [viewBinding release];
+    [binding release];
     [super dealloc];
 }
 
 - (void)drawRect:(CGRect)rect
 {
-    [self.viewBinding viewDidDraw:self inRect:rect];
+    [self.binding viewDidDraw:self inRect:rect];
 }
-
 
 @end

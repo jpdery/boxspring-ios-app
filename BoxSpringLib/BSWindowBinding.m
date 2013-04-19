@@ -13,7 +13,7 @@
 
 - (void)loadViewWithRect:(CGRect)rect
 {
-    self.view = [[BSBoundWindow alloc] initWithFrame:rect andViewBinding:self];
+    self.view = [[BSBoundWindow alloc] initWithFrame:rect binding:self];
 }
 
 /**

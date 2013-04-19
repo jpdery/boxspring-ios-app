@@ -6,6 +6,7 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
+#import "BSCoreImageBinding.h"
 #import "BSContextBinding.h"
 
 @implementation BSContextBinding
@@ -1185,6 +1186,48 @@ BS_DEFINE_BOUND_FUNCTION(drawImage, drawImage)
  */
 - (JSValueRef)drawImage:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef [])argv
 {
+//    double sx, sy, sw, sh;
+    double dx, dy, dw, dh;
+    
+    JSValueRef jsImage = argv[0];
+    
+    BSCoreImageBinding* binding = (BSCoreImageBinding*) JSObjectGetBoundObject(jsContext, (JSObjectRef) jsImage);
+ 
+    if (binding.loaded == NO) {
+        return NULL;
+    }
+ 
+    UIImage* image = binding.image;
+    
+	if (argc == 3) {
+		// drawImage(image, dx, dy)
+        dx = JSValueToNumber(jsContext, argv[1], NULL);
+        dy = JSValueToNumber(jsContext, argv[2], NULL);
+
+        CGRect rect = CGRectMake(0, 0, image.size.width, image.size.height);
+        CGContextSaveGState(self.context);
+        CGContextTranslateCTM(self.context, dx, image.size.height + dy);
+        CGContextScaleCTM(self.context, 1.0, -1.0);
+        CGContextDrawImage(self.context, rect, image.CGImage);
+        CGContextRestoreGState(self.context);
+	} else if (argc == 5) {
+		// drawImage(image, dx, dy, dw, dh)
+        dx = JSValueToNumber(jsContext, argv[1], NULL);
+        dy = JSValueToNumber(jsContext, argv[2], NULL);
+        dw = JSValueToNumber(jsContext, argv[3], NULL);
+        dh = JSValueToNumber(jsContext, argv[3], NULL);
+	} else if (argc >= 9) {
+		// drawImage(image, sx, sy, sw, sh, dx, dy, dw, dh)
+        dx = JSValueToNumber(jsContext, argv[1], NULL);
+        dy = JSValueToNumber(jsContext, argv[2], NULL);
+        dw = JSValueToNumber(jsContext, argv[3], NULL);
+        dh = JSValueToNumber(jsContext, argv[3], NULL);        
+	} else {
+		return NULL;
+	}
+	/*
+	scriptView.currentRenderingContext = renderingContext;
+	[renderingContext drawImage:image sx:sx sy:sy sw:sw sh:sh dx:dx dy:dy dw:dw dh:dh];*/
     return NULL;
 }
 

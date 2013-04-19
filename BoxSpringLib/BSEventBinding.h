@@ -9,7 +9,12 @@
 #import "BSBinding.h"
 
 @interface BSEventBinding : BSBinding {
-    NSMutableDictionary* events;
+    NSMutableDictionary* listeners;
+    NSMutableDictionary* callbacks;
 }
+
+- (void)setEventCallback:(NSString*)event callback:(JSObjectRef)jsCallback;
+- (void)getEventCallback:(NSString*)event;
+- (void)triggerEvent:(NSString*)event argc:(size_t)argc argv:(const JSValueRef[])argv;
 
 @end

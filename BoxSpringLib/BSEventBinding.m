@@ -17,10 +17,32 @@ BS_DEFINE_BOUND_FUNCTION(dispatchEvent, dispatchEvent)
 - (id)init
 {
     if (self = [super init]) {
-        events = [NSMutableDictionary new];
+        listeners = [NSMutableDictionary new];
+        callbacks = [NSMutableDictionary new];
     }
-    
     return self;
+}
+
+- (void)setEventCallback:(NSString*)event callback:(JSObjectRef)jsCallback
+{
+
+}
+
+- (void)getEventCallback:(NSString*)event
+{
+
+}
+
+- (void)triggerEvent:(NSString*)event argc:(size_t)argc argv:(const JSValueRef[])argv
+{
+    NSMutableArray* events = [listeners objectForKey:event];
+    if (events == nil)
+        return;
+    
+    for (int i = 0; i < events.count; i++) {
+        JSValueRef jsFunction = (JSValueRef) [[events objectAtIndex:i] pointerValue];
+        JSObjectCallAsFunction(self.jsContext, (JSObjectRef) jsFunction, self.jsThisObject, argc, argv, NULL);
+    }
 }
 
 -(JSValueRef)addEventListener:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef[])argv
@@ -30,15 +52,16 @@ BS_DEFINE_BOUND_FUNCTION(dispatchEvent, dispatchEvent)
     
     NSString* type = JSValueToNSString(jsContext, jsType);
     
-    NSMutableArray* listeners = [events objectForKey:type];
-    if (listeners == nil) {
-        listeners = [NSMutableArray new];
+    NSMutableArray* events = [listeners objectForKey:type];
+    if (events == nil) {
+        events = [NSMutableArray new];
+        [listeners setObject:events forKey:type];
     }
 
-//    NSData* listener = [NSData dataWithJSValueRef:jsListener];
-//    if ([listeners containsObject:listener] == NO) {
-  //      [listeners addObject:listener];
-   // }
+    NSValue* jsListenerValue = [NSValue valueWithPointer:jsListener];
+    if ([events containsObject:jsListenerValue] == NO) {
+        [events addObject:jsListenerValue];
+    }
 
     return NULL;
 }
@@ -50,18 +73,17 @@ BS_DEFINE_BOUND_FUNCTION(dispatchEvent, dispatchEvent)
     
     NSString* type = JSValueToNSString(jsContext, jsType);
     
-    NSMutableArray* listeners = [events objectForKey:type];
-    if (listeners == nil)
+    NSMutableArray* events = [listeners objectForKey:type];
+    if (events == nil)
         return NULL;
-
-//    NSData* listener = [NSData dataWithJSValueRef:jsListener];
-//    [listeners removeObject:listener];
     
-    return NULL;
-}
-
--(JSValueRef)dispatchEvent:(JSContextRef)jsContext argc:(size_t)argc argv:(const JSValueRef[])argv
-{
+    for (int i = 0; i < events.count; i++) {
+        if (JSValueIsStrictEqual(self.jsContext, [[events objectAtIndex:i] pointerValue], jsListener)) {
+            [events removeObjectAtIndex:i];
+            return NULL;
+        }
+    }
+    
     return NULL;
 }
 
