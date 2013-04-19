@@ -9,8 +9,6 @@
 
 #import "JavaScriptCore+Extras.h"
 #import "Geometry+Extras.h"
-#import "NSString+JavaScriptCore.h"
-#import "NSData+JavaScriptCore.h"
 
 #import "BSBinding.h"
 #import "BSScriptView.h"
@@ -26,15 +24,28 @@
 - (id)initWithScriptView:(BSScriptView*)theScriptView
 {
     if (self = [self init]) {
+       
         scriptView = [theScriptView retain];
+        
         jsContext = theScriptView.jsGlobalContext;
-        JSClassDefinition jsBindingClassDef = JSClassDefinitionFrom(self.class);
+
+        JSClassDefinition jsBindingClassDef = JSClassDefinitionFromClass(self.class);
+        jsBindingClassDef.className = NSStringFromClass(self.class).UTF8String;
         jsBindingClassDef.attributes = kJSClassAttributeNoAutomaticPrototype;
         JSClassRef jsBindingClass = JSClassCreate(&jsBindingClassDef);
+
         jsBoundObject = JSObjectMake(self.jsContext, jsBindingClass, self);
-        jsBoundObjectPrototype = (JSObjectRef)JSObjectGetPrototype(self.jsContext, jsBoundObject);
-        JSObjectInheritObject(self.jsContext, jsBoundObject);
+        jsBoundObjectPrototype = (JSObjectRef) JSObjectGetPrototype(self.jsContext, jsBoundObject);
+
+        // make sure the binding object inherits the object prototype
+        JSStringRef jsObjectString = JSStringCreateWithUTF8CString("Object");
+        JSObjectRef jsObjectConstruct = (JSObjectRef) JSObjectGetProperty(jsContext, theScriptView.jsGlobalObject, jsObjectString, NULL);
+        JSObjectRef jsObjectPrototype = JSObjectGetPrototypeProperty(jsContext, jsObjectConstruct);
+        JSObjectSetPrototype(jsContext, jsBoundObject, jsObjectPrototype);
+        JSStringRelease(jsObjectString);
+        
         JSObjectSetBoundObject(self.jsContext, jsBoundObject, self);
+
         jsThisObject = jsBoundObject;
         
         JSValueProtect(self.jsContext, jsBoundObject);
@@ -69,6 +80,7 @@
 
 - (void)dealloc
 {
+    JSValueUnprotect(self.jsContext, self.jsBoundObject);
     [scriptView release];
     [super dealloc];
 }
@@ -93,7 +105,7 @@
 
     return JSObjectCallAsFunction(
         self.jsContext,
-        (JSObjectRef) JSObjectGetProperty(self.jsContext, jsContextObject, [name jsStringValue], NULL),
+        (JSObjectRef) JSObjectGetProperty(self.jsContext, jsContextObject, NSStringToJSString(name), NULL),
         self.jsThisObject,
         argc,
         argv,

@@ -1,5 +1,5 @@
 //
-//  NSData+JavaScriptCore.m
+//  JavaScriptCore+Extras.m
 //  BoxSpringApp
 //
 //  Created by Jean-Philippe Déry on 2013-03-30.
@@ -7,20 +7,126 @@
 //
 
 #import "UIColor+Hex.h"
-#import "NSString+JavaScriptCore.h"
-#import "NSData+JavaScriptCore.h"
 #import "JavaScriptCore+Extras.h"
 #import "BSBinding.h"
 
-/* 
- * Properties
- */
+JSStringRef
+NSStringToJSString(NSString* string)
+{
+    return JSStringCreateWithCFString((CFStringRef)string);
+}
 
+/**
+ * Creates a javascript string from a NSString
+ *
+ * @param jsContext The javascript context
+ * @param jsString The javascript string
+ * @return The new string.
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1 
+ */
+JSStringRef
+JSStringCreateWithNSString(NSString* string)
+{
+    return JSStringCreateWithCFString((CFStringRef)string);
+}
+
+/**
+ * Convert a javascript string into a NSString
+ *
+ * @param jsContext The javascript context
+ * @param jsString The javascript string
+ * @return The new string.
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1 
+ */
+NSString*
+JSStringToNSString(JSContextRef jsContext, JSStringRef jsString)
+{
+    NSString *string = (NSString*)JSStringCopyCFString(kCFAllocatorDefault, jsString);
+    [string autorelease];
+    return string;
+}
+
+/**
+ * Convert a javascript value into a NSString
+ *
+ * @param jsContext The javascript context
+ * @param jsValue The javascript value
+ * @return The new string.
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1 
+ */
+NSString *
+JSValueToNSString(JSContextRef jsContext, JSValueRef jsValue)
+{
+	JSStringRef jsString = JSValueToStringCopy(jsContext, jsValue, NULL);
+	if (!jsString) return nil;
+	
+	NSString *string = (NSString*)JSStringCopyCFString(kCFAllocatorDefault, jsString);
+	[string autorelease];
+	JSStringRelease(jsString);
+	
+	return string;
+}
+
+/**
+ * TODO
+ */
+NSArray*
+JSValueToNSArray(JSContextRef jsContext, JSValueRef jsValue)
+{
+    NSLog(@"JSValueToNSArray not implemented");
+    return nil;
+}
+
+/**
+ * TODO
+ */
+NSDictionary*
+JSValueToNSDictionary(JSContextRef jsContext, JSValueRef jsValue)
+{
+    NSLog(@"JSValueToNSDictionary not implemented");
+    return nil;
+}
+
+/**
+ * Convert a javascript value into a CGColorRef
+ *
+ * @param jsContext The javascript context
+ * @param jsValue The javascript value
+ * @return The color
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1 
+ */
+CGColorRef
+JSValueToCGColor(JSContextRef jsContext, JSValueRef jsValue)
+{
+    NSString* name = JSValueToNSString(jsContext, jsValue);
+    UIColor* color = [UIColor colorWithCSS:name];
+    return [color CGColor];    
+}
+
+/**
+ * Convenience method to set the prototype property of an object.
+ *
+ * @param jsContext The javascript context
+ * @param jsObject The javascript object that will be assigned the prorotype property 
+ * @param jsPrototype The javascript object that will be assigned as the prototype property
+ * @return void
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1 
+ */
 void
-JSObjectSetPrototypeProperty(JSContextRef jsContext, JSObjectRef jsObject, JSObjectRef jsVal)
+JSObjectSetPrototypeProperty(JSContextRef jsContext, JSObjectRef jsObject, JSObjectRef jsPrototype)
 {
     JSStringRef jsKey = JSStringCreateWithUTF8CString("prototype");
-    JSObjectSetProperty(jsContext, jsObject, jsKey, jsVal, kJSPropertyAttributeDontDelete, NULL);
+    JSObjectSetProperty(jsContext, jsObject, jsKey, jsPrototype, kJSPropertyAttributeDontDelete, NULL);
     JSStringRelease(jsKey);
 }
 
@@ -33,11 +139,22 @@ JSObjectGetPrototypeProperty(JSContextRef jsContext, JSObjectRef jsObject)
     return jsVal;
 }
 
+/**
+ * Convenience method to set the constructor property of an object.
+ *
+ * @param jsContext The javascript context
+ * @param jsObject The javascript object that will be assigned the constructor property 
+ * @param jsPrototype The javascript object that will be assigned as the constructor property
+ * @return void
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1 
+ */
 void
-JSObjectSetConstructorProperty(JSContextRef jsContext, JSObjectRef jsObject, JSObjectRef jsVal)
+JSObjectSetConstructorProperty(JSContextRef jsContext, JSObjectRef jsObject, JSObjectRef jsConstructor)
 {
     JSStringRef jsKey = JSStringCreateWithUTF8CString("constructor");
-    JSObjectSetProperty(jsContext, jsObject, jsKey, jsVal, kJSPropertyAttributeDontDelete, NULL);
+    JSObjectSetProperty(jsContext, jsObject, jsKey, jsConstructor, kJSPropertyAttributeDontDelete, NULL);
     JSStringRelease(jsKey);
 }
 
@@ -50,11 +167,22 @@ JSObjectGetConstructorProperty(JSContextRef jsContext, JSObjectRef jsObject)
     return jsVal;
 }
 
+/**
+ * Convenience method to set the parent property of an object.
+ *
+ * @param jsContext The javascript context
+ * @param jsObject The javascript object that will be assigned the parent property 
+ * @param jsPrototype The javascript object that will be assigned as the parent property
+ * @return void
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1 
+ */
 void
-JSObjectSetParentProperty(JSContextRef jsContext, JSObjectRef jsObject, JSObjectRef jsVal)
+JSObjectSetParentProperty(JSContextRef jsContext, JSObjectRef jsObject, JSObjectRef jsParent)
 {
     JSStringRef jsKey = JSStringCreateWithUTF8CString("parent");
-    JSObjectSetProperty(jsContext, jsObject, jsKey, jsVal, kJSPropertyAttributeDontDelete, NULL);
+    JSObjectSetProperty(jsContext, jsObject, jsKey, jsParent, kJSPropertyAttributeDontDelete, NULL);
     JSStringRelease(jsKey);
 }
 
@@ -67,6 +195,17 @@ JSObjectGetParentProperty(JSContextRef jsContext, JSObjectRef jsObject)
     return jsVal;
 }
 
+/**
+ * Copy all properties from an object to another.
+ *
+ * @param jsContext The javascript context
+ * @param jsFrom The javascript object all properties will be copied from
+ * @param jsDest The javascript object to receive all properties
+ * @return void
+ *
+ * @author Jean-Philippe Dery (jeanphilippe.dery@gmail.com)
+ * @since  0.0.1 
+ */
 void
 JSObjectCopyProperties(JSContextRef jsContext, JSObjectRef jsFrom, JSObjectRef jsDest)
 {
@@ -87,10 +226,6 @@ JSObjectCopyProperties(JSContextRef jsContext, JSObjectRef jsFrom, JSObjectRef j
     }
 }
 
-/* 
- * Bindings
- */
-
 static NSMutableDictionary* jsObjectMapping = nil;
 
 void
@@ -108,7 +243,7 @@ JSObjectSetBoundObject(JSContextRef jsContext, JSObjectRef jsObject, BSBinding* 
         jsContext,
         jsObject,
         JSStringCreateWithUTF8CString("__instance_id"),
-        JSValueMakeString(jsContext, [identifier jsStringValue]),
+        JSValueMakeString(jsContext, NSStringToJSString(identifier)),
         kJSPropertyAttributeDontDelete | kJSPropertyAttributeReadOnly,
         NULL
     );
@@ -126,41 +261,11 @@ JSObjectGetBoundObject(JSContextRef jsContext, JSObjectRef jsObject)
     if (jsIntanceId == NULL)
         return nil;
 
-    return [jsObjectMapping objectForKey:[NSString stringWithJSString:JSValueToStringCopy(jsContext, jsIntanceId, NULL)]];
+    return [jsObjectMapping objectForKey:JSValueToNSString(jsContext, jsIntanceId)];
 }
-
-/*
- * Convenience 
- */
-
-void
-JSObjectInheritFunction(JSContextRef jsContext, JSObjectRef jsObject)
-{
-    JSObjectRef jsGlobalObject = JSContextGetGlobalObject(jsContext);
-    JSStringRef jsFunctionString = JSStringCreateWithUTF8CString("Function");
-    JSObjectRef jsFunctionConstruct = (JSObjectRef) JSObjectGetProperty(jsContext, jsGlobalObject, jsFunctionString, NULL);
-    JSObjectRef jsFunctionPrototype = JSObjectGetPrototypeProperty(jsContext, jsFunctionConstruct);
-    JSObjectSetPrototype(jsContext, jsObject, jsFunctionPrototype);
-    JSStringRelease(jsFunctionString);
-}
-
-void
-JSObjectInheritObject(JSContextRef jsContext, JSObjectRef jsObject)
-{
-    JSObjectRef jsGlobalObject = JSContextGetGlobalObject(jsContext);
-    JSStringRef jsFunctionString = JSStringCreateWithUTF8CString("Object");
-    JSObjectRef jsFunctionConstruct = (JSObjectRef) JSObjectGetProperty(jsContext, jsGlobalObject, jsFunctionString, NULL);
-    JSObjectRef jsFunctionPrototype = JSObjectGetPrototypeProperty(jsContext, jsFunctionConstruct);
-    JSObjectSetPrototype(jsContext, jsObject, jsFunctionPrototype);
-    JSStringRelease(jsFunctionString);
-}
-
-/* 
- * Classes
- */
 
 JSClassDefinition
-JSClassDefinitionFrom(Class binding)
+JSClassDefinitionFromClass(Class binding)
 {
     NSMutableArray* boundSetters = [NSMutableArray new];
     NSMutableArray* boundGetters = [NSMutableArray new];
@@ -219,10 +324,6 @@ JSClassDefinitionFrom(Class binding)
     
     return jsBindingClassDef;
 }
-
-/* 
- * Log
- */
  
 void
 JSObjectLogProperties(JSContextRef jsContext, JSObjectRef jsObject)
@@ -231,17 +332,10 @@ JSObjectLogProperties(JSContextRef jsContext, JSObjectRef jsObject)
     size_t count = JSPropertyNameArrayGetCount(jsProperties);
     for (int i = 0; i < count; i++) {
         JSStringRef jsProperty = JSPropertyNameArrayGetNameAtIndex(jsProperties, i);
-        NSLog(@"Property: %@", [NSString stringWithJSString:jsProperty]);
+        NSLog(@"Property: %@", JSStringToNSString(jsContext, jsProperty));
     }
 }
 
-/* 
- * Color
- */
 
-CGColorRef JSValueToCGColor(JSContextRef jsContext, JSValueRef jsVal)
-{
-    NSString* name = [NSString stringWithJSString:JSValueToStringCopy(jsContext, jsVal, NULL)];
-    UIColor* color = [UIColor colorWithCSS:name];
-    return [color CGColor];    
-}
+
+

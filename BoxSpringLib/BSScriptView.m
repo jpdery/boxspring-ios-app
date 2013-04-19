@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "NSString+JavaScriptCore.h"
-#import "NSData+JavaScriptCore.h"
 #import "JavaScriptCore+Extras.h"
 #import "BSCoreWindowBinding.h"
 #import "BSCoreConsoleBinding.h"
@@ -45,7 +43,8 @@
         jsNullValue = JSValueMakeNull(jsGlobalContext);
         JSValueProtect(jsGlobalContext, jsUndefinedValue);
         JSValueProtect(jsGlobalContext, jsNullValue);
-
+        
+        // still required ?
         JSObjectSetProperty(jsGlobalContext,jsGlobalObject, JSStringCreateWithUTF8CString("window"), jsGlobalObject, kJSPropertyAttributeDontDelete, NULL);
 
         bindings = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"Bindings" ofType:@"plist"]];
@@ -155,9 +154,9 @@
     
     NSLog(
         @"%@ at line %@ in %@",
-        [NSString stringWithJSValue:jsExceptionObject fromContext:self.jsGlobalContext],
-        [NSString stringWithJSValue:jsLine fromContext:self.jsGlobalContext],
-        [NSString stringWithJSValue:jsFile fromContext:self.jsGlobalContext]
+        JSValueToNSString(self.jsGlobalContext, jsExceptionObject),
+        JSValueToNSString(self.jsGlobalContext, jsFile),
+        JSValueToNSString(self.jsGlobalContext, jsLine)
      );
     
     JSStringRelease(jsLinePropertyName);
@@ -187,8 +186,8 @@
  */
 - (BSBinding*)createBinding:(NSString*)name
 {
-    JSObjectRef jsPrimeConstructor = [[primeConstructors objectForKey:name] jsObject];
-    JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] jsObject];
+    JSObjectRef jsPrimeConstructor = [[primeConstructors objectForKey:name] pointerValue];
+    JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] pointerValue];
     JSObjectRef jsBoundConstructorPrototype = JSObjectGetPrototypeProperty(self.jsGlobalContext, jsBoundConstructor);
    
     Class class = NSClassFromString([bindings objectForKey:name]);
@@ -213,8 +212,8 @@
  */
 - (BSBinding*)createBinding:(NSString*)name prototype:(JSObjectRef)jsPrototypeObject this:(JSObjectRef)jsThisObject
 {
-    JSObjectRef jsPrimeConstructor = [[primeConstructors objectForKey:name] jsObject];
-    JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] jsObject];
+    JSObjectRef jsPrimeConstructor = [[primeConstructors objectForKey:name] pointerValue];
+    JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] pointerValue];
     JSObjectRef jsBoundConstructorPrototype = JSObjectGetPrototypeProperty(self.jsGlobalContext, jsBoundConstructor);
    
     Class class = NSClassFromString([bindings objectForKey:name]);
@@ -244,7 +243,7 @@
  */
 - (void)bind:(BSBinding *)binding toKey:(NSString *)key ofObject:(JSObjectRef)jsObject
 {
-    JSObjectSetProperty(self.jsGlobalContext, jsObject, [key jsStringValue], [binding jsBoundObject], kJSPropertyAttributeDontDelete, NULL);
+    JSObjectSetProperty(self.jsGlobalContext, jsObject, NSStringToJSString(key), [binding jsBoundObject], kJSPropertyAttributeDontDelete, NULL);
     [boundInstances addObject:binding];
 }
 
@@ -260,7 +259,7 @@
  */
 - (void)didDefineObject:(JSObjectRef)jsObject name:(NSString*)name
 {
-    [primeConstructors setValue:[NSData dataWithJSObjectRef:jsObject] forKey:name];
+    [primeConstructors setValue:[NSValue valueWithPointer:jsObject] forKey:name];
    
     NSString* bindingName = [bindings objectForKey:name];
     if (bindingName) {
@@ -305,8 +304,14 @@
 
         JSObjectRef jsBindingConstructor = JSObjectMake(self.jsGlobalContext, jsBindingConstructorClass, data);
         JSObjectCopyProperties(self.jsGlobalContext, jsPrimeConstructor, jsBindingConstructor);
-        JSObjectInheritFunction(self.jsGlobalContext, jsBindingConstructor);
-
+    
+        // make sure the binding constructor inherits the function prototype
+        JSStringRef jsFunctionString = JSStringCreateWithUTF8CString("Function");
+        JSObjectRef jsFunctionConstruct = (JSObjectRef) JSObjectGetProperty(self.jsGlobalContext, self.jsGlobalObject, jsFunctionString, NULL);
+        JSObjectRef jsFunctionPrototype = JSObjectGetPrototypeProperty(self.jsGlobalContext, jsFunctionConstruct);
+        JSObjectSetPrototype(self.jsGlobalContext, jsBindingConstructor, jsFunctionPrototype);
+        JSStringRelease(jsFunctionString);
+ 
         JSObjectSetProperty(
             self.jsGlobalContext,
             JSObjectGetPrototypeProperty(self.jsGlobalContext, jsBindingConstructor),
@@ -317,8 +322,8 @@
         );
 
         JSValueProtect(self.jsGlobalContext, jsBindingConstructor);
-
-        [boundConstructors setValue:[NSData dataWithJSObjectRef:jsBindingConstructor] forKey:name];
+        
+        [boundConstructors setValue:[NSValue valueWithPointer:jsBindingConstructor] forKey:name];
     }
 }
 
@@ -338,14 +343,14 @@
 {
     BSBinding* instance = (BSBinding*)JSObjectGetBoundObject(self.jsGlobalContext, jsObject);
     if (instance) {
-        JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] jsObject];
+        JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] pointerValue];
         JSObjectRef jsBoundConstructorPrototype = JSObjectGetPrototypeProperty(self.jsGlobalContext, jsBoundConstructor);
         JSObjectRef jsConstructor = (JSObjectRef)JSObjectGetProperty(self.jsGlobalContext, jsBoundConstructorPrototype, JSStringCreateWithUTF8CString("__constructor"), NULL);
         JSObjectRef ret = (JSObjectRef)JSObjectCallAsFunction(self.jsGlobalContext, jsConstructor, jsObject, argc, argv, NULL);
         return ret ? ret : jsObject;
     }
 
-    JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] jsObject];
+    JSObjectRef jsBoundConstructor = [[boundConstructors objectForKey:name] pointerValue];
     JSObjectRef jsBoundConstructorPrototype = JSObjectGetPrototypeProperty(self.jsGlobalContext, jsBoundConstructor);
     
     JSObjectRef jsPrototype = (JSObjectRef)JSObjectGetPrototype(self.jsGlobalContext, jsObject);
@@ -408,7 +413,7 @@ static bool
 BSScriptViewClassSet(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef jsVal, JSValueRef* jsException)
 {
     BSScriptView* view = JSObjectGetPrivate(jsObject);
-    [view didDefineObject:(JSObjectRef)jsVal name:[NSString stringWithJSString:jsKey]];
+    [view didDefineObject:(JSObjectRef)jsVal name:JSStringToNSString(jsContext, jsKey)];
     return true;
 }
 
@@ -421,15 +426,15 @@ BSScriptViewClassSet(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef j
 static JSValueRef
 BSScriptViewClassGet(JSContextRef jsContext, JSObjectRef jsObject, JSStringRef jsKey, JSValueRef* jsException)
 {
-    NSString* name = [NSString stringWithJSString:jsKey];
+    NSString* name = JSStringToNSString(jsContext, jsKey);
 
     BSScriptView* view = JSObjectGetPrivate(jsObject);
     NSMutableDictionary* primeConstructors = view.primeConstructors;
     NSMutableDictionary* boundConstructors = view.boundConstructors;
     
     return [boundConstructors objectForKey:name]
-        ? [[boundConstructors objectForKey:name] jsObject]
-        : [[primeConstructors objectForKey:name] jsObject];
+        ? [[boundConstructors objectForKey:name] pointerValue]
+        : [[primeConstructors objectForKey:name] pointerValue];
 }
 
 /**

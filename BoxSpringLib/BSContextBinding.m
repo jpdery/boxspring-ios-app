@@ -56,13 +56,6 @@ BS_DEFINE_BOUND_GETTER(shadowOffsetY, getShadowOffsetY)
 {
     jsFillStyle = jsValue;
     CGContextSetFillColorWithColor(self.context, JSValueToCGColor(jsContext, jsFillStyle));
-
-//CGFloat hue = ( arc4random() % 256 / 256.0 );  //  0.0 to 1.0
-//CGFloat saturation = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from white
-//CGFloat brightness = ( arc4random() % 128 / 256.0 ) + 0.5;  //  0.5 to 1.0, away from black
-//UIColor *color = [UIColor colorWithHue:hue saturation:saturation brightness:brightness alpha:1];
-//
-// CGContextSetFillColorWithColor(self.context, [color CGColor]);
 }
 
 /**
@@ -294,7 +287,8 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
 - (void)setLineCap:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
     jsLineCap = jsValue;
-    NSString* lineCap = [[NSString stringWithJSString:JSValueToStringCopy(jsContext, jsLineCap, NULL)] lowercaseString];
+    
+    NSString* lineCap = [JSValueToNSString(jsContext, jsLineCap) lowercaseString];
     if ([lineCap isEqualToString:@"butt"]) {
         CGContextSetLineCap(self.context, kCGLineCapButt);
     } else if ([lineCap isEqualToString:@"round"]) {
@@ -336,7 +330,7 @@ BS_DEFINE_BOUND_GETTER(miterLimit, getMiterLimit)
 - (void)setLineJoin:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
     jsLineJoin = jsValue;
-    NSString* lineJoin = [[NSString stringWithJSString:JSValueToStringCopy(jsContext, jsLineJoin, NULL)] lowercaseString];
+    NSString* lineJoin = [JSValueToNSString(jsContext, jsLineJoin) lowercaseString];
     if ([lineJoin isEqualToString:@"miter"]) {
         CGContextSetLineJoin(self.context, kCGLineJoinMiter);
     } else if ([lineJoin isEqualToString:@"round"]) {
@@ -1312,7 +1306,7 @@ BS_DEFINE_BOUND_GETTER(globalCompositeOperation, getGlobalCompositeOperation)
 - (void)setGlobalCompositeOperation:(JSContextRef)jsContext value:(JSValueRef)jsValue
 {
     jsGlobalCompositeOperation = jsValue;
-    NSString* mode = [NSString stringWithJSString:JSValueToStringCopy(jsContext, jsGlobalCompositeOperation, NULL)];
+    NSString* mode = [JSValueToNSString(jsContext, jsGlobalCompositeOperation) lowercaseString];
     if ([mode isEqualToString:@"source-over"]) {
         CGContextSetBlendMode(self.context, kCGBlendModeNormal);
     } else if ([mode isEqualToString:@"source-in"]) {

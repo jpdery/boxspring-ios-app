@@ -7,9 +7,6 @@
 //
 
 #import <JavaScriptCore/JavaScriptCore.h>
-#import "NSString+JavaScriptCore.h"
-#import "NSData+JavaScriptCore.h"
-
 #import "BSBinding.h"
 
 @interface BSContextBinding : BSBinding {

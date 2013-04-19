@@ -27,7 +27,7 @@
         self.viewContextBinding = [[BSContextBinding alloc] initWithScriptView:self.scriptView];
     }
 
-    JSObjectRef jsRectConstructor = [[self.scriptView.primeConstructors objectForKey:@"boxspring.Rect"] jsObject];
+    JSObjectRef jsRectConstructor = [[self.scriptView.primeConstructors objectForKey:@"boxspring.Rect"] pointerValue];
     
     JSValueRef argv[4];
     argv[0] = JSValueMakeNumber(self.jsContext, rect.origin.x);

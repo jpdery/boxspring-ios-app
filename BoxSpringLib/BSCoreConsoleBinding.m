@@ -6,8 +6,6 @@
 //  Copyright (c) 2013 Jean-Philippe Déry. All rights reserved.
 //
 
-#import "NSString+JavaScriptCore.h"
-#import "NSData+JavaScriptCore.h"
 #import "BSCoreConsoleBinding.h"
 
 @implementation BSCoreConsoleBinding
@@ -18,7 +16,7 @@ BS_DEFINE_BOUND_FUNCTION(log, log)
 {
     NSMutableArray* args = [[NSMutableArray alloc] initWithCapacity: argc];
     for (int i = 0; i < argc; i++) {
-        NSString* obj = [NSString stringWithJSValue:argv[i] fromContext:self.scriptView.jsGlobalContext];
+        NSString* obj = JSValueToNSString(self.jsContext, argv[i]);
         if (obj) [args addObject:obj];
         else [args addObject:@"JCHEPAS"];
     }
